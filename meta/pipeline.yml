@@ -4,8 +4,8 @@ resource_types:
   type: registry-image
   source:
     repository: docker.robojackets.org/robojackets/concourse-github-check-resource
-    username: ((docker.robojackets.org/user.username))
-    password: ((docker.robojackets.org/user.password))
+    username: ((docker-robojackets-org.username))
+    password: ((docker-robojackets-org.password))
 
 - name: pull-request
   type: registry-image
@@ -22,7 +22,7 @@ resources:
     uri: https://github.com/RoboJackets/concourse-pipeline-library
     branch: main
     username: x-access-token
-    password: ((github.com/token))
+    password: ((github-com/token))
 
 - name: pull-request
   public: true
@@ -31,7 +31,7 @@ resources:
   webhook_token: ((webhook-token))
   source:
     repository: RoboJackets/concourse-pipeline-library
-    access_token: ((github.com/token))
+    access_token: ((github-com/token))
     base_branch: main
 
 - name: yamllint-check
@@ -40,7 +40,7 @@ resources:
   icon: check-bold
   source:
     repository: concourse-pipeline-library
-    token: ((github.com/token))
+    token: ((github-com/token))
     check_name: YAML Linting
     resource_name: yamllint-check
 
@@ -50,7 +50,7 @@ resources:
   icon: check-bold
   source:
     repository: pull-request
-    token: ((github.com/token))
+    token: ((github-com/token))
     check_name: YAML Linting
     resource_name: yamllint-check-pull-request
 
@@ -60,7 +60,7 @@ resources:
   icon: check-bold
   source:
     repository: concourse-pipeline-library
-    token: ((github.com/token))
+    token: ((github-com/token))
     check_name: Validate Pipelines
     resource_name: validate-pipeline-check
 
@@ -70,7 +70,7 @@ resources:
   icon: check-bold
   source:
     repository: pull-request
-    token: ((github.com/token))
+    token: ((github-com/token))
     check_name: Validate Pipelines
     resource_name: validate-pipeline-check-pull-request
 
