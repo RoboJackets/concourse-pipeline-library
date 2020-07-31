@@ -1,0 +1,197 @@
+---
+resource_types:
+- name: github-check
+  type: registry-image
+  source:
+    repository: docker.robojackets.org/robojackets/concourse-github-check-resource
+    username: ((docker.robojackets.org/user.username))
+    password: ((docker.robojackets.org/user.password))
+
+- name: pull-request
+  type: registry-image
+  source:
+    repository: teliaoss/github-pr-resource
+
+resources:
+- name: concourse-pipeline-library
+  public: true
+  type: git
+  icon: github
+  webhook_token: ((webhook-token))
+  source:
+    uri: https://github.com/RoboJackets/concourse-pipeline-library
+    branch: main
+    username: x-access-token
+    password: ((github.com/token))
+
+- name: pull-request
+  public: true
+  type: pull-request
+  icon: source-pull
+  webhook_token: ((webhook-token))
+  source:
+    repository: RoboJackets/concourse-pipeline-library
+    access_token: ((github.com/token))
+    base_branch: main
+
+- name: yamllint-check
+  public: true
+  type: github-check
+  icon: check-bold
+  source:
+    repository: concourse-pipeline-library
+    token: ((github.com/token))
+    check_name: YAML Linting
+    resource_name: yamllint-check
+
+- name: yamllint-check-pull-request
+  public: true
+  type: github-check
+  icon: check-bold
+  source:
+    repository: pull-request
+    token: ((github.com/token))
+    check_name: YAML Linting
+    resource_name: yamllint-check-pull-request
+
+- name: validate-pipeline-check
+  public: true
+  type: github-check
+  icon: check-bold
+  source:
+    repository: concourse-pipeline-library
+    token: ((github.com/token))
+    check_name: Validate Pipelines
+    resource_name: validate-pipeline-check
+
+- name: validate-pipeline-check-pull-request
+  public: true
+  type: github-check
+  icon: check-bold
+  source:
+    repository: pull-request
+    token: ((github.com/token))
+    check_name: Validate Pipelines
+    resource_name: validate-pipeline-check-pull-request
+
+jobs:
+- name: build-main
+  public: true
+  plan:
+  - get: concourse-pipeline-library
+    trigger: true
+  - put: yamllint-check
+  - task: yamllint
+    file: concourse-pipeline-library/tasks/python/yamllint.yml
+    input_mapping:
+      source: concourse-pipeline-library
+    on_success:
+      put: yamllint-check
+      params:
+        conclusion: success
+        title: YAML looks good
+        summary: All YAML files pass linting
+    on_failure:
+      put: yamllint-check
+      params:
+        conclusion: failure
+        title: YAML linting failed
+        summary: Annotations coming soon
+    on_abort:
+      put: yamllint-check
+      params:
+        conclusion: cancelled
+    on_error:
+      put: yamllint-check
+      params:
+        conclusion: action_required
+  - put: validate-pipeline-check
+  - in_parallel:
+    - task: validate-meta-pipeline
+      file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
+      input_mapping:
+        source: concourse-pipeline-library
+      vars:
+        file: meta/pipeline.yml
+    on_success:
+      put: validate-pipeline-check
+      params:
+        conclusion: success
+        title: Pipelines look good
+        summary: All pipelines passed `fly validate-pipeline`
+    on_failure:
+      put: validate-pipeline-check
+      params:
+        conclusion: failure
+        title: YAML linting failed
+        summary: Annotations coming soon
+    on_abort:
+      put: validate-pipeline-check
+      params:
+        conclusion: cancelled
+    on_error:
+      put: validate-pipeline-check
+      params:
+        conclusion: action_required
+  - set_pipeline: concourse-pipeline-library
+    file: concourse-pipeline-library/meta/pipeline.yml
+- name: build-pull-request
+  public: true
+  plan:
+  - get: pull-request
+    trigger: true
+    params:
+      integration_tool: checkout
+  - put: yamllint-check-pull-request
+  - task: yamllint
+    file: pull-request/tasks/python/yamllint.yml
+    input_mapping:
+      source: pull-request
+    on_success:
+      put: yamllint-check-pull-request
+      params:
+        conclusion: success
+        title: YAML looks good
+        summary: All YAML files pass linting
+    on_failure:
+      put: yamllint-check-pull-request
+      params:
+        conclusion: failure
+        title: YAML linting failed
+        summary: Annotations coming soon
+    on_abort:
+      put: yamllint-check-pull-request
+      params:
+        conclusion: cancelled
+    on_error:
+      put: yamllint-check-pull-request
+      params:
+        conclusion: action_required
+  - put: validate-pipeline-check-pull-request
+  - in_parallel:
+    - task: validate-meta-pipeline
+      file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
+      input_mapping:
+        source: concourse-pipeline-library
+      vars:
+        file: meta/pipeline.yml
+    on_success:
+      put: validate-pipeline-check-pull-request
+      params:
+        conclusion: success
+        title: Pipelines look good
+        summary: All pipelines passed `fly validate-pipeline`
+    on_failure:
+      put: validate-pipeline-check-pull-request
+      params:
+        conclusion: failure
+        title: YAML linting failed
+        summary: Annotations coming soon
+    on_abort:
+      put: validate-pipeline-check-pull-request
+      params:
+        conclusion: cancelled
+    on_error:
+      put: validate-pipeline-check-pull-request
+      params:
+        conclusion: action_required
