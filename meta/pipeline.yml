@@ -186,18 +186,18 @@ jobs:
   on_failure:
     put: slack
     params:
-      alert_type: success
-      mode: failed
+      alert_type: failed
+      mode: normal
   on_abort:
     put: slack
     params:
-      alert_type: success
-      mode: aborted
+      alert_type: aborted
+      mode: normal
   on_error:
     put: slack
     params:
-      alert_type: success
-      mode: failed
+      alert_type: failed
+      mode: normal
       message: Task error, review logs
 
 - name: build-pull-request
