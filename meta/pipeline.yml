@@ -165,7 +165,7 @@ jobs:
 
   - in_parallel:
 
-    - set_pipeline: concourse-pipeline-library
+    - set_pipeline: pipeline-library
       file: concourse-pipeline-library/meta/pipeline.yml
 
     - set_pipeline: python-build
