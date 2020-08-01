@@ -22,4 +22,6 @@ run:
   - -o
   - pipefail
   - -c
-  - yamllint --format parsable . | tee ../yamllint/output.txt
+  - yamllint --strict --format parsable . | tee ../yamllint/output.txt
+
+
