@@ -173,6 +173,11 @@ jobs:
       vars:
         source-repository: python-build
 
+    - set_pipeline: php-build
+      file: concourse-pipeline-library/pipelines/oci-build.yml
+      vars:
+        source-repository: php-build
+
     - set_pipeline: fly-docker
       file: concourse-pipeline-library/pipelines/oci-build.yml
       vars:
