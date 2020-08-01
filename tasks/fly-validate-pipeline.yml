@@ -4,7 +4,7 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: docker.robojackets.org/robojackets/fly
+    repository: docker.robojackets.org/robojackets/fly-docker
     username: ((docker-robojackets-org.username))
     password: ((docker-robojackets-org.password))
 

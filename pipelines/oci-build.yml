@@ -216,20 +216,20 @@ jobs:
   on_failure:
     put: slack
     params:
-      alert_type: success
-      mode: failed
+      alert_type: failed
+      mode: normal
     inputs: []
   on_abort:
     put: slack
     params:
-      alert_type: success
-      mode: aborted
+      alert_type: aborted
+      mode: normal
     inputs: []
   on_error:
     put: slack
     params:
-      alert_type: success
-      mode: failed
+      alert_type: failed
+      mode: normal
       message: Task error, review logs
     inputs: []
 
@@ -248,7 +248,6 @@ jobs:
         integration_tool: checkout
 
     - get: ubuntu
-      trigger: true
 
   - put: build-check-pull-request
     inputs:
