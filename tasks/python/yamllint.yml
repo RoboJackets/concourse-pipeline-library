@@ -19,6 +19,7 @@ run:
   dir: source
   args:
   - -e
-  - -o pipefail
+  - -o
+  - pipefail
   - -c
   - yamllint --format parsable . | tee ../yamllint/output.txt

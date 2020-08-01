@@ -1,5 +1,6 @@
 ---
 resource_types:
+
 - name: github-check
   type: registry-image
   source:
@@ -12,7 +13,13 @@ resource_types:
   source:
     repository: teliaoss/github-pr-resource
 
+- name: slack
+  type: registry-image
+  source:
+    repository: mockersf/concourse-slack-notifier
+
 resources:
+
 - name: concourse-pipeline-library
   public: true
   type: git
@@ -74,13 +81,24 @@ resources:
     check_name: Validate Pipelines
     resource_name: validate-pipeline-check-pull-request
 
+- name: slack
+  public: true
+  type: slack
+  icon: slack
+  source:
+    url: ((slack-webhook))
+
 jobs:
+
 - name: build-main
   public: true
   plan:
+
   - get: concourse-pipeline-library
     trigger: true
+
   - put: yamllint-check
+
   - task: yamllint
     file: concourse-pipeline-library/tasks/python/yamllint.yml
     input_mapping:
@@ -105,14 +123,25 @@ jobs:
       put: yamllint-check
       params:
         conclusion: action_required
+
   - put: validate-pipeline-check
+
   - in_parallel:
+
     - task: validate-meta-pipeline
       file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
       input_mapping:
         source: concourse-pipeline-library
       vars:
         file: meta/pipeline.yml
+
+    - task: validate-oci-build-pipeline
+      file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
+      input_mapping:
+        source: concourse-pipeline-library
+      vars:
+        file: pipelines/oci-build.yml
+
     on_success:
       put: validate-pipeline-check
       params:
@@ -133,16 +162,51 @@ jobs:
       put: validate-pipeline-check
       params:
         conclusion: action_required
-  - set_pipeline: concourse-pipeline-library
-    file: concourse-pipeline-library/meta/pipeline.yml
+
+  - in_parallel:
+
+    - set_pipeline: concourse-pipeline-library
+      file: concourse-pipeline-library/meta/pipeline.yml
+
+    - set_pipeline: python-build
+      file: concourse-pipeline-library/pipelines/oci-build.yml
+      vars:
+        source-repository: python-build
+
+  on_success:
+    put: slack
+    params:
+      alert_type: success
+      mode: normal
+  on_failure:
+    put: slack
+    params:
+      alert_type: success
+      mode: failed
+  on_abort:
+    put: slack
+    params:
+      alert_type: success
+      mode: aborted
+  on_error:
+    put: slack
+    params:
+      alert_type: success
+      mode: failed
+      message: Task error, review logs
+
 - name: build-pull-request
   public: true
   plan:
+
   - get: pull-request
     trigger: true
+    version: every
     params:
       integration_tool: checkout
+
   - put: yamllint-check-pull-request
+
   - task: yamllint
     file: pull-request/tasks/python/yamllint.yml
     input_mapping:
@@ -167,14 +231,25 @@ jobs:
       put: yamllint-check-pull-request
       params:
         conclusion: action_required
+
   - put: validate-pipeline-check-pull-request
+
   - in_parallel:
+
     - task: validate-meta-pipeline
       file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
       input_mapping:
         source: concourse-pipeline-library
       vars:
         file: meta/pipeline.yml
+
+    - task: validate-oci-build-pipeline
+      file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
+      input_mapping:
+        source: concourse-pipeline-library
+      vars:
+        file: pipelines/oci-build.yml
+
     on_success:
       put: validate-pipeline-check-pull-request
       params:
