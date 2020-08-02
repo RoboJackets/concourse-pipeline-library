@@ -312,7 +312,7 @@ jobs:
 
   - put: push-check-pull-request
     inputs:
-    - ((source-repository))
+    - pull-request
 
   - put: ((source-repository))-image-pull-request
     params:
