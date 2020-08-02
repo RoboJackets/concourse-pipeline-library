@@ -274,7 +274,7 @@ jobs:
   - task: build
     file: concourse-pipeline-library/tasks/oci-build.yml
     input_mapping:
-      source: ((source-repository))
+      source: pull-request
     privileged: true
     timeout: 15m
     on_success:
