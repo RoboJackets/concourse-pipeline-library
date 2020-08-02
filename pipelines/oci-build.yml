@@ -115,7 +115,7 @@ resources:
   type: github-check
   icon: check-bold
   source:
-    repository: ((source-repository))
+    repository: pull-request
     token: ((((github-host-dashes))/token))
     check_name: Push to Registry
     resource_name: push-check-pull-request
