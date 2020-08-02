@@ -50,6 +50,7 @@ resources:
     token: ((github-com/token))
     check_name: YAML Linting
     resource_name: yamllint-check
+    annotations_format: yamllint
 
 - name: yamllint-check-pull-request
   public: true
@@ -60,6 +61,7 @@ resources:
     token: ((github-com/token))
     check_name: YAML Linting
     resource_name: yamllint-check-pull-request
+    annotations_format: yamllint
 
 - name: validate-pipeline-check
   public: true
