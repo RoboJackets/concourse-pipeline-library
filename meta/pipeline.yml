@@ -145,7 +145,7 @@ jobs:
       params:
         conclusion: success
         title: Pipelines look good
-        summary: All pipelines passed `fly validate-pipeline`
+        summary: All pipelines passed `fly validate-pipeline`.
     on_failure:
       put: validate-pipeline-check
       params:
