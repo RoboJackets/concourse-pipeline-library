@@ -25,5 +25,5 @@ run:
   - pipefail
   - -c
   - >-
-    poetry run pylint --output-format=json ((python-pathspec))
-    | tee ../pylint/output.json
+      poetry run pylint --output-format=json ((python-pathspec))
+      | tee ../pylint/output.json
