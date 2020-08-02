@@ -52,9 +52,9 @@ resources:
     v3_endpoint: ((github-rest-api-endpoint))
     v4_endpoint: ((github-graphql-api-endpoint))
     base_branch: ((base-branch))
-    disable_forks: true
+    disable_forks: ((disable-forks))
 
-- name: ((source-repository))-image
+- name: image
   type: registry-image
   public: true
   icon: docker
@@ -63,7 +63,7 @@ resources:
     username: ((docker-robojackets-org.username))
     password: ((docker-robojackets-org.password))
 
-- name: ((source-repository))-image-pull-request
+- name: pull-request-image
   type: registry-image
   public: true
   icon: docker
@@ -86,6 +86,7 @@ resources:
   icon: check-bold
   source:
     repository: ((source-repository))
+    pull_request: pull-request
     token: ((((github-host-dashes))/token))
     check_name: OCI Build
     resource_name: build-check
@@ -96,29 +97,10 @@ resources:
   icon: check-bold
   source:
     repository: ((source-repository))
+    pull_request: pull-request
     token: ((((github-host-dashes))/token))
     check_name: Push to Registry
     resource_name: push-check
-
-- name: build-check-pull-request
-  public: true
-  type: github-check
-  icon: check-bold
-  source:
-    repository: pull-request
-    token: ((((github-host-dashes))/token))
-    check_name: OCI Build
-    resource_name: build-check-pull-request
-
-- name: push-check-pull-request
-  public: true
-  type: github-check
-  icon: check-bold
-  source:
-    repository: pull-request
-    token: ((((github-host-dashes))/token))
-    check_name: Push to Registry
-    resource_name: push-check-pull-request
 
 - name: slack
   public: true
@@ -190,7 +172,7 @@ jobs:
     inputs:
     - ((source-repository))
 
-  - put: ((source-repository))-image
+  - put: image
     params:
       image: image/image.tar
     inputs: detect
@@ -267,9 +249,7 @@ jobs:
       params:
         integration_tool: checkout
 
-  - put: build-check-pull-request
-    inputs:
-    - pull-request
+  - put: build-check
 
   - task: build
     file: concourse-pipeline-library/tasks/oci-build.yml
@@ -278,76 +258,76 @@ jobs:
     privileged: true
     timeout: 15m
     on_success:
-      put: build-check-pull-request
+      put: build-check
       params:
         conclusion: success
         title: Image built successfully
         summary: The OCI image was built successfully.
       inputs:
       - pull-request
-      - build-check-pull-request
+      - build-check
     on_failure:
-      put: build-check-pull-request
+      put: build-check
       params:
         conclusion: failure
         title: Image failed to build
         summary: Review the output within Concourse.
       inputs:
       - pull-request
-      - build-check-pull-request
+      - build-check
     on_abort:
-      put: build-check-pull-request
+      put: build-check
       params:
         conclusion: cancelled
       inputs:
       - pull-request
-      - build-check-pull-request
+      - build-check
     on_error:
-      put: build-check-pull-request
+      put: build-check
       params:
         conclusion: action_required
       inputs:
       - pull-request
-      - build-check-pull-request
+      - build-check
 
-  - put: push-check-pull-request
+  - put: push-check
     inputs:
     - pull-request
 
-  - put: ((source-repository))-image-pull-request
+  - put: pull-request-image
     params:
       image: image/image.tar
       additional_tags: pull-request/.git/resource/author
     inputs: detect
     on_success:
-      put: push-check-pull-request
+      put: push-check
       params:
         conclusion: success
         title: Image pushed to registry
         summary: The image was successfully uploaded to the registry.
       inputs:
-      - push-check-pull-request
+      - push-check
       - pull-request
     on_failure:
-      put: push-check-pull-request
+      put: push-check
       params:
         conclusion: failure
         title: Image failed to push
         summary: Review the output within Concourse.
       inputs:
-      - push-check-pull-request
+      - push-check
       - pull-request
     on_abort:
-      put: push-check-pull-request
+      put: push-check
       params:
         conclusion: cancelled
       inputs:
-      - push-check-pull-request
+      - push-check
       - pull-request
     on_error:
       put: push-check-pull-request
       params:
         conclusion: action_required
       inputs:
-      - push-check-pull-request
+      - push-check
       - pull-request

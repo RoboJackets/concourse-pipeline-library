@@ -47,20 +47,10 @@ resources:
   icon: check-bold
   source:
     repository: concourse-pipeline-library
+    pull_request: pull-request
     token: ((github-com/token))
     check_name: yamllint
     resource_name: yamllint-check
-    annotations_format: yamllint
-
-- name: yamllint-check-pull-request
-  public: true
-  type: github-check
-  icon: check-bold
-  source:
-    repository: pull-request
-    token: ((github-com/token))
-    check_name: yamllint
-    resource_name: yamllint-check-pull-request
     annotations_format: yamllint
 
 - name: validate-pipeline-check
@@ -69,19 +59,10 @@ resources:
   icon: check-bold
   source:
     repository: concourse-pipeline-library
+    pull_request: pull-request
     token: ((github-com/token))
     check_name: validate-pipeline
     resource_name: validate-pipeline-check
-
-- name: validate-pipeline-check-pull-request
-  public: true
-  type: github-check
-  icon: check-bold
-  source:
-    repository: pull-request
-    token: ((github-com/token))
-    check_name: validate-pipeline
-    resource_name: validate-pipeline-check-pull-request
 
 - name: slack
   public: true
@@ -224,30 +205,30 @@ jobs:
     params:
       integration_tool: checkout
 
-  - put: yamllint-check-pull-request
+  - put: yamllint-check
 
   - task: yamllint
     file: pull-request/tasks/python/yamllint.yml
     input_mapping:
       source: pull-request
     on_success:
-      put: yamllint-check-pull-request
+      put: yamllint-check
       params:
         conclusion: success
     on_failure:
-      put: yamllint-check-pull-request
+      put: yamllint-check
       params:
         conclusion: failure
     on_abort:
-      put: yamllint-check-pull-request
+      put: yamllint-check
       params:
         conclusion: cancelled
     on_error:
-      put: yamllint-check-pull-request
+      put: yamllint-check
       params:
         conclusion: action_required
 
-  - put: validate-pipeline-check-pull-request
+  - put: validate-pipeline-check
 
   - in_parallel:
 
@@ -266,22 +247,24 @@ jobs:
         file: pipelines/oci-build.yml
 
     on_success:
-      put: validate-pipeline-check-pull-request
+      put: validate-pipeline-check
       params:
         conclusion: success
         title: Pipelines look good
         summary: All pipelines passed `fly validate-pipeline`
     on_failure:
-      put: validate-pipeline-check-pull-request
+      put: validate-pipeline-check
       params:
         conclusion: failure
-        title: YAML linting failed
-        summary: Annotations coming soon
+        title: Issues with pipelines
+        summary: >-
+          One or more pipelines failed `fly validate-pipeline`. Please review
+          the output in Concourse for more information.
     on_abort:
-      put: validate-pipeline-check-pull-request
+      put: validate-pipeline-check
       params:
         conclusion: cancelled
     on_error:
-      put: validate-pipeline-check-pull-request
+      put: validate-pipeline-check
       params:
         conclusion: action_required
