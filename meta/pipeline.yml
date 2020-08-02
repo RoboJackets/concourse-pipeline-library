@@ -112,14 +112,21 @@ jobs:
       input_mapping:
         source: concourse-pipeline-library
       vars:
-        file: meta/pipeline.yml
+        pipeline: meta/pipeline.yml
 
     - task: validate-oci-build-pipeline
       file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
       input_mapping:
         source: concourse-pipeline-library
       vars:
-        file: pipelines/oci-build.yml
+        pipeline: pipelines/oci-build.yml
+
+    - task: validate-python-library-pipeline
+      file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
+      input_mapping:
+        source: concourse-pipeline-library
+      vars:
+        pipeline: pipelines/python/library.yml
 
     on_success:
       put: validate-pipeline-check
@@ -172,6 +179,12 @@ jobs:
       var_files:
       - concourse-pipeline-library/var_files/github/com.yml
       - concourse-pipeline-library/var_files/pipelines/github-check.yml
+
+    - set_pipeline: gatech-aws-credentials
+      file: concourse-pipeline-library/pipelines/python/library.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/com.yml
+      - concourse-pipeline-library/var_files/pipelines/gatech-aws-credentials.yml
 
   on_success:
     put: slack
@@ -233,18 +246,25 @@ jobs:
   - in_parallel:
 
     - task: validate-meta-pipeline
-      file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
+      file: pull-request/tasks/fly-validate-pipeline.yml
       input_mapping:
-        source: concourse-pipeline-library
+        source: pull-request
       vars:
-        file: meta/pipeline.yml
+        pipeline: meta/pipeline.yml
 
     - task: validate-oci-build-pipeline
-      file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
+      file: pull-request/tasks/fly-validate-pipeline.yml
       input_mapping:
-        source: concourse-pipeline-library
+        source: pull-request
       vars:
-        file: pipelines/oci-build.yml
+        pipeline: pipelines/oci-build.yml
+
+    - task: validate-python-library-pipeline
+      file: pull-request/tasks/fly-validate-pipeline.yml
+      input_mapping:
+        source: pull-request
+      vars:
+        pipeline: pipelines/python/library.yml
 
     on_success:
       put: validate-pipeline-check

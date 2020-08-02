@@ -4,17 +4,23 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: docker.robojackets.org/robojackets/fly-docker
+    repository: docker.robojackets.org/robojackets/python-build
     username: ((docker-robojackets-org.username))
     password: ((docker-robojackets-org.password))
 
 inputs:
 - name: source
 
+outputs:
+- name: virtual-environment
+  path: source/.venv
+
+caches:
+- path: source/.venv
+
 run:
-  path: fly
+  path: poetry
   dir: source
   args:
-  - validate-pipeline
-  - --config
-  - ((pipeline))
+  - install
+  - --no-interaction

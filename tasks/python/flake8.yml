@@ -1,0 +1,29 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: docker.robojackets.org/robojackets/python-build
+    username: ((docker-robojackets-org.username))
+    password: ((docker-robojackets-org.password))
+
+inputs:
+- name: source
+- name: virtual-environment
+  path: source/.venv
+
+outputs:
+- name: flake8
+
+run:
+  path: poetry
+  dir: source
+  args:
+  - run
+  - flake8
+  - --format
+  - json
+  - --output-file
+  - ../flake8/output.json
+  - ((python-pathspec))

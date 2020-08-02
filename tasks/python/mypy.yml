@@ -1,0 +1,27 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: docker.robojackets.org/robojackets/python-build
+    username: ((docker-robojackets-org.username))
+    password: ((docker-robojackets-org.password))
+
+inputs:
+- name: source
+- name: virtual-environment
+  path: source/.venv
+
+outputs:
+- name: pylint
+
+run:
+  path: bash
+  dir: source
+  args:
+  - -e
+  - -o
+  - pipefail
+  - -c
+  - poetry run pylint --output-format=json ((python-pathspec)) | tee ../pylint/output.json

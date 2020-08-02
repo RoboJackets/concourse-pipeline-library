@@ -1,0 +1,452 @@
+---
+resource_types:
+
+- name: github-check
+  type: registry-image
+  source:
+    repository: docker.robojackets.org/robojackets/concourse-github-check-resource
+    username: ((docker-robojackets-org.username))
+    password: ((docker-robojackets-org.password))
+
+- name: pull-request
+  type: registry-image
+  source:
+    repository: teliaoss/github-pr-resource
+
+- name: slack
+  type: registry-image
+  source:
+    repository: mockersf/concourse-slack-notifier
+
+resources:
+
+- name: concourse-pipeline-library
+  public: true
+  type: git
+  icon: github
+  source:
+    uri: https://github.com/RoboJackets/concourse-pipeline-library
+    branch: main
+    username: x-access-token
+    password: ((github-com/token))
+
+- name: ((source-repository))
+  type: git
+  public: true
+  icon: github
+  source:
+    uri: https://((github-host))/RoboJackets/((source-repository))
+    branch: ((base-branch))
+    username: x-access-token
+    password: ((((github-host-dashes))/token))
+  webhook_token: ((webhook-token))
+
+- name: pull-request
+  public: true
+  type: pull-request
+  icon: source-pull
+  webhook_token: ((webhook-token))
+  source:
+    repository: RoboJackets/((source-repository))
+    access_token: ((((github-host-dashes))/token))
+    v3_endpoint: ((github-rest-api-endpoint))
+    v4_endpoint: ((github-graphql-api-endpoint))
+    base_branch: ((base-branch))
+    disable_forks: true
+
+- name: poetry-install-check
+  public: true
+  type: github-check
+  icon: check-bold
+  source:
+    repository: ((source-repository))
+    pull_request: pull-request
+    token: ((((github-host-dashes))/token))
+    check_name: Poetry Install
+    resource_name: poetry-install-check
+
+- name: mypy-check
+  public: true
+  type: github-check
+  icon: check-bold
+  source:
+    repository: ((source-repository))
+    pull_request: pull-request
+    token: ((((github-host-dashes))/token))
+    check_name: mypy
+    resource_name: mypy-check
+    annotations_format: mypy
+
+- name: flake8-check
+  public: true
+  type: github-check
+  icon: check-bold
+  source:
+    repository: ((source-repository))
+    pull_request: pull-request
+    token: ((((github-host-dashes))/token))
+    check_name: flake8
+    resource_name: flake8-check
+    annotations_format: flake8
+
+- name: pylint-check
+  public: true
+  type: github-check
+  icon: check-bold
+  source:
+    repository: ((source-repository))
+    pull_request: pull-request
+    token: ((((github-host-dashes))/token))
+    check_name: pylint
+    resource_name: pylint-check
+    annotations_format: pylint
+
+- name: slack
+  public: true
+  type: slack
+  icon: slack
+  source:
+    url: ((slack-webhook))
+
+jobs:
+
+- name: build-((base-branch))
+  public: true
+  plan:
+
+  - in_parallel:
+
+    - get: concourse-pipeline-library
+
+    - get: ((source-repository))
+      trigger: true
+
+  - put: poetry-install-check
+    inputs:
+    - ((source-repository))
+
+  - task: poetry-install-dev
+    file: concourse-pipeline-library/tasks/python/poetry-install-dev.yml
+    input_mapping:
+      source: ((source-repository))
+    on_success:
+      put: poetry-install-check
+      params:
+        conclusion: success
+        title: Dependencies installed
+        summary: Poetry successfully installed development dependencies.
+      inputs:
+      - poetry-install-check
+      - ((source-repository))
+    on_failure:
+      put: poetry-install-check
+      params:
+        conclusion: failure
+        title: Failed to install dependencies
+        summary: Review the output within Concourse.
+      inputs:
+      - poetry-install-check
+      - ((source-repository))
+    on_abort:
+      put: poetry-install-check
+      params:
+        conclusion: cancelled
+      inputs:
+      - poetry-install-check
+      - ((source-repository))
+    on_error:
+      put: poetry-install-check
+      params:
+        conclusion: action_required
+      inputs:
+      - poetry-install-check
+      - ((source-repository))
+
+  - in_parallel:
+    - do:
+      - put: flake8-check
+      - task: flake8
+        file: concourse-pipeline-library/tasks/python/flake8.yml
+        input_mapping:
+          source: ((source-repository))
+        on_success:
+          put: flake8-check
+          params:
+            conclusion: success
+          inputs:
+          - flake8-check
+          - ((source-repository))
+        on_failure:
+          put: flake8-check
+          params:
+            conclusion: failure
+          inputs:
+          - flake8-check
+          - ((source-repository))
+        on_abort:
+          put: flake8-check
+          params:
+            conclusion: cancelled
+          inputs:
+          - flake8-check
+          - ((source-repository))
+        on_error:
+          put: flake8-check
+          params:
+            conclusion: action_required
+          inputs:
+          - flake8-check
+          - ((source-repository))
+    - do:
+      - put: pylint-check
+      - task: pylint
+        file: concourse-pipeline-library/tasks/python/pylint.yml
+        input_mapping:
+          source: ((source-repository))
+        on_success:
+          put: pylint-check
+          params:
+            conclusion: success
+          inputs:
+          - pylint-check
+          - ((source-repository))
+        on_failure:
+          put: pylint-check
+          params:
+            conclusion: failure
+          inputs:
+          - pylint-check
+          - ((source-repository))
+        on_abort:
+          put: pylint-check
+          params:
+            conclusion: cancelled
+          inputs:
+          - pylint-check
+          - ((source-repository))
+        on_error:
+          put: pylint-check
+          params:
+            conclusion: action_required
+          inputs:
+          - pylint-check
+          - ((source-repository))
+    - do:
+      - put: mypy-check
+      - task: mypy
+        file: concourse-pipeline-library/tasks/python/mypy.yml
+        input_mapping:
+          source: ((source-repository))
+        on_success:
+          put: mypy-check
+          params:
+            conclusion: success
+          inputs:
+          - mypy-check
+          - ((source-repository))
+        on_failure:
+          put: mypy-check
+          params:
+            conclusion: failure
+          inputs:
+          - mypy-check
+          - ((source-repository))
+        on_abort:
+          put: mypy-check
+          params:
+            conclusion: cancelled
+          inputs:
+          - mypy-check
+          - ((source-repository))
+        on_error:
+          put: mypy-check
+          params:
+            conclusion: action_required
+          inputs:
+          - mypy-check
+          - ((source-repository))
+
+  on_success:
+    put: slack
+    params:
+      alert_type: success
+      mode: normal
+    inputs: []
+  on_failure:
+    put: slack
+    params:
+      alert_type: failed
+      mode: normal
+    inputs: []
+  on_abort:
+    put: slack
+    params:
+      alert_type: aborted
+      mode: normal
+    inputs: []
+  on_error:
+    put: slack
+    params:
+      alert_type: failed
+      mode: normal
+      message: Task error, review logs
+    inputs: []
+
+- name: build-pull-request
+  public: true
+  plan:
+
+  - in_parallel:
+
+    - get: concourse-pipeline-library
+
+    - get: pull-request
+      trigger: true
+      version: every
+      params:
+        integration_tool: checkout
+
+  - put: poetry-install-check
+    inputs:
+    - pull-request
+
+  - task: poetry-install-dev
+    file: concourse-pipeline-library/tasks/python/poetry-install-dev.yml
+    input_mapping:
+      source: pull-request
+    on_success:
+      put: poetry-install-check
+      params:
+        conclusion: success
+        title: Dependencies installed
+        summary: Poetry successfully installed development dependencies.
+      inputs:
+      - poetry-install-check
+      - pull-request
+    on_failure:
+      put: poetry-install-check
+      params:
+        conclusion: failure
+        title: Failed to install dependencies
+        summary: Review the output within Concourse.
+      inputs:
+      - poetry-install-check
+      - pull-request
+    on_abort:
+      put: poetry-install-check
+      params:
+        conclusion: cancelled
+      inputs:
+      - poetry-install-check
+      - pull-request
+    on_error:
+      put: poetry-install-check
+      params:
+        conclusion: action_required
+      inputs:
+      - poetry-install-check
+      - pull-request
+
+  - in_parallel:
+    - do:
+      - put: flake8-check
+      - task: flake8
+        file: concourse-pipeline-library/tasks/python/flake8.yml
+        input_mapping:
+          source: pull-request
+        on_success:
+          put: flake8-check
+          params:
+            conclusion: success
+          inputs:
+          - flake8-check
+          - pull-request
+        on_failure:
+          put: flake8-check
+          params:
+            conclusion: failure
+          inputs:
+          - flake8-check
+          - pull-request
+        on_abort:
+          put: flake8-check
+          params:
+            conclusion: cancelled
+          inputs:
+          - flake8-check
+          - pull-request
+        on_error:
+          put: flake8-check
+          params:
+            conclusion: action_required
+          inputs:
+          - flake8-check
+          - pull-request
+    - do:
+      - put: pylint-check
+      - task: pylint
+        file: concourse-pipeline-library/tasks/python/pylint.yml
+        input_mapping:
+          source: pull-request
+        on_success:
+          put: pylint-check
+          params:
+            conclusion: success
+          inputs:
+          - pylint-check
+          - pull-request
+        on_failure:
+          put: pylint-check
+          params:
+            conclusion: failure
+          inputs:
+          - pylint-check
+          - pull-request
+        on_abort:
+          put: pylint-check
+          params:
+            conclusion: cancelled
+          inputs:
+          - pylint-check
+          - pull-request
+        on_error:
+          put: pylint-check
+          params:
+            conclusion: action_required
+          inputs:
+          - pylint-check
+          - pull-request
+    - do:
+      - put: mypy-check
+      - task: mypy
+        file: concourse-pipeline-library/tasks/python/mypy.yml
+        input_mapping:
+          source: pull-request
+        on_success:
+          put: mypy-check
+          params:
+            conclusion: success
+          inputs:
+          - mypy-check
+          - pull-request
+        on_failure:
+          put: mypy-check
+          params:
+            conclusion: failure
+          inputs:
+          - mypy-check
+          - pull-request
+        on_abort:
+          put: mypy-check
+          params:
+            conclusion: cancelled
+          inputs:
+          - mypy-check
+          - pull-request
+        on_error:
+          put: mypy-check
+          params:
+            conclusion: action_required
+          inputs:
+          - mypy-check
+          - pull-request
