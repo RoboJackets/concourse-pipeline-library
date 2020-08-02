@@ -111,7 +111,7 @@ resources:
 
 jobs:
 
-- name: build-main
+- name: build-((base-branch))
   public: true
   plan:
 
@@ -325,7 +325,7 @@ jobs:
       - push-check
       - pull-request
     on_error:
-      put: push-check-pull-request
+      put: push-check
       params:
         conclusion: action_required
       inputs:
