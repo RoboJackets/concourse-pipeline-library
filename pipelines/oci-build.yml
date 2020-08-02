@@ -35,10 +35,10 @@ resources:
   public: true
   icon: github
   source:
-    uri: https://github.gatech.edu/RoboJackets/((source-repository))
-    branch: main
+    uri: https://((github-host))/RoboJackets/((source-repository))
+    branch: ((base-branch))
     username: x-access-token
-    password: ((github-gatech-edu/token))
+    password: ((((github-host-dashes))/token))
   webhook_token: ((webhook-token))
 
 - name: pull-request
@@ -48,10 +48,10 @@ resources:
   webhook_token: ((webhook-token))
   source:
     repository: RoboJackets/((source-repository))
-    access_token: ((github-gatech-edu/token))
-    v3_endpoint: https://github.gatech.edu/api/v3
-    v4_endpoint: https://github.gatech.edu/api/graphql
-    base_branch: main
+    access_token: ((((github-host-dashes))/token))
+    v3_endpoint: ((github-rest-api-endpoint))
+    v4_endpoint: ((github-graphql-api-endpoint))
+    base_branch: ((base-branch))
     disable_forks: true
 
 - name: ((source-repository))-image
@@ -62,6 +62,16 @@ resources:
     repository: docker.robojackets.org/robojackets/((source-repository))
     username: ((docker-robojackets-org.username))
     password: ((docker-robojackets-org.password))
+
+- name: ((source-repository))-image-pull-request
+  type: registry-image
+  public: true
+  icon: docker
+  source:
+    repository: docker.robojackets.org/robojackets/((source-repository))
+    username: ((docker-robojackets-org.username))
+    password: ((docker-robojackets-org.password))
+    tag: pull-request
 
 - name: ubuntu
   type: registry-image
@@ -76,7 +86,7 @@ resources:
   icon: check-bold
   source:
     repository: ((source-repository))
-    token: ((github-gatech-edu/token))
+    token: ((((github-host-dashes))/token))
     check_name: OCI Build
     resource_name: build-check
 
@@ -86,7 +96,7 @@ resources:
   icon: check-bold
   source:
     repository: ((source-repository))
-    token: ((github-gatech-edu/token))
+    token: ((((github-host-dashes))/token))
     check_name: Push to Registry
     resource_name: push-check
 
@@ -96,9 +106,19 @@ resources:
   icon: check-bold
   source:
     repository: pull-request
-    token: ((github-gatech-edu/token))
+    token: ((((github-host-dashes))/token))
     check_name: OCI Build
     resource_name: build-check-pull-request
+
+- name: push-check-pull-request
+  public: true
+  type: github-check
+  icon: check-bold
+  source:
+    repository: ((source-repository))
+    token: ((((github-host-dashes))/token))
+    check_name: Push to Registry
+    resource_name: push-check-pull-request
 
 - name: slack
   public: true
@@ -291,3 +311,45 @@ jobs:
       inputs:
       - pull-request
       - build-check-pull-request
+
+  - put: push-check-pull-request
+    inputs:
+    - ((source-repository))
+
+  - put: ((source-repository))-image-pull-request
+    params:
+      image: image/image.tar
+      additional_tags: pull-request/.git/resource/author
+    inputs: detect
+    on_success:
+      put: push-check-pull-request
+      params:
+        conclusion: success
+        title: Image pushed to registry
+        summary: The image was successfully uploaded to the registry.
+      inputs:
+      - push-check-pull-request
+      - pull-request
+    on_failure:
+      put: push-check-pull-request
+      params:
+        conclusion: failure
+        title: Image failed to push
+        summary: Review the output within Concourse.
+      inputs:
+      - push-check-pull-request
+      - pull-request
+    on_abort:
+      put: push-check-pull-request
+      params:
+        conclusion: cancelled
+      inputs:
+      - push-check-pull-request
+      - pull-request
+    on_error:
+      put: push-check-pull-request
+      params:
+        conclusion: action_required
+      inputs:
+      - push-check-pull-request
+      - pull-request

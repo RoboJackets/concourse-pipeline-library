@@ -1,0 +1,4 @@
+github-host: github.com
+github-host-dashes: github-com
+github-rest-api-endpoint: https://api.github.com
+github-graphql-api-endpoint: https://api.github.com/graphql

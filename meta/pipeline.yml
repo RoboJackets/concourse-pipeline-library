@@ -170,18 +170,27 @@ jobs:
 
     - set_pipeline: python-build
       file: concourse-pipeline-library/pipelines/oci-build.yml
-      vars:
-        source-repository: python-build
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/pipelines/python-build.yml
 
     - set_pipeline: php-build
       file: concourse-pipeline-library/pipelines/oci-build.yml
-      vars:
-        source-repository: php-build
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/pipelines/php-build.yml
 
     - set_pipeline: fly-docker
       file: concourse-pipeline-library/pipelines/oci-build.yml
-      vars:
-        source-repository: fly-docker
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/pipelines/fly-docker.yml
+
+    - set_pipeline: github-check
+      file: concourse-pipeline-library/pipelines/oci-build.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/com.yml
+      - concourse-pipeline-library/var_files/pipelines/github-check.yml
 
   on_success:
     put: slack
