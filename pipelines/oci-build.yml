@@ -267,8 +267,6 @@ jobs:
       params:
         integration_tool: checkout
 
-    - get: ubuntu
-
   - put: build-check-pull-request
     inputs:
     - pull-request
