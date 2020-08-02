@@ -151,7 +151,9 @@ jobs:
       params:
         conclusion: failure
         title: Issues with pipelines
-        summary: One or more pipelines failed `fly validate-pipeline`. Please review the output in Concourse for more information.
+        summary: >-
+          One or more pipelines failed `fly validate-pipeline`. Please review
+          the output in Concourse for more information.
     on_abort:
       put: validate-pipeline-check
       params:
