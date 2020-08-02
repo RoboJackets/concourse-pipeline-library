@@ -48,7 +48,7 @@ resources:
   source:
     repository: concourse-pipeline-library
     token: ((github-com/token))
-    check_name: YAML Linting
+    check_name: yamllint
     resource_name: yamllint-check
     annotations_format: yamllint
 
@@ -59,7 +59,7 @@ resources:
   source:
     repository: pull-request
     token: ((github-com/token))
-    check_name: YAML Linting
+    check_name: yamllint
     resource_name: yamllint-check-pull-request
     annotations_format: yamllint
 
@@ -70,7 +70,7 @@ resources:
   source:
     repository: concourse-pipeline-library
     token: ((github-com/token))
-    check_name: Validate Pipelines
+    check_name: validate-pipeline
     resource_name: validate-pipeline-check
 
 - name: validate-pipeline-check-pull-request
@@ -80,7 +80,7 @@ resources:
   source:
     repository: pull-request
     token: ((github-com/token))
-    check_name: Validate Pipelines
+    check_name: validate-pipeline
     resource_name: validate-pipeline-check-pull-request
 
 - name: slack
@@ -109,14 +109,10 @@ jobs:
       put: yamllint-check
       params:
         conclusion: success
-        title: YAML looks good
-        summary: All YAML files pass linting
     on_failure:
       put: yamllint-check
       params:
         conclusion: failure
-        title: YAML linting failed
-        summary: Annotations coming soon
     on_abort:
       put: yamllint-check
       params:
@@ -154,8 +150,8 @@ jobs:
       put: validate-pipeline-check
       params:
         conclusion: failure
-        title: YAML linting failed
-        summary: Annotations coming soon
+        title: Issues with pipelines
+        summary: One or more pipelines failed `fly validate-pipeline`. Please review the output in Concourse for more information.
     on_abort:
       put: validate-pipeline-check
       params:
@@ -227,14 +223,10 @@ jobs:
       put: yamllint-check-pull-request
       params:
         conclusion: success
-        title: YAML looks good
-        summary: All YAML files pass linting
     on_failure:
       put: yamllint-check-pull-request
       params:
         conclusion: failure
-        title: YAML linting failed
-        summary: Annotations coming soon
     on_abort:
       put: yamllint-check-pull-request
       params:

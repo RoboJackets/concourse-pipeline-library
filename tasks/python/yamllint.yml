@@ -23,5 +23,3 @@ run:
   - pipefail
   - -c
   - yamllint --strict --format parsable . | tee ../yamllint/output.txt
-
-
