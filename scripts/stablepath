@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export WORKDIR=$(PWD)
+export WORKDIR=$(pwd)
 
 cd /tmp/
 ln -s $WORKDIR stablepath
