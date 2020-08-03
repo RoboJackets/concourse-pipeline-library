@@ -25,6 +25,7 @@ run:
   - pipefail
   - -c
   - >-
-      ./concourse-pipeline-library/scripts/stablepath && cd source &&
+      ./concourse-pipeline-library/scripts/stablepath &&
+      cd /tmp/stablepath/source &&
       poetry run flake8 --format json --output-file ../flake8/output.json
       ((python-pathspec))

@@ -4,4 +4,3 @@ export WORKDIR=$(pwd)
 
 cd /tmp/
 ln -s $WORKDIR stablepath
-cd stablepath

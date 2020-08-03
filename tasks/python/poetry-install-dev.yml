@@ -28,4 +28,5 @@ run:
   - -c
   - >-
       ./concourse-pipeline-library/scripts/stablepath &&
+      cd /tmp/stablepath/source &&
       poetry install --no-interaction
