@@ -27,4 +27,5 @@ run:
   - pipefail
   - -c
   - >-
-      ./concourse-pipeline-library/scripts/stablepath && poetry install --no-interaction
+      ./concourse-pipeline-library/scripts/stablepath &&
+      poetry install --no-interaction
