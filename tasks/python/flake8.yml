@@ -12,18 +12,17 @@ inputs:
 - name: source
 - name: virtual-environment
   path: source/.venv
+- name: concourse-pipeline-library
 
 outputs:
 - name: flake8
 
 run:
-  path: poetry
-  dir: source
+  path: bash
   args:
-  - run
-  - flake8
-  - --format
-  - json
-  - --output-file
-  - ../flake8/output.json
-  - ((python-pathspec))
+  - -e
+  - -o
+  - pipefail
+  - -c
+  - >-
+      ./concourse-pipeline-library/scripts/stablepath && cd source && poetry run flake8 --format json --output-file ../flake8/output.json ((python-pathspec))

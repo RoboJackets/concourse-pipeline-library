@@ -10,6 +10,7 @@ image_resource:
 
 inputs:
 - name: source
+- name: concourse-pipeline-library
 
 outputs:
 - name: virtual-environment
@@ -19,8 +20,11 @@ caches:
 - path: source/.venv
 
 run:
-  path: poetry
-  dir: source
+  path: bash
   args:
-  - install
-  - --no-interaction
+  - -e
+  - -o
+  - pipefail
+  - -c
+  - >-
+      ./concourse-pipeline-library/scripts/stablepath && poetry install --no-interaction
