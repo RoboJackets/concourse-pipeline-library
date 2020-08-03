@@ -167,6 +167,8 @@ jobs:
       - put: flake8-check
       - task: flake8
         file: concourse-pipeline-library/tasks/python/flake8.yml
+        vars:
+          python-pathspec: ((python-pathspec))
         input_mapping:
           source: ((source-repository))
         on_success:
@@ -201,6 +203,8 @@ jobs:
       - put: pylint-check
       - task: pylint
         file: concourse-pipeline-library/tasks/python/pylint.yml
+        vars:
+          python-pathspec: ((python-pathspec))
         input_mapping:
           source: ((source-repository))
         on_success:
@@ -235,6 +239,8 @@ jobs:
       - put: mypy-check
       - task: mypy
         file: concourse-pipeline-library/tasks/python/mypy.yml
+        vars:
+          python-pathspec: ((python-pathspec))
         input_mapping:
           source: ((source-repository))
         on_success:
@@ -352,6 +358,8 @@ jobs:
       - put: flake8-check
       - task: flake8
         file: concourse-pipeline-library/tasks/python/flake8.yml
+        vars:
+          python-pathspec: ((python-pathspec))
         input_mapping:
           source: pull-request
         on_success:
@@ -386,6 +394,8 @@ jobs:
       - put: pylint-check
       - task: pylint
         file: concourse-pipeline-library/tasks/python/pylint.yml
+        vars:
+          python-pathspec: ((python-pathspec))
         input_mapping:
           source: pull-request
         on_success:
@@ -420,6 +430,8 @@ jobs:
       - put: mypy-check
       - task: mypy
         file: concourse-pipeline-library/tasks/python/mypy.yml
+        vars:
+          python-pathspec: ((python-pathspec))
         input_mapping:
           source: pull-request
         on_success:
