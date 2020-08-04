@@ -8,24 +8,25 @@ image_resource:
     username: ((docker-robojackets-org.username))
     password: ((docker-robojackets-org.password))
 
+params:
+  PYTHONPATH: ./__pypackages__
+
 inputs:
 - name: source
-- name: virtual-environment
-  path: source/.venv
-- name: concourse-pipeline-library
+- name: pypackages
+  path: source/__pypackages__
 
 outputs:
 - name: flake8
 
 run:
-  path: bash
+  path: python
+  dir: source
   args:
-  - -e
-  - -o
-  - pipefail
-  - -c
-  - >-
-      ./concourse-pipeline-library/scripts/stablepath &&
-      cd /tmp/stablepath/source &&
-      poetry run flake8 --format json --output-file ../flake8/output.json
-      ((python-pathspec))
+  - -m
+  - flake8
+  - -format
+  - json
+  - --output-file
+  - ../flake8/output.json
+  - ((python-pathspec))

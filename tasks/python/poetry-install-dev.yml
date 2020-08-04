@@ -10,23 +10,30 @@ image_resource:
 
 inputs:
 - name: source
-- name: concourse-pipeline-library
 
 outputs:
-- name: virtual-environment
-  path: source/.venv
+- name: pypackages
+  path: source/__pypackages__
 
 caches:
-- path: source/.venv
+- path: source/__pypackages__
+- path: pipcache
 
 run:
   path: bash
+  dir: source
   args:
   - -e
   - -o
   - pipefail
   - -c
   - >-
-      ./concourse-pipeline-library/scripts/stablepath &&
-      cd /tmp/stablepath/source &&
-      poetry install --no-interaction
+      poetry export --format requirements.txt --dev |
+      python3 -m pip install
+      --cache-dir ../pipcache
+      --upgrade
+      --target ./__pypackages__
+      --isolated
+      --retries 1
+      --timeout 1
+      --requirement /dev/stdin
