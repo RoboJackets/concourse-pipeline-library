@@ -30,5 +30,5 @@ run:
   - pipefail
   - -c
   - >-
-      python -m mypy --cache-dir ../mypy-cache --strict --no-error-summary ((python-pathspec))
-      | tee ../pylint/output.json
+      python -m mypy --cache-dir ../mypy-cache --strict --no-error-summary
+      ((python-pathspec)) | tee ../pylint/output.json
