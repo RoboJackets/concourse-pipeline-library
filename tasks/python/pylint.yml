@@ -9,12 +9,11 @@ image_resource:
     password: ((docker-robojackets-org.password))
 
 params:
-  PYTHONPATH: ./__pypackages__
+  PYTHONPATH: ../__pypackages__
 
 inputs:
 - name: source
-- name: pypackages
-  path: source/__pypackages__
+- name: __pypackages__
 
 outputs:
 - name: pylint

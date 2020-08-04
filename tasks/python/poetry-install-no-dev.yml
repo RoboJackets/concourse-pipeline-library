@@ -12,12 +12,11 @@ inputs:
 - name: source
 
 outputs:
-- name: pypackages
-  path: source/__pypackages__
+- name: __pypackages__
 
 caches:
-- path: source/__pypackages__
-- path: pipcache
+- path: __pypackages__
+- path: pip-cache
 
 run:
   path: bash
@@ -30,9 +29,9 @@ run:
   - >-
       poetry export --format requirements.txt |
       python3 -m pip install
-      --cache-dir ../pipcache
+      --cache-dir ../pip-cache
       --upgrade
-      --target ./__pypackages__
+      --target ../__pypackages__
       --isolated
       --retries 1
       --timeout 1

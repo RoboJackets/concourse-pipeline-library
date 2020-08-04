@@ -9,15 +9,17 @@ image_resource:
     password: ((docker-robojackets-org.password))
 
 params:
-  PYTHONPATH: ./__pypackages__
+  PYTHONPATH: ../__pypackages__
 
 inputs:
 - name: source
-- name: pypackages
-  path: source/__pypackages__
+- name: __pypackages__
 
 outputs:
-- name: pylint
+- name: mypy
+
+caches:
+- path: mypy-cache
 
 run:
   path: bash
@@ -28,5 +30,5 @@ run:
   - pipefail
   - -c
   - >-
-      python -m mypy --strict --no-error-summary ((python-pathspec))
+      python -m mypy --cache-dir ../mypy-cache --strict --no-error-summary ((python-pathspec))
       | tee ../pylint/output.json
