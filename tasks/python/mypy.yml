@@ -31,4 +31,4 @@ run:
   - -c
   - >-
       python -m mypy --cache-dir ../mypy-cache --strict --no-error-summary
-      ((python-pathspec)) | tee ../pylint/output.json
+      ((python-pathspec)) | tee ../mypy/output.json

@@ -165,6 +165,8 @@ jobs:
   - in_parallel:
     - do:
       - put: flake8-check
+        inputs:
+        - ((source-repository))
       - task: flake8
         file: concourse-pipeline-library/tasks/python/flake8.yml
         vars:
@@ -176,6 +178,7 @@ jobs:
           params:
             conclusion: success
           inputs:
+          - flake8
           - flake8-check
           - ((source-repository))
         on_failure:
@@ -183,6 +186,7 @@ jobs:
           params:
             conclusion: failure
           inputs:
+          - flake8
           - flake8-check
           - ((source-repository))
         on_abort:
@@ -190,6 +194,7 @@ jobs:
           params:
             conclusion: cancelled
           inputs:
+          - flake8
           - flake8-check
           - ((source-repository))
         on_error:
@@ -197,10 +202,13 @@ jobs:
           params:
             conclusion: action_required
           inputs:
+          - flake8
           - flake8-check
           - ((source-repository))
     - do:
       - put: pylint-check
+        inputs:
+        - ((source-repository))
       - task: pylint
         file: concourse-pipeline-library/tasks/python/pylint.yml
         vars:
@@ -212,6 +220,7 @@ jobs:
           params:
             conclusion: success
           inputs:
+          - pylint
           - pylint-check
           - ((source-repository))
         on_failure:
@@ -219,6 +228,7 @@ jobs:
           params:
             conclusion: failure
           inputs:
+          - pylint
           - pylint-check
           - ((source-repository))
         on_abort:
@@ -226,6 +236,7 @@ jobs:
           params:
             conclusion: cancelled
           inputs:
+          - pylint
           - pylint-check
           - ((source-repository))
         on_error:
@@ -233,10 +244,13 @@ jobs:
           params:
             conclusion: action_required
           inputs:
+          - pylint
           - pylint-check
           - ((source-repository))
     - do:
       - put: mypy-check
+        inputs:
+        - ((source-repository))
       - task: mypy
         file: concourse-pipeline-library/tasks/python/mypy.yml
         vars:
@@ -248,6 +262,7 @@ jobs:
           params:
             conclusion: success
           inputs:
+          - mypy
           - mypy-check
           - ((source-repository))
         on_failure:
@@ -255,6 +270,7 @@ jobs:
           params:
             conclusion: failure
           inputs:
+          - mypy
           - mypy-check
           - ((source-repository))
         on_abort:
@@ -262,6 +278,7 @@ jobs:
           params:
             conclusion: cancelled
           inputs:
+          - mypy
           - mypy-check
           - ((source-repository))
         on_error:
@@ -269,6 +286,7 @@ jobs:
           params:
             conclusion: action_required
           inputs:
+          - mypy
           - mypy-check
           - ((source-repository))
 
@@ -356,6 +374,8 @@ jobs:
   - in_parallel:
     - do:
       - put: flake8-check
+        inputs:
+        - pull-request
       - task: flake8
         file: concourse-pipeline-library/tasks/python/flake8.yml
         vars:
@@ -367,6 +387,7 @@ jobs:
           params:
             conclusion: success
           inputs:
+          - flake8
           - flake8-check
           - pull-request
         on_failure:
@@ -374,6 +395,7 @@ jobs:
           params:
             conclusion: failure
           inputs:
+          - flake8
           - flake8-check
           - pull-request
         on_abort:
@@ -381,6 +403,7 @@ jobs:
           params:
             conclusion: cancelled
           inputs:
+          - flake8
           - flake8-check
           - pull-request
         on_error:
@@ -388,10 +411,13 @@ jobs:
           params:
             conclusion: action_required
           inputs:
+          - flake8
           - flake8-check
           - pull-request
     - do:
       - put: pylint-check
+        inputs:
+        - pull-request
       - task: pylint
         file: concourse-pipeline-library/tasks/python/pylint.yml
         vars:
@@ -403,6 +429,7 @@ jobs:
           params:
             conclusion: success
           inputs:
+          - pylint
           - pylint-check
           - pull-request
         on_failure:
@@ -410,6 +437,7 @@ jobs:
           params:
             conclusion: failure
           inputs:
+          - pylint
           - pylint-check
           - pull-request
         on_abort:
@@ -417,6 +445,7 @@ jobs:
           params:
             conclusion: cancelled
           inputs:
+          - pylint
           - pylint-check
           - pull-request
         on_error:
@@ -424,10 +453,13 @@ jobs:
           params:
             conclusion: action_required
           inputs:
+          - pylint
           - pylint-check
           - pull-request
     - do:
       - put: mypy-check
+        inputs:
+        - pull-request
       - task: mypy
         file: concourse-pipeline-library/tasks/python/mypy.yml
         vars:
@@ -439,6 +471,7 @@ jobs:
           params:
             conclusion: success
           inputs:
+          - mypy
           - mypy-check
           - pull-request
         on_failure:
@@ -446,6 +479,7 @@ jobs:
           params:
             conclusion: failure
           inputs:
+          - mypy
           - mypy-check
           - pull-request
         on_abort:
@@ -453,6 +487,7 @@ jobs:
           params:
             conclusion: cancelled
           inputs:
+          - mypy
           - mypy-check
           - pull-request
         on_error:
@@ -460,5 +495,6 @@ jobs:
           params:
             conclusion: action_required
           inputs:
+          - mypy
           - mypy-check
           - pull-request
