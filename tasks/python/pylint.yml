@@ -8,10 +8,13 @@ image_resource:
     username: ((docker-robojackets-org.username))
     password: ((docker-robojackets-org.password))
 
+params:
+  PYTHONPATH: ./__pypackages__
+
 inputs:
 - name: source
-- name: virtual-environment
-  path: source/.venv
+- name: pypackages
+  path: source/__pypackages__
 
 outputs:
 - name: pylint
@@ -25,5 +28,5 @@ run:
   - pipefail
   - -c
   - >-
-      poetry run pylint --output-format=json ((python-pathspec))
+      python -m pylint --output-format=json ((python-pathspec))
       | tee ../pylint/output.json

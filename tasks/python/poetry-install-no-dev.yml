@@ -12,16 +12,28 @@ inputs:
 - name: source
 
 outputs:
-- name: virtual-environment
-  path: source/.venv
+- name: pypackages
+  path: source/__pypackages__
 
 caches:
-- path: source/.venv
+- path: source/__pypackages__
+- path: pipcache
 
 run:
-  path: poetry
+  path: bash
   dir: source
   args:
-  - install
-  - --no-interaction
-  - --no-dev
+  - -e
+  - -o
+  - pipefail
+  - -c
+  - >-
+      poetry export --format requirements.txt |
+      python3 -m pip install
+      --cache-dir ../pipcache
+      --upgrade
+      --target ./__pypackages__
+      --isolated
+      --retries 1
+      --timeout 1
+      --requirement /dev/stdin

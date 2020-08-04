@@ -25,7 +25,7 @@ run:
   args:
   - -m
   - flake8
-  - -format
+  - --format
   - json
   - --output-file
   - ../flake8/output.json
