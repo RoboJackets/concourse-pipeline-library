@@ -415,7 +415,6 @@ jobs:
       - push-check
       - ((source-repository))
 
-
   on_success:
     put: slack
     params:
