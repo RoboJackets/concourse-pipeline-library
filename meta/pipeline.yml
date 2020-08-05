@@ -128,6 +128,13 @@ jobs:
       vars:
         pipeline: pipelines/python/library.yml
 
+    - task: validate-python-oci-build-pipeline
+      file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
+      input_mapping:
+        source: concourse-pipeline-library
+      vars:
+        pipeline: pipelines/python/oci-build.yml
+
     on_success:
       put: validate-pipeline-check
       params:
@@ -175,7 +182,7 @@ jobs:
       - concourse-pipeline-library/var_files/pipelines/fly-docker.yml
 
     - set_pipeline: github-check
-      file: concourse-pipeline-library/pipelines/oci-build.yml
+      file: concourse-pipeline-library/pipelines/python/oci-build.yml
       var_files:
       - concourse-pipeline-library/var_files/github/com.yml
       - concourse-pipeline-library/var_files/pipelines/github-check.yml
