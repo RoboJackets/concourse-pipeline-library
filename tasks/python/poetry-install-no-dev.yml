@@ -27,7 +27,7 @@ run:
   - pipefail
   - -c
   - >-
-      poetry export --format requirements.txt |
+      poetry export --format requirements.txt --without-hashes |
       python3 -m pip install
       --cache-dir ../pip-cache
       --upgrade
