@@ -19,13 +19,13 @@ outputs:
 - name: flake8
 
 run:
-  path: python
+  path: bash
   dir: source
   args:
-  - -m
-  - flake8
-  - --format
-  - json
-  - --output-file
-  - ../flake8/output.json
-  - ((python-pathspec))
+  - -e
+  - -o
+  - pipefail
+  - -c
+  - >-
+      python -m flake8 --format json --output-file ../flake8/output.json
+      ((python-pathspec))

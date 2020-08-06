@@ -31,4 +31,5 @@ run:
   - -c
   - >-
       python -m mypy --cache-dir ../mypy-cache --strict --no-error-summary
-      ((python-pathspec)) | tee ../mypy/output.json
+      --scripts-are-modules ((python-pathspec))
+      | tee ../mypy/output.json
