@@ -1,9 +1,0 @@
----
-phan-run:
-  path: vendor/bin/phan
-  dir: source
-  args:
-  - --output-mode
-  - json
-  - --output
-  - ../phan/output.json

@@ -1,2 +1,2 @@
 ---
-codesniffer-config: ../concourse-pipeline-library/defaults/phpstan.neon
+phpstan-config: ../concourse-pipeline-library/defaults/phpstan.neon
