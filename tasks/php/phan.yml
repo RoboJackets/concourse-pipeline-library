@@ -16,7 +16,4 @@ inputs:
 outputs:
 - name: phan
 
-run:
-  path: vendor/bin/phan
-  dir: source
-  args: ((phan-args))
+run: ((phan-run))

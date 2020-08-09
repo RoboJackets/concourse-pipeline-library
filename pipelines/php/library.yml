@@ -249,7 +249,7 @@ jobs:
       - task: phan
         file: concourse-pipeline-library/tasks/php/phan.yml
         vars:
-          phan-args: ((phan-args))
+          phan-run: ((phan-run))
         input_mapping:
           source: ((source-repository))
         on_success:
@@ -277,7 +277,7 @@ jobs:
           - phan-check
           - ((source-repository))
         on_error:
-          put: codesniffer-check
+          put: phan-check
           params:
             conclusion: action_required
           inputs:
@@ -501,7 +501,7 @@ jobs:
       - task: phan
         file: concourse-pipeline-library/tasks/php/phan.yml
         vars:
-          phan-args: ((phan-args))
+          phan-run: ((phan-run))
         input_mapping:
           source: pull-request
         on_success:
