@@ -157,7 +157,7 @@ resources:
     github_token: ((((github-host-dashes))/token))
     webhook_token: ((webhook-token))
     resources:
-      concourse-pipeline-library:
+      ((source-repository)):
         github_uri: https://((github-host))/RoboJackets/((source-repository))
         events:
         - push
