@@ -172,7 +172,7 @@ jobs:
         conclusion: success
         title: Dependencies installed
         summary: Composer successfully installed development dependencies.
-      inputs: &composer-install-main-inputs
+      inputs:
       - composer-install-check
       - ((source-repository))
     on_failure:
@@ -182,19 +182,22 @@ jobs:
         title: Failed to install dependencies
         summary: Review the output within Concourse.
       inputs:
-        <<: *composer-install-main-inputs
+      - composer-install-check
+      - ((source-repository))
     on_abort:
       put: composer-install-check
       params:
         conclusion: cancelled
       inputs:
-        <<: *composer-install-main-inputs
+      - composer-install-check
+      - ((source-repository))
     on_error:
       put: composer-install-check
       params:
         conclusion: action_required
       inputs:
-        <<: *composer-install-main-inputs
+      - composer-install-check
+      - ((source-repository))
 
   - in_parallel:
     - do:
@@ -211,7 +214,7 @@ jobs:
           put: codesniffer-check
           params:
             conclusion: success
-          inputs: &codesniffer-main-inputs
+          inputs:
           - codesniffer
           - codesniffer-check
           - ((source-repository))
@@ -220,19 +223,25 @@ jobs:
           params:
             conclusion: failure
           inputs:
-            <<: *codesniffer-main-inputs
+          - codesniffer
+          - codesniffer-check
+          - ((source-repository))
         on_abort:
           put: codesniffer-check
           params:
             conclusion: cancelled
           inputs:
-            <<: *codesniffer-main-inputs
+          - codesniffer
+          - codesniffer-check
+          - ((source-repository))
         on_error:
           put: codesniffer-check
           params:
             conclusion: action_required
           inputs:
-            <<: *codesniffer-main-inputs
+          - codesniffer
+          - codesniffer-check
+          - ((source-repository))
     - do:
       - put: phan-check
         inputs:
@@ -247,7 +256,7 @@ jobs:
           put: phan-check
           params:
             conclusion: success
-          inputs: &phan-main-inputs
+          inputs:
           - phan
           - phan-check
           - ((source-repository))
@@ -256,19 +265,25 @@ jobs:
           params:
             conclusion: failure
           inputs:
-            <<: *phan-main-inputs
+          - phan
+          - phan-check
+          - ((source-repository))
         on_abort:
           put: phan-check
           params:
             conclusion: cancelled
           inputs:
-            <<: *phan-main-inputs
+          - phan
+          - phan-check
+          - ((source-repository))
         on_error:
           put: codesniffer-check
           params:
             conclusion: action_required
           inputs:
-            <<: *phan-main-inputs
+          - phan
+          - phan-check
+          - ((source-repository))
     - do:
       - put: phpstan-check
         inputs:
@@ -283,26 +298,34 @@ jobs:
           put: phpstan-check
           params:
             conclusion: success
-          inputs: &phpstan-main-inputs
-            <<: *phpstan-main-inputs
+          inputs:
+          - phpstan
+          - phpstan-check
+          - ((source-repository))
         on_failure:
           put: phpstan-check
           params:
             conclusion: failure
           inputs:
-            <<: *phpstan-main-inputs
+          - phpstan
+          - phpstan-check
+          - ((source-repository))
         on_abort:
           put: phpstan-check
           params:
             conclusion: cancelled
           inputs:
-            <<: *phpstan-main-inputs
+          - phpstan
+          - phpstan-check
+          - ((source-repository))
         on_error:
           put: phpstan-check
           params:
             conclusion: action_required
           inputs:
-            <<: *phpstan-main-inputs
+          - phpstan
+          - phpstan-check
+          - ((source-repository))
     - do:
       - put: psalm-check
         inputs:
@@ -315,7 +338,7 @@ jobs:
           put: psalm-check
           params:
             conclusion: success
-          inputs: &psalm-main-inputs
+          inputs:
           - psalm
           - psalm-check
           - ((source-repository))
@@ -324,19 +347,25 @@ jobs:
           params:
             conclusion: failure
           inputs:
-            <<: *psalm-main-inputs
+          - psalm
+          - psalm-check
+          - ((source-repository))
         on_abort:
           put: psalm-check
           params:
             conclusion: cancelled
           inputs:
-            <<: *psalm-main-inputs
+          - psalm
+          - psalm-check
+          - ((source-repository))
         on_error:
           put: psalm-check
           params:
             conclusion: action_required
           inputs:
-            <<: *psalm-main-inputs
+          - psalm
+          - psalm-check
+          - ((source-repository))
 
   - put: webhooks
     inputs: []
@@ -395,7 +424,7 @@ jobs:
         conclusion: success
         title: Dependencies installed
         summary: Composer successfully installed development dependencies.
-      inputs: &composer-install-pull-request-inputs
+      inputs:
       - composer-install-check
       - pull-request
     on_failure:
@@ -405,19 +434,22 @@ jobs:
         title: Failed to install dependencies
         summary: Review the output within Concourse.
       inputs:
-        <<: *composer-install-pull-request-inputs
+      - composer-install-check
+      - pull-request
     on_abort:
       put: composer-install-check
       params:
         conclusion: cancelled
       inputs:
-        <<: *composer-install-pull-request-inputs
+      - composer-install-check
+      - pull-request
     on_error:
       put: composer-install-check
       params:
         conclusion: action_required
       inputs:
-        <<: *composer-install-pull-request-inputs
+      - composer-install-check
+      - pull-request
 
   - in_parallel:
     - do:
@@ -434,7 +466,7 @@ jobs:
           put: codesniffer-check
           params:
             conclusion: success
-          inputs: &codesniffer-pull-request-inputs
+          inputs:
           - codesniffer
           - codesniffer-check
           - pull-request
@@ -443,19 +475,25 @@ jobs:
           params:
             conclusion: failure
           inputs:
-            <<: *codesniffer-pull-request-inputs
+          - codesniffer
+          - codesniffer-check
+          - pull-request
         on_abort:
           put: codesniffer-check
           params:
             conclusion: cancelled
           inputs:
-            <<: *codesniffer-pull-request-inputs
+          - codesniffer
+          - codesniffer-check
+          - pull-request
         on_error:
           put: codesniffer-check
           params:
             conclusion: action_required
           inputs:
-            <<: *codesniffer-pull-request-inputs
+          - codesniffer
+          - codesniffer-check
+          - pull-request
     - do:
       - put: phan-check
         inputs:
@@ -470,7 +508,7 @@ jobs:
           put: phan-check
           params:
             conclusion: success
-          inputs: &phan-pull-request-inputs
+          inputs:
           - phan
           - phan-check
           - pull-request
@@ -479,19 +517,25 @@ jobs:
           params:
             conclusion: failure
           inputs:
-            <<: *phan-pull-request-inputs
+          - phan
+          - phan-check
+          - pull-request
         on_abort:
           put: phan-check
           params:
             conclusion: cancelled
           inputs:
-            <<: *phan-pull-request-inputs
+          - phan
+          - phan-check
+          - pull-request
         on_error:
           put: codesniffer-check
           params:
             conclusion: action_required
           inputs:
-            <<: *phan-pull-request-inputs
+          - phan
+          - phan-check
+          - pull-request
     - do:
       - put: phpstan-check
         inputs:
@@ -506,7 +550,7 @@ jobs:
           put: phpstan-check
           params:
             conclusion: success
-          inputs: &phpstan-pull-request-inputs
+          inputs:
           - phpstan
           - phpstan-check
           - pull-request
@@ -515,19 +559,25 @@ jobs:
           params:
             conclusion: failure
           inputs:
-            <<: *phpstan-pull-request-inputs
+          - phpstan
+          - phpstan-check
+          - pull-request
         on_abort:
           put: phpstan-check
           params:
             conclusion: cancelled
           inputs:
-            <<: *phpstan-pull-request-inputs
+          - phpstan
+          - phpstan-check
+          - pull-request
         on_error:
           put: phpstan-check
           params:
             conclusion: action_required
           inputs:
-            <<: *phpstan-pull-request-inputs
+          - phpstan
+          - phpstan-check
+          - pull-request
     - do:
       - put: psalm-check
         inputs:
@@ -540,7 +590,7 @@ jobs:
           put: psalm-check
           params:
             conclusion: success
-          inputs: &psalm-pull-request-inputs
+          inputs:
           - psalm
           - psalm-check
           - pull-request
@@ -549,16 +599,22 @@ jobs:
           params:
             conclusion: failure
           inputs:
-            <<: *psalm-pull-request-inputs
+          - psalm
+          - psalm-check
+          - pull-request
         on_abort:
           put: psalm-check
           params:
             conclusion: cancelled
           inputs:
-            <<: *psalm-pull-request-inputs
+          - psalm
+          - psalm-check
+          - pull-request
         on_error:
           put: psalm-check
           params:
             conclusion: action_required
           inputs:
-            <<: *psalm-pull-request-inputs
+          - psalm
+          - psalm-check
+          - pull-request
