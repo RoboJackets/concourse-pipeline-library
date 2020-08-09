@@ -1,0 +1,4 @@
+---
+source-repository: concourse-github-deployment-resource
+base-branch: main
+python-pathspec: src/*
