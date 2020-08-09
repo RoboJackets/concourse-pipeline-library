@@ -1,0 +1,4 @@
+---
+source-repository: concourse-github-webhook-resource
+base-branch: main
+python-pathspec: src/*

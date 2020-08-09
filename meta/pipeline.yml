@@ -187,6 +187,12 @@ jobs:
       - concourse-pipeline-library/var_files/github/com.yml
       - concourse-pipeline-library/var_files/pipelines/github-check.yml
 
+    - set_pipeline: github-webhook
+      file: concourse-pipeline-library/pipelines/python/oci-build.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/com.yml
+      - concourse-pipeline-library/var_files/pipelines/github-webhook.yml
+
     - set_pipeline: gatech-aws-credentials
       file: concourse-pipeline-library/pipelines/python/library.yml
       var_files:
