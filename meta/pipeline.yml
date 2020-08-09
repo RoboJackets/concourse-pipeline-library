@@ -83,6 +83,7 @@ resources:
   type: github-webhook
   icon: webhook
   source:
+    debug: true
     github_token: ((github-com/token))
     webhook_token: ((webhook-token))
     resources:
@@ -94,7 +95,7 @@ resources:
         github_uri: https://github.com/RoboJackets/concourse-pipeline-library
         events:
         - push
-        - pull-request
+        - pull_request
 
 jobs:
 
