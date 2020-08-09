@@ -83,7 +83,6 @@ resources:
   type: github-webhook
   icon: webhook
   source:
-    debug: true
     github_token: ((github-com/token))
     webhook_token: ((webhook-token))
     resources:
@@ -226,6 +225,7 @@ jobs:
       - concourse-pipeline-library/var_files/pipelines/gatech-aws-credentials.yml
 
   - put: webhooks
+    inputs: []
 
   on_success:
     put: slack
