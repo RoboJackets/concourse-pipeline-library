@@ -89,12 +89,12 @@ resources:
       concourse-pipeline-library:
         github_uri: https://github.com/RoboJackets/concourse-pipeline-library
         events:
-          - push
+        - push
       pull-request:
         github_uri: https://github.com/RoboJackets/concourse-pipeline-library
         events:
-          - push
-          - pull-request
+        - push
+        - pull-request
 
 jobs:
 
