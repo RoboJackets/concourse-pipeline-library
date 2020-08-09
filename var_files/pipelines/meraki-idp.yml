@@ -1,3 +1,4 @@
 ---
 source-repository: meraki-idp
 base-branch: main
+phan-mode: custom

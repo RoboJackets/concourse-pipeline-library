@@ -247,7 +247,7 @@ jobs:
         inputs:
         - ((source-repository))
       - task: phan
-        file: concourse-pipeline-library/tasks/php/phan.yml
+        file: concourse-pipeline-library/tasks/php/phan-((phan-mode)).yml
         vars:
           phan-run: ((phan-run))
         input_mapping:
@@ -499,7 +499,7 @@ jobs:
         inputs:
         - pull-request
       - task: phan
-        file: concourse-pipeline-library/tasks/php/phan.yml
+        file: concourse-pipeline-library/tasks/php/phan-((phan-mode)).yml
         vars:
           phan-run: ((phan-run))
         input_mapping:
