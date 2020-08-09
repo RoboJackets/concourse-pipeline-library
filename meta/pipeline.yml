@@ -139,12 +139,12 @@ jobs:
       vars:
         pipeline: meta/pipeline.yml
 
-    - task: validate-oci-build-pipeline
+    - task: validate-php-library-pipeline
       file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
       input_mapping:
         source: concourse-pipeline-library
       vars:
-        pipeline: pipelines/oci-build.yml
+        pipeline: pipelines/php/library.yml
 
     - task: validate-python-library-pipeline
       file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
@@ -159,6 +159,13 @@ jobs:
         source: concourse-pipeline-library
       vars:
         pipeline: pipelines/python/oci-build.yml
+
+    - task: validate-oci-build-pipeline
+      file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
+      input_mapping:
+        source: concourse-pipeline-library
+      vars:
+        pipeline: pipelines/oci-build.yml
 
     on_success:
       put: validate-pipeline-check
@@ -229,6 +236,15 @@ jobs:
       var_files:
       - concourse-pipeline-library/var_files/github/com.yml
       - concourse-pipeline-library/var_files/pipelines/gatech-aws-credentials.yml
+
+    - set_pipeline: meraki-idp
+      file: concourse-pipeline-library/pipelines/php/library.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/phan/custom.yml
+      - concourse-pipeline-library/var_files/phpstan/defaults.yml
+      - concourse-pipeline-library/var_files/codesniffer/defaults.yml
+      - concourse-pipeline-library/var_files/pipelines/meraki-idp.yml
 
   - put: webhooks
     inputs: []

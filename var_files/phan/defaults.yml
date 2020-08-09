@@ -1,0 +1,34 @@
+---
+phan-args:
+- --output-mode
+- json
+- --output
+- ../phan/output.json
+- --exclude-directory-list
+- vendor
+- --directory
+- .
+- --signature-compatibility
+- --redundant-condition-detection
+- --dead-code-detection
+- --strict-type-checking
+- --plugin
+- DollarDollarPlugin
+- --plugin
+- AlwaysReturnPlugin
+- --plugin
+- DuplicateArrayKeyPlugin
+- --plugin
+- PregRegexCheckerPlugin
+- --plugin
+- PrintfCheckerPlugin
+- --plugin
+- UnreachableCodePlugin
+- --plugin
+- NonBoolBranchPlugin
+- --plugin
+- NonBoolInLogicalArithPlugin
+- --plugin
+- DuplicateExpressionPlugin
+- --plugin
+- UnusedSuppressionPlugin

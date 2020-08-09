@@ -1,0 +1,6 @@
+---
+phan-args:
+- --output-mode
+- json
+- --output
+- ../phan/output.json

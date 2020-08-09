@@ -1,0 +1,23 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: docker.robojackets.org/robojackets/php-build
+    username: ((docker-robojackets-org.username))
+    password: ((docker-robojackets-org.password))
+
+inputs:
+- name: source
+- name: vendor
+  path: source/vendor
+
+outputs:
+- name: psalm
+
+run:
+  path: vendor/bin/psalm
+  dir: source
+  args:
+  - --report=../psalm/output.json
