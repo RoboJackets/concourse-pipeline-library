@@ -71,13 +71,6 @@ resources:
     check_name: validate-pipeline
     resource_name: validate-pipeline-check
 
-- name: slack
-  public: true
-  type: slack
-  icon: slack
-  source:
-    url: ((slack-webhook))
-
 - name: webhooks
   public: true
   type: github-webhook
@@ -95,6 +88,13 @@ resources:
         events:
         - push
         - pull_request
+
+- name: slack
+  public: true
+  type: slack
+  icon: slack
+  source:
+    url: ((slack-webhook))
 
 jobs:
 

@@ -8,6 +8,13 @@ resource_types:
     username: ((docker-robojackets-org.username))
     password: ((docker-robojackets-org.password))
 
+- name: github-webhook
+  type: registry-image
+  source:
+    repository: docker.robojackets.org/robojackets/concourse-github-webhook-resource
+    username: ((docker-robojackets-org.username))
+    password: ((docker-robojackets-org.password))
+
 - name: pull-request
   type: registry-image
   source:
@@ -101,6 +108,24 @@ resources:
     token: ((((github-host-dashes))/token))
     check_name: Push to Registry
     resource_name: push-check
+
+- name: webhooks
+  public: true
+  type: github-webhook
+  icon: webhook
+  source:
+    github_token: ((((github-host-dashes))/token))
+    webhook_token: ((webhook-token))
+    resources:
+      concourse-pipeline-library:
+        github_uri: https://((github-host))/RoboJackets/((source-repository))
+        events:
+        - push
+      pull-request:
+        github_uri: https://((github-host))/RoboJackets/((source-repository))
+        events:
+        - push
+        - pull_request
 
 - name: slack
   public: true
