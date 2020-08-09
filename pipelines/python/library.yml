@@ -313,7 +313,10 @@ jobs:
           inputs:
           - mypy
           - mypy-check
-          - ((source-repository))
+          - ((source-repository
+
+  - put: webhooks
+    inputs: []
 
   on_success:
     put: slack

@@ -440,6 +440,9 @@ jobs:
       - push-check
       - ((source-repository))
 
+  - put: webhooks
+    inputs: []
+
   on_success:
     put: slack
     params:

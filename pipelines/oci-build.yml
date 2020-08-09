@@ -80,13 +80,6 @@ resources:
     password: ((docker-robojackets-org.password))
     tag: pull-request
 
-- name: ubuntu
-  type: registry-image
-  public: true
-  icon: ubuntu
-  source:
-    repository: ubuntu
-
 - name: build-check
   public: true
   type: github-check
@@ -145,9 +138,6 @@ jobs:
     - get: concourse-pipeline-library
 
     - get: ((source-repository))
-      trigger: true
-
-    - get: ubuntu
       trigger: true
 
   - put: build-check
@@ -233,6 +223,9 @@ jobs:
       inputs:
       - push-check
       - ((source-repository))
+
+  - put: webhooks
+    inputs: []
 
   on_success:
     put: slack
