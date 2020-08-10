@@ -9,6 +9,7 @@ image_resource:
     password: ((docker-robojackets-org.password))
 
 inputs:
+- name: concourse-pipeline-library
 - name: source
 - name: vendor
   path: source/vendor
