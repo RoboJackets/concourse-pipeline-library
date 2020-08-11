@@ -17,6 +17,8 @@ inputs:
 outputs:
 - name: phpstan
 
+# Have to run composer install here again because the phpstan extension
+# installer uses absolute paths
 run:
   path: bash
   dir: source
@@ -26,6 +28,8 @@ run:
   - pipefail
   - -c
   - >-
-      php -f vendor/bin/phpstan analyse --no-progress --level=max
+      composer install --no-interaction --no-progress --no-suggest
+      --optimize-autoloader --classmap-authoritative &&
+      php -f vendor/bin/phpstan analyse --level=max
       --configuration=((phpstan-config)) --error-format=json .
       | tee ../phpstan/output.json
