@@ -4,6 +4,8 @@
 
     <config name="installed_paths" value="../../slevomat/coding-standard"/>
 
+    <file>.</file>
+
     <exclude-pattern>*.blade.php</exclude-pattern>
     <exclude-pattern>*.min.js</exclude-pattern>
     <exclude-pattern>/_ide_helper.php</exclude-pattern>
