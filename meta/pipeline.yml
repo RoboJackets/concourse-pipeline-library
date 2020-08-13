@@ -146,6 +146,13 @@ jobs:
       vars:
         pipeline: pipelines/php/library.yml
 
+    - task: validate-php-serverless-pipeline
+      file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
+      input_mapping:
+        source: concourse-pipeline-library
+      vars:
+        pipeline: pipelines/php/serverless.yml
+
     - task: validate-python-library-pipeline
       file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
       input_mapping:
