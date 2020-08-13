@@ -445,6 +445,8 @@ jobs:
 
   - task: serverless-deploy
     file: concourse-pipeline-library/tasks/php/serverless-deploy.yml
+    input_mapping:
+      source: ((source-repository))
     vars:
       stage: production
 
