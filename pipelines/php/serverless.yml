@@ -422,7 +422,8 @@ jobs:
 
     - get: ((source-repository))
       trigger: true
-      passed: build-((base-branch))
+      passed:
+      - build-((base-branch))
 
   - put: deployment
     params:
