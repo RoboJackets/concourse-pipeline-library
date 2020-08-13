@@ -10,15 +10,14 @@ image_resource:
 
 inputs:
 - name: source
-- name: vendor
-  path: source/vendor
+
+outputs:
 - name: node_modules
   path: source/node_modules
 
 run:
-  path: serverless
+  path: npm
   dir: source
   args:
-  - deploy
-  - --stage
-  - ((stage))
+  - ci
+  - --production

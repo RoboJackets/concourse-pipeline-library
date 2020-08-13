@@ -431,17 +431,28 @@ jobs:
     inputs:
     - ((source-repository))
 
+  - in_parallel:
+    - put: deployment
+      params:
+        state: queued
+      inputs:
+      - ((source-repository))
+      - deployment
+    - task: composer-install-no-dev
+      file: concourse-pipeline-library/tasks/php/composer-install-no-dev.yml
+      input_mapping:
+        source: ((source-repository))
+    - task: npm-ci-no-dev
+      file: concourse-pipeline-library/tasks/javascript/npm-ci-dev.yml
+      input_mapping:
+        source: ((source-repository))
+
   - put: deployment
     params:
       state: in_progress
     inputs:
     - ((source-repository))
     - deployment
-
-  - task: composer-install-no-dev
-    file: concourse-pipeline-library/tasks/php/composer-install-no-dev.yml
-    input_mapping:
-      source: ((source-repository))
 
   - task: serverless-deploy
     file: concourse-pipeline-library/tasks/php/serverless-deploy.yml
