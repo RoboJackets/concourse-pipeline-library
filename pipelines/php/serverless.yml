@@ -442,7 +442,7 @@ jobs:
       file: concourse-pipeline-library/tasks/php/composer-install-no-dev.yml
       input_mapping:
         source: ((source-repository))
-    - task: npm-ci-no-dev
+    - task: npm-ci-dev
       file: concourse-pipeline-library/tasks/javascript/npm-ci-dev.yml
       input_mapping:
         source: ((source-repository))
