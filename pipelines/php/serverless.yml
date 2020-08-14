@@ -460,6 +460,7 @@ jobs:
       source: ((source-repository))
     vars:
       stage: production
+      aws-credentials: ((aws-credentials))
 
   on_success:
     put: deployment
