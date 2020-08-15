@@ -83,6 +83,17 @@ resources:
     check_name: Satis Build
     resource_name: satis-build-check
 
+- name: s3-sync-check
+  public: true
+  type: github-check
+  icon: check-bold
+  source:
+    repository: ((source-repository))
+    pull_request: pull-request
+    token: ((((github-host-dashes))/token))
+    check_name: S3 Sync
+    resource_name: s3-sync-check
+
 - name: webhooks
   public: true
   type: github-webhook
@@ -132,7 +143,7 @@ resources:
     owner: RoboJackets
     repository: apiary-user
     access_token: ((((github-host-dashes))/token))
-    github_api_url: ((github-rest-api-endpoint))
+    github_api_url: ((github-rest-api-endpoint))/
     release: true
     pre_release: true
 
@@ -144,7 +155,7 @@ resources:
     owner: RoboJackets
     repository: error-pages
     access_token: ((((github-host-dashes))/token))
-    github_api_url: ((github-rest-api-endpoint))
+    github_api_url: ((github-rest-api-endpoint))/
     release: true
     pre_release: true
 
@@ -156,7 +167,7 @@ resources:
     owner: RoboJackets
     repository: network-check
     access_token: ((((github-host-dashes))/token))
-    github_api_url: ((github-rest-api-endpoint))
+    github_api_url: ((github-rest-api-endpoint))/
     release: true
     pre_release: true
 
@@ -168,7 +179,7 @@ resources:
     owner: OIT-NetworkServices
     repository: BuzzAPIClient
     access_token: ((((github-host-dashes))/token))
-    github_api_url: ((github-rest-api-endpoint))
+    github_api_url: ((github-rest-api-endpoint))/
     release: true
     pre_release: true
 
@@ -277,6 +288,47 @@ jobs:
         conclusion: action_required
       inputs:
       - satis-build-check
+      - ((source-repository))
+
+  - put: s3-sync-check
+    inputs:
+    - ((source-repository))
+
+  - task: s3-sync
+    file: concourse-pipeline-library/tasks/aws/s3-sync.yml
+    input_mapping:
+      source: dist
+    on_success:
+      put: s3-sync-check
+      params:
+        conclusion: success
+        title: Distribution uploaded
+        summary: Repository was successfully synced to AWS.
+      inputs:
+      - s3-sync-check
+      - ((source-repository))
+    on_failure:
+      put: s3-sync-check
+      params:
+        conclusion: failure
+        title: Failed to upload distribution
+        summary: Review the output within Concourse.
+      inputs:
+      - s3-sync-check
+      - ((source-repository))
+    on_abort:
+      put: s3-sync-check
+      params:
+        conclusion: cancelled
+      inputs:
+      - s3-sync-check
+      - ((source-repository))
+    on_error:
+      put: s3-sync-check
+      params:
+        conclusion: action_required
+      inputs:
+      - s3-sync-check
       - ((source-repository))
 
   - put: webhooks
