@@ -1,0 +1,4 @@
+---
+source-repository: jedi
+base-branch: master
+phan-mode: custom

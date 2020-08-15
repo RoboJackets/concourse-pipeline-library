@@ -282,6 +282,70 @@ jobs:
       - concourse-pipeline-library/var_files/codesniffer/custom.yml
       - concourse-pipeline-library/var_files/pipelines/apiary.yml
 
+    - set_pipeline: apiary-user
+      file: concourse-pipeline-library/pipelines/php/library.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/phpstan/custom.yml
+      - concourse-pipeline-library/var_files/codesniffer/custom.yml
+      - concourse-pipeline-library/var_files/pipelines/apiary-user.yml
+
+    - set_pipeline: network-check
+      file: concourse-pipeline-library/pipelines/php/library.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/phpstan/defaults.yml
+      - concourse-pipeline-library/var_files/codesniffer/custom.yml
+      - concourse-pipeline-library/var_files/pipelines/network-check.yml
+
+    - set_pipeline: error-pages
+      file: concourse-pipeline-library/pipelines/php/library.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/phpstan/defaults.yml
+      - concourse-pipeline-library/var_files/codesniffer/custom.yml
+      - concourse-pipeline-library/var_files/pipelines/error-pages.yml
+
+    - set_pipeline: google-idp
+      file: concourse-pipeline-library/pipelines/php/on-premises.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/phpstan/custom.yml
+      - concourse-pipeline-library/var_files/codesniffer/defaults.yml
+      - concourse-pipeline-library/var_files/pipelines/google-idp.yml
+
+    - set_pipeline: jedi
+      file: concourse-pipeline-library/pipelines/php/on-premises.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/phpstan/custom.yml
+      - concourse-pipeline-library/var_files/codesniffer/defaults.yml
+      - concourse-pipeline-library/var_files/pipelines/jedi.yml
+
+    - set_pipeline: nextcloud-auth
+      file: concourse-pipeline-library/pipelines/php/on-premises.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/phpstan/custom.yml
+      - concourse-pipeline-library/var_files/codesniffer/defaults.yml
+      - concourse-pipeline-library/var_files/pipelines/nextcloud-auth.yml
+
+    - set_pipeline: mediawiki-auth
+      file: concourse-pipeline-library/pipelines/php/on-premises.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/phpstan/custom.yml
+      - concourse-pipeline-library/var_files/codesniffer/defaults.yml
+      - concourse-pipeline-library/var_files/pipelines/mediawiki-auth.yml
+
+    - set_pipeline: wordpress-auth
+      file: concourse-pipeline-library/pipelines/php/on-premises.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/phpstan/custom.yml
+      - concourse-pipeline-library/var_files/codesniffer/defaults.yml
+      - concourse-pipeline-library/var_files/pipelines/wordpress-auth.yml
+
     - set_pipeline: satis
       file: concourse-pipeline-library/pipelines/php/satis.yml
       var_files:

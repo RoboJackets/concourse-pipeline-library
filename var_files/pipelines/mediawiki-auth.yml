@@ -1,0 +1,4 @@
+---
+source-repository: mediawiki-auth
+base-branch: master
+phan-mode: default

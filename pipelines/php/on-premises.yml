@@ -383,6 +383,12 @@ jobs:
           - psalm-check
           - ((source-repository))
 
+  - put: deployment
+    params:
+      environment: production
+    inputs:
+    - ((source-repository))
+
   - put: webhooks
     inputs: []
 
@@ -411,85 +417,6 @@ jobs:
       mode: normal
       message: Task error, review logs
     inputs: []
-
-- name: deploy-production
-  public: true
-  plan:
-
-  - in_parallel:
-
-    - get: concourse-pipeline-library
-
-    - get: ((source-repository))
-      trigger: true
-      passed:
-      - build-((base-branch))
-
-  - put: deployment
-    params:
-      environment: production
-    inputs:
-    - ((source-repository))
-
-  - in_parallel:
-    - put: deployment
-      params:
-        state: queued
-      inputs:
-      - ((source-repository))
-      - deployment
-    - task: composer-install-no-dev
-      file: concourse-pipeline-library/tasks/php/composer-install-no-dev.yml
-      input_mapping:
-        source: ((source-repository))
-    - task: npm-ci-dev
-      file: concourse-pipeline-library/tasks/javascript/npm-ci-dev.yml
-      input_mapping:
-        source: ((source-repository))
-
-  - put: deployment
-    params:
-      state: in_progress
-    inputs:
-    - ((source-repository))
-    - deployment
-
-  - task: serverless-deploy
-    file: concourse-pipeline-library/tasks/php/serverless-deploy.yml
-    input_mapping:
-      source: ((source-repository))
-    vars:
-      stage: production
-      aws-credentials: ((aws-credentials))
-
-  on_success:
-    put: deployment
-    params:
-      state: success
-    inputs:
-    - ((source-repository))
-    - deployment
-  on_failure:
-    put: deployment
-    params:
-      state: failure
-    inputs:
-    - ((source-repository))
-    - deployment
-  on_abort:
-    put: deployment
-    params:
-      state: error
-    inputs:
-    - ((source-repository))
-    - deployment
-  on_error:
-    put: deployment
-    params:
-      state: error
-    inputs:
-    - ((source-repository))
-    - deployment
 
 - name: build-pull-request
   public: true
