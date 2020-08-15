@@ -257,6 +257,9 @@ jobs:
     file: concourse-pipeline-library/tasks/php/satis-build.yml
     input_mapping:
       source: ((source-repository))
+    vars:
+      github-host: ((github-host))
+      github-host-dashes: ((github-host-dashes))
     on_success:
       put: satis-build-check
       params:
@@ -435,6 +438,9 @@ jobs:
     file: concourse-pipeline-library/tasks/php/satis-build.yml
     input_mapping:
       source: pull-request
+    vars:
+      github-host: ((github-host))
+      github-host-dashes: ((github-host-dashes))
     on_success:
       put: satis-build-check
       params:
