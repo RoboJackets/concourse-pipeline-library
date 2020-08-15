@@ -162,8 +162,8 @@ jobs:
     inputs:
     - ((source-repository))
 
-  - task: composer-install-dev
-    file: concourse-pipeline-library/tasks/php/composer-install-dev.yml
+  - task: composer-install-no-plugins
+    file: concourse-pipeline-library/tasks/php/composer-install-no-plugins.yml
     input_mapping:
       source: ((source-repository))
     on_success:
@@ -412,8 +412,8 @@ jobs:
     inputs:
     - pull-request
 
-  - task: composer-install-dev
-    file: concourse-pipeline-library/tasks/php/composer-install-dev.yml
+  - task: composer-install-no-plugins
+    file: concourse-pipeline-library/tasks/php/composer-install-no-plugins.yml
     input_mapping:
       source: pull-request
     on_success:
