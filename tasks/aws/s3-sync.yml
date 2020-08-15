@@ -17,6 +17,8 @@ inputs:
 run:
   path: aws
   args:
+  - s3
+  - sync
   - source
   - ((target))
   - --delete
