@@ -301,6 +301,9 @@ jobs:
     file: concourse-pipeline-library/tasks/aws/s3-sync.yml
     input_mapping:
       source: dist
+    vars:
+      target: ((target))
+      aws-credentials: ((aws-credentials))
     on_success:
       put: s3-sync-check
       params:
@@ -378,16 +381,12 @@ jobs:
         integration_tool: checkout
 
     - get: apiary-user
-      trigger: true
 
     - get: error-pages
-      trigger: true
 
     - get: network-check
-      trigger: true
 
     - get: buzzapiclient
-      trigger: true
 
   - put: composer-install-check
     inputs:

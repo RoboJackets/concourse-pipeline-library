@@ -2,3 +2,4 @@
 source-repository: satis
 base-branch: main
 aws-credentials: gatech/sts/deploy
+target: s3://robojackets-satis
