@@ -1,0 +1,32 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: docker.robojackets.org/robojackets/php-build
+    username: ((docker-robojackets-org.username))
+    password: ((docker-robojackets-org.password))
+
+params:
+  COMPOSER_AUTH:
+    github-oauth:
+      ((github-host)): ((((github-host-dashes))/token))
+
+inputs:
+- name: source
+- name: vendor
+  path: source/vendor
+
+outputs:
+- name: dist
+  path: source/dist
+
+run:
+  path: php
+  dir: source
+  args:
+  - -f
+  - vendor/bin/satis
+  - build
+  - --no-interaction

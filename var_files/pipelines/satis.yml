@@ -1,0 +1,4 @@
+---
+source-repository: satis
+base-branch: main
+aws-credentials: gatech/sts/deploy
