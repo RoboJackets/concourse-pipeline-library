@@ -166,15 +166,6 @@ jobs:
     file: concourse-pipeline-library/tasks/php/composer-install-dev.yml
     input_mapping:
       source: ((source-repository))
-    on_success:
-      put: composer-install-check
-      params:
-        conclusion: success
-        title: Dependencies installed
-        summary: Composer successfully installed development dependencies.
-      inputs:
-      - composer-install-check
-      - ((source-repository))
     on_failure:
       put: composer-install-check
       params:
@@ -200,6 +191,14 @@ jobs:
       - ((source-repository))
 
   - in_parallel:
+    - put: composer-install-check
+      params:
+        conclusion: success
+        title: Dependencies installed
+        summary: Composer successfully installed development dependencies.
+      inputs:
+      - composer-install-check
+      - ((source-repository))
     - do:
       - put: codesniffer-check
         inputs:
@@ -416,15 +415,6 @@ jobs:
     file: concourse-pipeline-library/tasks/php/composer-install-dev.yml
     input_mapping:
       source: pull-request
-    on_success:
-      put: composer-install-check
-      params:
-        conclusion: success
-        title: Dependencies installed
-        summary: Composer successfully installed development dependencies.
-      inputs:
-      - composer-install-check
-      - pull-request
     on_failure:
       put: composer-install-check
       params:
@@ -450,6 +440,14 @@ jobs:
       - pull-request
 
   - in_parallel:
+    - put: composer-install-check
+      params:
+        conclusion: success
+        title: Dependencies installed
+        summary: Composer successfully installed development dependencies.
+      inputs:
+      - composer-install-check
+      - pull-request
     - do:
       - put: codesniffer-check
         inputs:

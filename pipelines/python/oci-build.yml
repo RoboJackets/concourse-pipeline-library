@@ -195,15 +195,6 @@ jobs:
     file: concourse-pipeline-library/tasks/python/poetry-install-dev.yml
     input_mapping:
       source: ((source-repository))
-    on_success:
-      put: poetry-install-check
-      params:
-        conclusion: success
-        title: Dependencies installed
-        summary: Poetry successfully installed development dependencies.
-      inputs:
-      - poetry-install-check
-      - ((source-repository))
     on_failure:
       put: poetry-install-check
       params:
@@ -229,6 +220,14 @@ jobs:
       - ((source-repository))
 
   - in_parallel:
+    - put: poetry-install-check
+      params:
+        conclusion: success
+        title: Dependencies installed
+        summary: Poetry successfully installed development dependencies.
+      inputs:
+      - poetry-install-check
+      - ((source-repository))
     - do:
       - put: flake8-check
         inputs:
@@ -366,15 +365,6 @@ jobs:
           source: ((source-repository))
         privileged: true
         timeout: 15m
-        on_success:
-          put: build-check
-          params:
-            conclusion: success
-            title: Image built
-            summary: The OCI image was built successfully.
-          inputs:
-          - build-check
-          - ((source-repository))
         on_failure:
           put: build-check
           params:
@@ -399,9 +389,18 @@ jobs:
           - build-check
           - ((source-repository))
 
-  - put: push-check
-    inputs:
-    - ((source-repository))
+  - in_parallel:
+    - put: build-check
+      params:
+        conclusion: success
+        title: Image built
+        summary: The OCI image was built successfully.
+      inputs:
+      - build-check
+      - ((source-repository))
+    - put: push-check
+      inputs:
+      - ((source-repository))
 
   - put: image
     params:
@@ -491,15 +490,6 @@ jobs:
     file: concourse-pipeline-library/tasks/python/poetry-install-dev.yml
     input_mapping:
       source: pull-request
-    on_success:
-      put: poetry-install-check
-      params:
-        conclusion: success
-        title: Dependencies installed
-        summary: Poetry successfully installed development dependencies.
-      inputs:
-      - poetry-install-check
-      - pull-request
     on_failure:
       put: poetry-install-check
       params:
@@ -525,6 +515,14 @@ jobs:
       - pull-request
 
   - in_parallel:
+    - put: poetry-install-check
+      params:
+        conclusion: success
+        title: Dependencies installed
+        summary: Poetry successfully installed development dependencies.
+      inputs:
+      - poetry-install-check
+      - pull-request
     - do:
       - put: flake8-check
         inputs:
@@ -661,15 +659,6 @@ jobs:
           source: pull-request
         privileged: true
         timeout: 15m
-        on_success:
-          put: build-check
-          params:
-            conclusion: success
-            title: Image built successfully
-            summary: The OCI image was built successfully.
-          inputs:
-          - pull-request
-          - build-check
         on_failure:
           put: build-check
           params:
@@ -694,9 +683,18 @@ jobs:
           - pull-request
           - build-check
 
-  - put: push-check
-    inputs:
-    - pull-request
+  - in_parallel:
+    - put: build-check
+      params:
+        conclusion: success
+        title: Image built successfully
+        summary: The OCI image was built successfully.
+      inputs:
+      - pull-request
+      - build-check
+    - put: push-check
+      inputs:
+      - pull-request
 
   - put: pull-request-image
     params:

@@ -235,15 +235,6 @@ jobs:
     file: concourse-pipeline-library/tasks/php/composer-install-dev.yml
     input_mapping:
       source: ((source-repository))
-    on_success:
-      put: composer-install-check
-      params:
-        conclusion: success
-        title: Dependencies installed
-        summary: Composer successfully installed development dependencies.
-      inputs:
-      - composer-install-check
-      - ((source-repository))
     on_failure:
       put: composer-install-check
       params:
@@ -268,9 +259,18 @@ jobs:
       - composer-install-check
       - ((source-repository))
 
-  - put: satis-build-check
-    inputs:
-    - ((source-repository))
+  - in_parallel:
+    - put: composer-install-check
+      params:
+        conclusion: success
+        title: Dependencies installed
+        summary: Composer successfully installed development dependencies.
+      inputs:
+      - composer-install-check
+      - ((source-repository))
+    - put: satis-build-check
+      inputs:
+      - ((source-repository))
 
   - task: satis-build
     file: concourse-pipeline-library/tasks/php/satis-build.yml
@@ -279,15 +279,6 @@ jobs:
     vars:
       github-host: ((github-host))
       github-host-dashes: ((github-host-dashes))
-    on_success:
-      put: satis-build-check
-      params:
-        conclusion: success
-        title: Repository built
-        summary: Satis successfully built the repository.
-      inputs:
-      - satis-build-check
-      - ((source-repository))
     on_failure:
       put: satis-build-check
       params:
@@ -312,9 +303,18 @@ jobs:
       - satis-build-check
       - ((source-repository))
 
-  - put: s3-sync-check
-    inputs:
-    - ((source-repository))
+  - in_parallel:
+    - put: satis-build-check
+      params:
+        conclusion: success
+        title: Repository built
+        summary: Satis successfully built the repository.
+      inputs:
+      - satis-build-check
+      - ((source-repository))
+    - put: s3-sync-check
+      inputs:
+      - ((source-repository))
 
   - task: s3-sync
     file: concourse-pipeline-library/tasks/aws/s3-sync.yml
@@ -407,15 +407,6 @@ jobs:
     file: concourse-pipeline-library/tasks/php/composer-install-dev.yml
     input_mapping:
       source: pull-request
-    on_success:
-      put: composer-install-check
-      params:
-        conclusion: success
-        title: Dependencies installed
-        summary: Composer successfully installed development dependencies.
-      inputs:
-      - composer-install-check
-      - pull-request
     on_failure:
       put: composer-install-check
       params:
@@ -440,9 +431,18 @@ jobs:
       - composer-install-check
       - pull-request
 
-  - put: satis-build-check
-    inputs:
-    - pull-request
+  - in_parallel:
+    - put: composer-install-check
+      params:
+        conclusion: success
+        title: Dependencies installed
+        summary: Composer successfully installed development dependencies.
+      inputs:
+      - composer-install-check
+      - pull-request
+    - put: satis-build-check
+      inputs:
+      - pull-request
 
   - task: satis-build
     file: concourse-pipeline-library/tasks/php/satis-build.yml

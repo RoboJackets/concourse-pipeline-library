@@ -154,15 +154,6 @@ jobs:
     file: concourse-pipeline-library/tasks/python/poetry-install-dev.yml
     input_mapping:
       source: ((source-repository))
-    on_success:
-      put: poetry-install-check
-      params:
-        conclusion: success
-        title: Dependencies installed
-        summary: Poetry successfully installed development dependencies.
-      inputs:
-      - poetry-install-check
-      - ((source-repository))
     on_failure:
       put: poetry-install-check
       params:
@@ -188,6 +179,14 @@ jobs:
       - ((source-repository))
 
   - in_parallel:
+    - put: poetry-install-check
+      params:
+        conclusion: success
+        title: Dependencies installed
+        summary: Poetry successfully installed development dependencies.
+      inputs:
+      - poetry-install-check
+      - ((source-repository))
     - do:
       - put: flake8-check
         inputs:
@@ -366,15 +365,6 @@ jobs:
     file: concourse-pipeline-library/tasks/python/poetry-install-dev.yml
     input_mapping:
       source: pull-request
-    on_success:
-      put: poetry-install-check
-      params:
-        conclusion: success
-        title: Dependencies installed
-        summary: Poetry successfully installed development dependencies.
-      inputs:
-      - poetry-install-check
-      - pull-request
     on_failure:
       put: poetry-install-check
       params:
@@ -400,6 +390,14 @@ jobs:
       - pull-request
 
   - in_parallel:
+    - put: poetry-install-check
+      params:
+        conclusion: success
+        title: Dependencies installed
+        summary: Poetry successfully installed development dependencies.
+      inputs:
+      - poetry-install-check
+      - pull-request
     - do:
       - put: flake8-check
         inputs:

@@ -111,10 +111,6 @@ jobs:
     file: concourse-pipeline-library/tasks/python/yamllint.yml
     input_mapping:
       source: concourse-pipeline-library
-    on_success:
-      put: yamllint-check
-      params:
-        conclusion: success
     on_failure:
       put: yamllint-check
       params:
@@ -128,7 +124,11 @@ jobs:
       params:
         conclusion: action_required
 
-  - put: validate-pipeline-check
+  - in_parallel:
+    - put: yamllint-check
+      params:
+        conclusion: success
+    - put: validate-pipeline-check
 
   - in_parallel:
 
@@ -195,12 +195,6 @@ jobs:
       vars:
         pipeline: pipelines/oci-build.yml
 
-    on_success:
-      put: validate-pipeline-check
-      params:
-        conclusion: success
-        title: Pipelines look good
-        summary: All pipelines passed `fly validate-pipeline`.
     on_failure:
       put: validate-pipeline-check
       params:
@@ -219,6 +213,11 @@ jobs:
         conclusion: action_required
 
   - in_parallel:
+    - put: validate-pipeline-check
+      params:
+        conclusion: success
+        title: Pipelines look good
+        summary: All pipelines passed `fly validate-pipeline`.
 
     - set_pipeline: pipeline-library
       file: concourse-pipeline-library/meta/pipeline.yml
@@ -294,7 +293,7 @@ jobs:
       var_files:
       - concourse-pipeline-library/var_files/github/gatech.edu.yml
       - concourse-pipeline-library/var_files/phpstan/custom.yml
-      - concourse-pipeline-library/var_files/codesniffer/custom.yml
+      - concourse-pipeline-library/var_files/codesniffer/defaults.yml
       - concourse-pipeline-library/var_files/pipelines/apiary-user.yml
 
     - set_pipeline: network-check
@@ -310,7 +309,7 @@ jobs:
       var_files:
       - concourse-pipeline-library/var_files/github/gatech.edu.yml
       - concourse-pipeline-library/var_files/phpstan/defaults.yml
-      - concourse-pipeline-library/var_files/codesniffer/custom.yml
+      - concourse-pipeline-library/var_files/codesniffer/defaults.yml
       - concourse-pipeline-library/var_files/pipelines/error-pages.yml
 
     - set_pipeline: google-idp
@@ -406,10 +405,6 @@ jobs:
     file: pull-request/tasks/python/yamllint.yml
     input_mapping:
       source: pull-request
-    on_success:
-      put: yamllint-check
-      params:
-        conclusion: success
     on_failure:
       put: yamllint-check
       params:
@@ -423,7 +418,11 @@ jobs:
       params:
         conclusion: action_required
 
-  - put: validate-pipeline-check
+  - in_parallel:
+    - put: yamllint-check
+      params:
+        conclusion: success
+    - put: validate-pipeline-check
 
   - in_parallel:
 
