@@ -446,20 +446,21 @@ jobs:
       input_mapping:
         source: ((source-repository))
 
-  - put: deployment
-    params:
-      state: in_progress
-    inputs:
-    - ((source-repository))
-    - deployment
+  - in_parallel:
+    - put: deployment
+      params:
+        state: in_progress
+      inputs:
+      - ((source-repository))
+      - deployment
 
-  - task: serverless-deploy
-    file: concourse-pipeline-library/tasks/php/serverless-deploy.yml
-    input_mapping:
-      source: ((source-repository))
-    vars:
-      stage: production
-      aws-credentials: ((aws-credentials))
+    - task: serverless-deploy
+      file: concourse-pipeline-library/tasks/php/serverless-deploy.yml
+      input_mapping:
+        source: ((source-repository))
+      vars:
+        stage: production
+        aws-credentials: ((aws-credentials))
 
   on_success:
     put: deployment
