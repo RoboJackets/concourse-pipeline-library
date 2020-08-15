@@ -99,6 +99,7 @@ resources:
   type: github-webhook
   icon: webhook
   source:
+    debug: true
     github_token: ((((github-host-dashes))/token))
     webhook_token: ((webhook-token))
     resources:
