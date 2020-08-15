@@ -1,4 +1,6 @@
 ---
+resource_types:
+
 - name: github-check
   type: registry-image
   source:
