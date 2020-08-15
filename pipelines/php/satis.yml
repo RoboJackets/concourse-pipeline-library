@@ -264,8 +264,8 @@ jobs:
       put: satis-build-check
       params:
         conclusion: success
-        title: Distribution built
-        summary: Satis successfully built the distribution.
+        title: Repository built
+        summary: Satis successfully built the repository.
       inputs:
       - satis-build-check
       - ((source-repository))
@@ -273,7 +273,7 @@ jobs:
       put: satis-build-check
       params:
         conclusion: failure
-        title: Failed to install dependencies
+        title: Failed to build repository
         summary: Review the output within Concourse.
       inputs:
       - satis-build-check
@@ -300,7 +300,7 @@ jobs:
   - task: s3-sync
     file: concourse-pipeline-library/tasks/aws/s3-sync.yml
     input_mapping:
-      source: dist
+      source: build
     vars:
       target: ((target))
       aws-credentials: ((aws-credentials))
@@ -308,7 +308,7 @@ jobs:
       put: s3-sync-check
       params:
         conclusion: success
-        title: Distribution uploaded
+        title: Repository uploaded
         summary: Repository was successfully synced to AWS.
       inputs:
       - s3-sync-check
@@ -317,7 +317,7 @@ jobs:
       put: s3-sync-check
       params:
         conclusion: failure
-        title: Failed to upload distribution
+        title: Failed to upload repository
         summary: Review the output within Concourse.
       inputs:
       - s3-sync-check
@@ -401,7 +401,7 @@ jobs:
       put: composer-install-check
       params:
         conclusion: failure
-        title: Failed to build distribution
+        title: Failed to install dependencies
         summary: Review the output within Concourse.
       inputs:
       - composer-install-check
@@ -436,7 +436,7 @@ jobs:
       put: satis-build-check
       params:
         conclusion: success
-        title: Distribution built
+        title: Repository built
         summary: Satis successfully built the distribution.
       inputs:
       - satis-build-check
@@ -445,7 +445,7 @@ jobs:
       put: satis-build-check
       params:
         conclusion: failure
-        title: Failed to build distribution
+        title: Failed to build repository
         summary: Review the output within Concourse.
       inputs:
       - satis-build-check
