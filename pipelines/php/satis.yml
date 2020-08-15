@@ -124,10 +124,6 @@ resources:
         github_uri: https://((github-host))/RoboJackets/network-check
         events:
         - release
-      buzzapiclient:
-        github_uri: https://((github-host))/OIT-NetworkServices/BuzzAPIClient
-        events:
-        - release
 
 - name: slack
   public: true
