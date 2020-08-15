@@ -153,6 +153,13 @@ jobs:
       vars:
         pipeline: pipelines/php/metapackage.yml
 
+    - task: validate-php-on-premises-pipeline
+      file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
+      input_mapping:
+        source: concourse-pipeline-library
+      vars:
+        pipeline: pipelines/php/on-premises.yml
+
     - task: validate-php-satis-pipeline
       file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
       input_mapping:
