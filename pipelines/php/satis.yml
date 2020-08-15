@@ -380,14 +380,6 @@ jobs:
       params:
         integration_tool: checkout
 
-    - get: apiary-user
-
-    - get: error-pages
-
-    - get: network-check
-
-    - get: buzzapiclient
-
   - put: composer-install-check
     inputs:
     - pull-request

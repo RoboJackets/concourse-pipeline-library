@@ -10,8 +10,10 @@ image_resource:
 
 params:
   COMPOSER_AUTH:
-    github-oauth:
-      ((github-host)): ((((github-host-dashes))/token))
+    http-basic:
+      ((github-host)):
+        username: x-access-token
+        password: ((((github-host-dashes))/token))
 
 inputs:
 - name: source
