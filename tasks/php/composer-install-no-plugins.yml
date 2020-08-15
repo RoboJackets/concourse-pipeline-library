@@ -1,0 +1,31 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: docker.robojackets.org/robojackets/php-build
+    username: ((docker-robojackets-org.username))
+    password: ((docker-robojackets-org.password))
+
+inputs:
+- name: source
+
+outputs:
+- name: vendor
+  path: source/vendor
+
+caches:
+- path: source/vendor
+
+run:
+  path: composer
+  dir: source
+  args:
+  - install
+  - --no-interaction
+  - --no-progress
+  - --no-suggest
+  - --optimize-autoloader
+  - --classmap-authoritative
+  - --no-plugins
