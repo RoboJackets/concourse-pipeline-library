@@ -153,8 +153,6 @@ resources:
     repository: ((source-repository))
     token: ((((github-host-dashes))/token))
     resource_name: deployment
-    environment_urls:
-      production: ((production-url))
 
 - name: slack
   public: true
