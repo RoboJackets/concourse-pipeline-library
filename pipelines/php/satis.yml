@@ -264,9 +264,6 @@ jobs:
       inputs:
       - satis-build-check
       - ((source-repository))
-      vars:
-        github-host: ((github-host))
-        github-host-dashes: ((github-host-dashes))
     on_abort:
       put: satis-build-check
       params:
@@ -395,9 +392,6 @@ jobs:
       inputs:
       - satis-build-check
       - pull-request
-      vars:
-        github-host: ((github-host))
-        github-host-dashes: ((github-host-dashes))
     on_failure:
       put: satis-build-check
       params:
