@@ -19,8 +19,7 @@ inputs:
   path: source/vendor
 
 outputs:
-- name: dist
-  path: source/dist
+- name: build
 
 run:
   path: php
