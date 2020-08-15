@@ -1,2 +1,2 @@
 ---
-phpstan-config: ../concourse-pipeline-library/defaults/phpstan.neon
+phpstan-config: vendor/robojackets/static-analysis/defaults/phpstan.neon

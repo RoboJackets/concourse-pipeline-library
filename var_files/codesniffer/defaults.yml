@@ -1,2 +1,2 @@
 ---
-codesniffer-config: ../concourse-pipeline-library/defaults/phpcs.xml
+codesniffer-config: vendor/robojackets/static-analysis/defaults/phpcs.xml
