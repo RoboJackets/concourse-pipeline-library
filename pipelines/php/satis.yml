@@ -99,7 +99,6 @@ resources:
   type: github-webhook
   icon: webhook
   source:
-    debug: true
     github_token: ((((github-host-dashes))/token))
     webhook_token: ((webhook-token))
     resources:
@@ -122,6 +121,10 @@ resources:
         - release
       network-check:
         github_uri: https://((github-host))/RoboJackets/network-check
+        events:
+        - release
+      static-analysis:
+        github_uri: https://((github-host))/RoboJackets/static-analysis
         events:
         - release
 
@@ -171,6 +174,19 @@ resources:
     release: true
     pre_release: true
 
+- name: static-analysis
+  public: true
+  type: github-release
+  icon: github
+  webhook_token: ((webhook-token))
+  source:
+    owner: RoboJackets
+    repository: static-analysis
+    access_token: ((((github-host-dashes))/token))
+    github_api_url: ((github-rest-api-endpoint))/
+    release: true
+    pre_release: true
+
 - name: buzzapiclient
   public: true
   type: github-release
@@ -203,6 +219,9 @@ jobs:
       trigger: true
 
     - get: network-check
+      trigger: true
+
+    - get: static-analysis
       trigger: true
 
     - get: buzzapiclient

@@ -146,6 +146,13 @@ jobs:
       vars:
         pipeline: pipelines/php/library.yml
 
+    - task: validate-php-metapackage-pipeline
+      file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
+      input_mapping:
+        source: concourse-pipeline-library
+      vars:
+        pipeline: pipelines/php/metapackage.yml
+
     - task: validate-php-satis-pipeline
       file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
       input_mapping:
@@ -280,6 +287,12 @@ jobs:
       var_files:
       - concourse-pipeline-library/var_files/github/gatech.edu.yml
       - concourse-pipeline-library/var_files/pipelines/satis.yml
+
+    - set_pipeline: static-analysis
+      file: concourse-pipeline-library/pipelines/php/metapackage.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/pipelines/static-analysis.yml
 
   - put: webhooks
     inputs: []
