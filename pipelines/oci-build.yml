@@ -149,7 +149,7 @@ jobs:
     input_mapping:
       source: ((source-repository))
     privileged: true
-    timeout: 15m
+    timeout: 20m
     on_failure:
       put: build-check
       params:
