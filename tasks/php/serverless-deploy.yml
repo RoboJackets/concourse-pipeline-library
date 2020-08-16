@@ -22,7 +22,7 @@ inputs:
   path: source/node_modules
 
 run:
-  path: serverless
+  path: node_modules/.bin/serverless
   dir: source
   args:
   - deploy
