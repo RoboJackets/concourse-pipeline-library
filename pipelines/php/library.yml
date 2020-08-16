@@ -415,6 +415,8 @@ jobs:
 
   - task: composer-install-dev
     file: concourse-pipeline-library/tasks/php/composer-install-dev.yml
+    params:
+      COMPOSER_AUTH: ((composer-auth))
     input_mapping:
       source: pull-request
     on_failure:
