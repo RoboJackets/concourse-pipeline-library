@@ -8,6 +8,9 @@ image_resource:
     username: ((docker-robojackets-org.username))
     password: ((docker-robojackets-org.password))
 
+params:
+  COMPOSER_AUTH: "{}"
+
 inputs:
 - name: source
 
