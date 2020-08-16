@@ -301,7 +301,7 @@ jobs:
       var_files:
       - concourse-pipeline-library/var_files/github/gatech.edu.yml
       - concourse-pipeline-library/var_files/phpstan/defaults.yml
-      - concourse-pipeline-library/var_files/codesniffer/custom.yml
+      - concourse-pipeline-library/var_files/codesniffer/defaults.yml
       - concourse-pipeline-library/var_files/pipelines/network-check.yml
 
     - set_pipeline: error-pages
