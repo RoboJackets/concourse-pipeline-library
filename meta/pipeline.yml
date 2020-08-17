@@ -240,6 +240,12 @@ jobs:
       - concourse-pipeline-library/var_files/github/gatech.edu.yml
       - concourse-pipeline-library/var_files/pipelines/fly.yml
 
+    - set_pipeline: github-approval
+      file: concourse-pipeline-library/pipelines/python/oci-build.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/com.yml
+      - concourse-pipeline-library/var_files/pipelines/github-approval.yml
+
     - set_pipeline: github-check
       file: concourse-pipeline-library/pipelines/python/oci-build.yml
       var_files:
