@@ -1,6 +1,13 @@
 ---
 resource_types:
 
+- name: github-approval
+  type: registry-image
+  source:
+    repository: docker.robojackets.org/robojackets/concourse-github-approval-resource
+    username: ((docker-robojackets-org.username))
+    password: ((docker-robojackets-org.password))
+
 - name: github-check
   type: registry-image
   source:
@@ -137,6 +144,14 @@ resources:
         events:
         - push
         - pull_request
+
+- name: approve-pull-request
+  public: true
+  type: github-approval
+  icon: check-circle
+  source:
+    token: ((((github-host-dashes))/token))
+    pull_request: pull-request
 
 - name: slack
   public: true
@@ -616,3 +631,7 @@ jobs:
           - psalm
           - psalm-check
           - pull-request
+
+  - put: approve-pull-request
+    inputs:
+    - pull-request
