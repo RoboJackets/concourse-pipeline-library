@@ -1,0 +1,25 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: docker.robojackets.org/robojackets/php-build
+    username: ((docker-robojackets-org.username))
+    password: ((docker-robojackets-org.password))
+
+inputs:
+- name: source
+
+run:
+  path: bash
+  dir: source
+  args:
+  - -o
+  - pipefail
+  - -c
+  - >-
+      git config --global user.email support@robojackets.org &&
+      git config --global user.name "George Burdell"
+      && git add composer.lock
+      && git commit -m "Fix composer.lock"
