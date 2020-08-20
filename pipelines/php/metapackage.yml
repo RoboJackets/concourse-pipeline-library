@@ -114,10 +114,19 @@ jobs:
     inputs:
     - ((source-repository))
 
-  - task: composer-install-no-plugins
-    file: concourse-pipeline-library/tasks/php/composer-install-no-plugins.yml
-    input_mapping:
-      source: ((source-repository))
+  - in_parallel:
+    - task: composer-install-dev
+      file: concourse-pipeline-library/tasks/php/composer-install-dev.yml
+      params:
+        COMPOSER_AUTH: ((composer-auth))
+      input_mapping:
+        source: ((source-repository))
+    - task: composer-verify-lock
+      file: concourse-pipeline-library/tasks/php/composer-verify-lock.yml
+      params:
+        COMPOSER_AUTH: ((composer-auth))
+      input_mapping:
+        source: ((source-repository))
     on_success:
       put: composer-install-check
       params:
@@ -198,10 +207,19 @@ jobs:
     inputs:
     - pull-request
 
-  - task: composer-install-no-plugins
-    file: concourse-pipeline-library/tasks/php/composer-install-no-plugins.yml
-    input_mapping:
-      source: pull-request
+  - in_parallel:
+    - task: composer-install-dev
+      file: concourse-pipeline-library/tasks/php/composer-install-dev.yml
+      params:
+        COMPOSER_AUTH: ((composer-auth))
+      input_mapping:
+        source: pull-request
+    - task: composer-verify-lock
+      file: concourse-pipeline-library/tasks/php/composer-verify-lock.yml
+      params:
+        COMPOSER_AUTH: ((composer-auth))
+      input_mapping:
+        source: pull-request
     on_success:
       put: composer-install-check
       params:
