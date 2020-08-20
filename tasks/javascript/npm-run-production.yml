@@ -1,0 +1,21 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: docker.robojackets.org/robojackets/php-build
+    username: ((docker-robojackets-org.username))
+    password: ((docker-robojackets-org.password))
+
+inputs:
+- name: source
+- name: node_modules
+  path: source/node_modules
+
+run:
+  path: npm
+  dir: source
+  args:
+  - run
+  - production

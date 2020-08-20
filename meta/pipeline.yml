@@ -174,6 +174,13 @@ jobs:
       vars:
         pipeline: pipelines/php/serverless.yml
 
+    - task: validate-php-vapor-pipeline
+      file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
+      input_mapping:
+        source: concourse-pipeline-library
+      vars:
+        pipeline: pipelines/php/vapor.yml
+
     - task: validate-python-library-pipeline
       file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
       input_mapping:
@@ -287,7 +294,7 @@ jobs:
       - concourse-pipeline-library/var_files/pipelines/meraki-idp.yml
 
     - set_pipeline: apiary
-      file: concourse-pipeline-library/pipelines/php/library.yml
+      file: concourse-pipeline-library/pipelines/php/vapor.yml
       var_files:
       - concourse-pipeline-library/var_files/github/com.yml
       - concourse-pipeline-library/var_files/phpstan/custom.yml
