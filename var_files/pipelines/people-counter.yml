@@ -1,0 +1,4 @@
+---
+source-repository: people-counter
+base-branch: master
+phan-mode: custom
