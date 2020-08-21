@@ -11,6 +11,9 @@ image_resource:
 inputs:
 - name: source
 
+outputs:
+- name: source
+
 run:
   path: bash
   dir: source
