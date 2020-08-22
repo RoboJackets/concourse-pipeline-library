@@ -15,6 +15,13 @@ resource_types:
     username: ((docker-robojackets-org.username))
     password: ((docker-robojackets-org.password))
 
+- name: github-merge
+  type: registry-image
+  source:
+    repository: docker.robojackets.org/robojackets/concourse-github-merge-resource
+    username: ((docker-robojackets-org.username))
+    password: ((docker-robojackets-org.password))
+
 - name: github-webhook
   type: registry-image
   source:
@@ -171,6 +178,14 @@ resources:
   public: true
   type: github-approval
   icon: check-circle
+  source:
+    token: ((((github-host-dashes))/token))
+    pull_request: pull-request
+
+- name: merge-pull-request
+  public: true
+  type: github-merge
+  icon: source-merge
   source:
     token: ((((github-host-dashes))/token))
     pull_request: pull-request
@@ -817,5 +832,9 @@ jobs:
               - pull-request
 
   - put: approve-pull-request
+    inputs:
+    - pull-request
+
+  - put: merge-pull-request
     inputs:
     - pull-request
