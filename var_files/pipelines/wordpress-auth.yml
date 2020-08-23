@@ -2,6 +2,4 @@
 source-repository: wordpress-auth
 base-branch: master
 phan-mode: custom
-environment_urls:
-  production: https://robojackets.org/wp-login.php
 automatic-deployment-environment: production
