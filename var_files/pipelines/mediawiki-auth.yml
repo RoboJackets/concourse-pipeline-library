@@ -2,3 +2,6 @@
 source-repository: mediawiki-auth
 base-branch: master
 phan-mode: default
+environment_urls:
+  production: https://wiki.robojackets.org/Special:UserLogin
+automatic-deployment-environment: production

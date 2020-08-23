@@ -2,3 +2,6 @@
 source-repository: jedi
 base-branch: master
 phan-mode: custom
+environment_urls:
+  production: https://jedi.robojackets.org
+automatic-deployment-environment: production

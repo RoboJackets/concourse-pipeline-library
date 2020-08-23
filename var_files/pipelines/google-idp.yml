@@ -2,4 +2,6 @@
 source-repository: google-idp
 base-branch: master
 phan-mode: default
-production-url: https://login.robojackets.org
+environment_urls:
+  production: https://login.robojackets.org
+automatic-deployment-environment: production

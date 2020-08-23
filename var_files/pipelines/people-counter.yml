@@ -2,3 +2,7 @@
 source-repository: people-counter
 base-branch: master
 phan-mode: custom
+environment_urls:
+  test: https://people-counter-demo.robojackets.org/
+  production: https://counter.scc.gatech.edu/
+automatic-deployment-environment: test
