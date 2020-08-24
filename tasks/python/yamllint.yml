@@ -22,4 +22,6 @@ run:
   - -o
   - pipefail
   - -c
-  - yamllint --strict --format parsable . | tee ../yamllint/output.txt
+  - >-
+    yamllint -d "{extends: default, rules: {line-length: {max: 120}}}" --strict --format parsable . |
+    tee ../yamllint/output.txt
