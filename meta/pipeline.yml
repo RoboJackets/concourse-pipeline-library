@@ -376,7 +376,7 @@ jobs:
       var_files:
       - concourse-pipeline-library/var_files/github/com.yml
       - concourse-pipeline-library/var_files/phpstan/custom.yml
-      - concourse-pipeline-library/var_files/codesniffer/defaults.yml
+      - concourse-pipeline-library/var_files/codesniffer/custom.yml
       - concourse-pipeline-library/var_files/pipelines/people-counter.yml
 
     - set_pipeline: satis
