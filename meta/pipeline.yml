@@ -372,7 +372,7 @@ jobs:
       - concourse-pipeline-library/var_files/pipelines/wordpress-auth.yml
 
     - set_pipeline: people-counter
-      file: concourse-pipeline-library/pipelines/php/on-premises.yml
+      file: concourse-pipeline-library/pipelines/php/vapor.yml
       var_files:
       - concourse-pipeline-library/var_files/github/com.yml
       - concourse-pipeline-library/var_files/phpstan/custom.yml
