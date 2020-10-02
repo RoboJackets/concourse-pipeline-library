@@ -29,6 +29,13 @@ resource_types:
     username: ((docker-robojackets-org.username))
     password: ((docker-robojackets-org.password))
 
+- name: github-deployment
+  type: registry-image
+  source:
+    repository: docker.robojackets.org/robojackets/concourse-github-deployment-resource
+    username: ((docker-robojackets-org.username))
+    password: ((docker-robojackets-org.password))
+
 - name: pull-request
   type: registry-image
   source:
@@ -189,6 +196,15 @@ resources:
   source:
     token: ((((github-host-dashes))/token))
     pull_request: pull-request
+
+- name: deployment
+  public: true
+  type: github-deployment
+  icon: ferry
+  source:
+    repository: ((source-repository))
+    token: ((((github-host-dashes))/token))
+    resource_name: deployment
 
 - name: slack
   public: true
@@ -498,6 +514,12 @@ jobs:
               - psalm
               - psalm-check
               - ((source-repository))
+
+  - put: deployment
+    params:
+      environment: ((automatic-deployment-environment))
+    inputs:
+    - ((source-repository))
 
   - put: webhooks
     inputs: []

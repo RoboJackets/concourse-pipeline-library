@@ -174,12 +174,12 @@ jobs:
       vars:
         pipeline: pipelines/php/serverless.yml
 
-    - task: validate-php-vapor-pipeline
+    - task: validate-php-laravel-pipeline
       file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
       input_mapping:
         source: concourse-pipeline-library
       vars:
-        pipeline: pipelines/php/vapor.yml
+        pipeline: pipelines/php/laravel.yml
 
     - task: validate-python-library-pipeline
       file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
@@ -300,7 +300,7 @@ jobs:
       - concourse-pipeline-library/var_files/pipelines/meraki-idp.yml
 
     - set_pipeline: apiary
-      file: concourse-pipeline-library/pipelines/php/vapor.yml
+      file: concourse-pipeline-library/pipelines/php/laravel.yml
       var_files:
       - concourse-pipeline-library/var_files/github/com.yml
       - concourse-pipeline-library/var_files/phpstan/custom.yml
@@ -340,7 +340,7 @@ jobs:
       - concourse-pipeline-library/var_files/pipelines/google-idp.yml
 
     - set_pipeline: jedi
-      file: concourse-pipeline-library/pipelines/php/on-premises.yml
+      file: concourse-pipeline-library/pipelines/php/laravel.yml
       var_files:
       - concourse-pipeline-library/var_files/github/gatech.edu.yml
       - concourse-pipeline-library/var_files/phpstan/custom.yml
@@ -372,7 +372,7 @@ jobs:
       - concourse-pipeline-library/var_files/pipelines/wordpress-auth.yml
 
     - set_pipeline: people-counter
-      file: concourse-pipeline-library/pipelines/php/vapor.yml
+      file: concourse-pipeline-library/pipelines/php/laravel.yml
       var_files:
       - concourse-pipeline-library/var_files/github/com.yml
       - concourse-pipeline-library/var_files/phpstan/custom.yml
