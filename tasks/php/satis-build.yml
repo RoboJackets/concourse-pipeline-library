@@ -13,7 +13,7 @@ params:
     http-basic:
       ((github-host)):
         username: x-access-token
-        password: ((((github-host-dashes))/token))
+        password: ((((github-host-dashes))/token.token))
 
 inputs:
 - name: source

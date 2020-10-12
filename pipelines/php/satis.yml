@@ -35,7 +35,7 @@ resources:
     uri: https://github.com/RoboJackets/concourse-pipeline-library
     branch: main
     username: x-access-token
-    password: ((github-com/token))
+    password: ((github-com/token.token))
 
 - name: ((source-repository))
   type: git
@@ -45,7 +45,7 @@ resources:
     uri: https://((github-host))/RoboJackets/((source-repository))
     branch: ((base-branch))
     username: x-access-token
-    password: ((((github-host-dashes))/token))
+    password: ((((github-host-dashes))/token.token))
   webhook_token: ((webhook-token))
 
 - name: pull-request
@@ -55,7 +55,7 @@ resources:
   webhook_token: ((webhook-token))
   source:
     repository: RoboJackets/((source-repository))
-    access_token: ((((github-host-dashes))/token))
+    access_token: ((((github-host-dashes))/token.token))
     v3_endpoint: ((github-rest-api-endpoint))
     v4_endpoint: ((github-graphql-api-endpoint))
     base_branch: ((base-branch))
@@ -68,7 +68,7 @@ resources:
   source:
     repository: ((source-repository))
     pull_request: pull-request
-    token: ((((github-host-dashes))/token))
+    token: ((((github-host-dashes))/token.token))
     check_name: Composer Install
     resource_name: composer-install-check
 
@@ -79,7 +79,7 @@ resources:
   source:
     repository: ((source-repository))
     pull_request: pull-request
-    token: ((((github-host-dashes))/token))
+    token: ((((github-host-dashes))/token.token))
     check_name: Satis Build
     resource_name: satis-build-check
 
@@ -90,7 +90,7 @@ resources:
   source:
     repository: ((source-repository))
     pull_request: pull-request
-    token: ((((github-host-dashes))/token))
+    token: ((((github-host-dashes))/token.token))
     check_name: S3 Sync
     resource_name: s3-sync-check
 
@@ -99,7 +99,7 @@ resources:
   type: github-webhook
   icon: webhook
   source:
-    github_token: ((((github-host-dashes))/token))
+    github_token: ((((github-host-dashes))/token.token))
     webhook_token: ((webhook-token))
     resources:
       ((source-repository)):
@@ -143,7 +143,7 @@ resources:
   source:
     owner: RoboJackets
     repository: apiary-user
-    access_token: ((((github-host-dashes))/token))
+    access_token: ((((github-host-dashes))/token.token))
     github_api_url: ((github-rest-api-endpoint))/
     release: true
     pre_release: true
@@ -156,7 +156,7 @@ resources:
   source:
     owner: RoboJackets
     repository: error-pages
-    access_token: ((((github-host-dashes))/token))
+    access_token: ((((github-host-dashes))/token.token))
     github_api_url: ((github-rest-api-endpoint))/
     release: true
     pre_release: true
@@ -169,7 +169,7 @@ resources:
   source:
     owner: RoboJackets
     repository: network-check
-    access_token: ((((github-host-dashes))/token))
+    access_token: ((((github-host-dashes))/token.token))
     github_api_url: ((github-rest-api-endpoint))/
     release: true
     pre_release: true
@@ -182,7 +182,7 @@ resources:
   source:
     owner: RoboJackets
     repository: static-analysis
-    access_token: ((((github-host-dashes))/token))
+    access_token: ((((github-host-dashes))/token.token))
     github_api_url: ((github-rest-api-endpoint))/
     release: true
     pre_release: true
@@ -194,7 +194,7 @@ resources:
   source:
     owner: OIT-NetworkServices
     repository: BuzzAPIClient
-    access_token: ((((github-host-dashes))/token))
+    access_token: ((((github-host-dashes))/token.token))
     github_api_url: ((github-rest-api-endpoint))/
     release: true
     pre_release: true

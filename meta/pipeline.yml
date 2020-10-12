@@ -36,7 +36,7 @@ resources:
     uri: https://github.com/RoboJackets/concourse-pipeline-library
     branch: main
     username: x-access-token
-    password: ((github-com/token))
+    password: ((github-com/token.token))
 
 - name: pull-request
   public: true
@@ -45,7 +45,7 @@ resources:
   webhook_token: ((webhook-token))
   source:
     repository: RoboJackets/concourse-pipeline-library
-    access_token: ((github-com/token))
+    access_token: ((github-com/token.token))
     base_branch: main
 
 - name: yamllint-check
@@ -55,7 +55,7 @@ resources:
   source:
     repository: concourse-pipeline-library
     pull_request: pull-request
-    token: ((github-com/token))
+    token: ((github-com/token.token))
     check_name: yamllint
     resource_name: yamllint-check
     annotations_format: yamllint
@@ -67,7 +67,7 @@ resources:
   source:
     repository: concourse-pipeline-library
     pull_request: pull-request
-    token: ((github-com/token))
+    token: ((github-com/token.token))
     check_name: validate-pipeline
     resource_name: validate-pipeline-check
 
@@ -76,7 +76,7 @@ resources:
   type: github-webhook
   icon: webhook
   source:
-    github_token: ((github-com/token))
+    github_token: ((github-com/token.token))
     webhook_token: ((webhook-token))
     resources:
       concourse-pipeline-library:

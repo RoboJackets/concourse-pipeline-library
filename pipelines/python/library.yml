@@ -35,7 +35,7 @@ resources:
     uri: https://github.com/RoboJackets/concourse-pipeline-library
     branch: main
     username: x-access-token
-    password: ((github-com/token))
+    password: ((github-com/token.token))
 
 - name: ((source-repository))
   type: git
@@ -45,7 +45,7 @@ resources:
     uri: https://((github-host))/RoboJackets/((source-repository))
     branch: ((base-branch))
     username: x-access-token
-    password: ((((github-host-dashes))/token))
+    password: ((((github-host-dashes))/token.token))
   webhook_token: ((webhook-token))
 
 - name: pull-request
@@ -55,7 +55,7 @@ resources:
   webhook_token: ((webhook-token))
   source:
     repository: RoboJackets/((source-repository))
-    access_token: ((((github-host-dashes))/token))
+    access_token: ((((github-host-dashes))/token.token))
     v3_endpoint: ((github-rest-api-endpoint))
     v4_endpoint: ((github-graphql-api-endpoint))
     base_branch: ((base-branch))
@@ -68,7 +68,7 @@ resources:
   source:
     repository: ((source-repository))
     pull_request: pull-request
-    token: ((((github-host-dashes))/token))
+    token: ((((github-host-dashes))/token.token))
     check_name: Poetry Install
     resource_name: poetry-install-check
 
@@ -79,7 +79,7 @@ resources:
   source:
     repository: ((source-repository))
     pull_request: pull-request
-    token: ((((github-host-dashes))/token))
+    token: ((((github-host-dashes))/token.token))
     check_name: mypy
     resource_name: mypy-check
     annotations_format: mypy
@@ -91,7 +91,7 @@ resources:
   source:
     repository: ((source-repository))
     pull_request: pull-request
-    token: ((((github-host-dashes))/token))
+    token: ((((github-host-dashes))/token.token))
     check_name: flake8
     resource_name: flake8-check
     annotations_format: flake8
@@ -103,7 +103,7 @@ resources:
   source:
     repository: ((source-repository))
     pull_request: pull-request
-    token: ((((github-host-dashes))/token))
+    token: ((((github-host-dashes))/token.token))
     check_name: pylint
     resource_name: pylint-check
     annotations_format: pylint
@@ -113,7 +113,7 @@ resources:
   type: github-webhook
   icon: webhook
   source:
-    github_token: ((((github-host-dashes))/token))
+    github_token: ((((github-host-dashes))/token.token))
     webhook_token: ((webhook-token))
     resources:
       ((source-repository)):
