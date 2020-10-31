@@ -7,6 +7,10 @@ resource_types:
     repository: docker.robojackets.org/robojackets/concourse-github-check-resource
     username: ((docker-robojackets-org.username))
     password: ((docker-robojackets-org.password))
+  defaults:
+    repository: ((source-repository))
+    pull_request: pull-request
+    token: ((((github-host-dashes))/token.token))
 
 - name: github-webhook
   type: registry-image
@@ -85,9 +89,6 @@ resources:
   type: github-check
   icon: check-bold
   source:
-    repository: ((source-repository))
-    pull_request: pull-request
-    token: ((((github-host-dashes))/token.token))
     check_name: OCI Build
     resource_name: build-check
 
@@ -96,9 +97,6 @@ resources:
   type: github-check
   icon: check-bold
   source:
-    repository: ((source-repository))
-    pull_request: pull-request
-    token: ((((github-host-dashes))/token.token))
     check_name: Push to Registry
     resource_name: push-check
 

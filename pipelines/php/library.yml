@@ -14,6 +14,10 @@ resource_types:
     repository: docker.robojackets.org/robojackets/concourse-github-check-resource
     username: ((docker-robojackets-org.username))
     password: ((docker-robojackets-org.password))
+  defaults:
+    repository: ((source-repository))
+    pull_request: pull-request
+    token: ((((github-host-dashes))/token.token))
 
 - name: github-webhook
   type: registry-image
@@ -73,9 +77,6 @@ resources:
   type: github-check
   icon: check-bold
   source:
-    repository: ((source-repository))
-    pull_request: pull-request
-    token: ((((github-host-dashes))/token.token))
     check_name: Composer Install
     resource_name: composer-install-check
 
@@ -84,9 +85,6 @@ resources:
   type: github-check
   icon: check-bold
   source:
-    repository: ((source-repository))
-    pull_request: pull-request
-    token: ((((github-host-dashes))/token.token))
     check_name: CodeSniffer
     resource_name: codesniffer-check
     annotations_format: codesniffer
@@ -96,9 +94,6 @@ resources:
   type: github-check
   icon: check-bold
   source:
-    repository: ((source-repository))
-    pull_request: pull-request
-    token: ((((github-host-dashes))/token.token))
     check_name: Phan
     resource_name: phan-check
     annotations_format: phan
@@ -108,9 +103,6 @@ resources:
   type: github-check
   icon: check-bold
   source:
-    repository: ((source-repository))
-    pull_request: pull-request
-    token: ((((github-host-dashes))/token.token))
     check_name: PHPStan
     resource_name: phpstan-check
     annotations_format: phpstan
@@ -120,9 +112,6 @@ resources:
   type: github-check
   icon: check-bold
   source:
-    repository: ((source-repository))
-    pull_request: pull-request
-    token: ((((github-host-dashes))/token.token))
     check_name: Psalm
     resource_name: psalm-check
     annotations_format: psalm

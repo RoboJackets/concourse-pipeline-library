@@ -7,6 +7,10 @@ resource_types:
     repository: docker.robojackets.org/robojackets/concourse-github-check-resource
     username: ((docker-robojackets-org.username))
     password: ((docker-robojackets-org.password))
+  defaults:
+    repository: concourse-pipeline-library
+    pull_request: pull-request
+    token: ((github-com/token.token))
 
 - name: github-webhook
   type: registry-image
@@ -53,9 +57,6 @@ resources:
   type: github-check
   icon: check-bold
   source:
-    repository: concourse-pipeline-library
-    pull_request: pull-request
-    token: ((github-com/token.token))
     check_name: yamllint
     resource_name: yamllint-check
     annotations_format: yamllint
@@ -65,9 +66,6 @@ resources:
   type: github-check
   icon: check-bold
   source:
-    repository: concourse-pipeline-library
-    pull_request: pull-request
-    token: ((github-com/token.token))
     check_name: validate-pipeline
     resource_name: validate-pipeline-check
 
