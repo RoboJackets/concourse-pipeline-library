@@ -193,6 +193,13 @@ jobs:
       vars:
         pipeline: pipelines/python/oci-build.yml
 
+    - task: validate-python-zappa-pipeline
+      file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
+      input_mapping:
+        source: concourse-pipeline-library
+      vars:
+        pipeline: pipelines/python/zappa.yml
+
     - task: validate-oci-build-pipeline
       file: concourse-pipeline-library/tasks/fly-validate-pipeline.yml
       input_mapping:
@@ -388,6 +395,12 @@ jobs:
       var_files:
       - concourse-pipeline-library/var_files/github/gatech.edu.yml
       - concourse-pipeline-library/var_files/pipelines/static-analysis.yml
+
+    - set_pipeline: id
+      file: concourse-pipeline-library/pipelines/python/zappa.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/pipelines/zappa.yml
 
   - put: webhooks
     inputs: []
