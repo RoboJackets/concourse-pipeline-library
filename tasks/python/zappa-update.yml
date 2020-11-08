@@ -12,17 +12,17 @@ params:
   AWS_ACCESS_KEY_ID: ((((aws-credentials)).access_key))
   AWS_SECRET_ACCESS_KEY: ((((aws-credentials)).secret_key))
   AWS_SESSION_TOKEN: ((((aws-credentials)).security_token))
-  PYTHONPATH: ../__pypackages__
 
 inputs:
 - name: source
-- name: __pypackages__
 
 run:
-  path: python3
+  path: bash
   dir: source
   args:
-  - -m
-  - zappa
-  - update
-  - ((stage))
+  - -e
+  - -o
+  - pipefail
+  - -c
+  - >-
+      poetry install --no-dev && poetry run zappa update ((stage))

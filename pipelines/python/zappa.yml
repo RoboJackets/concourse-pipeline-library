@@ -375,18 +375,6 @@ jobs:
   - in_parallel:
     - put: deployment
       params:
-        state: queued
-      inputs:
-      - ((source-repository))
-      - deployment
-    - task: poetry-install-no-dev
-      file: concourse-pipeline-library/tasks/python/poetry-install-no-dev.yml
-      input_mapping:
-        source: ((source-repository))
-
-  - in_parallel:
-    - put: deployment
-      params:
         state: in_progress
       inputs:
       - ((source-repository))
