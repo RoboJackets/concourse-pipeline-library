@@ -400,7 +400,7 @@ jobs:
       file: concourse-pipeline-library/pipelines/python/zappa.yml
       var_files:
       - concourse-pipeline-library/var_files/github/gatech.edu.yml
-      - concourse-pipeline-library/var_files/pipelines/zappa.yml
+      - concourse-pipeline-library/var_files/pipelines/id.yml
 
   - put: webhooks
     inputs: []
