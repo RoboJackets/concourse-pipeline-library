@@ -26,17 +26,6 @@ resource_types:
     username: ((docker-robojackets-org.username))
     password: ((docker-robojackets-org.password))
 
-- name: deployment
-  public: true
-  type: github-deployment
-  icon: ferry
-  source:
-    repository: ((source-repository))
-    token: ((((github-host-dashes))/token.token))
-    resource_name: deployment
-    environment_urls:
-      production: ((production-url))
-
 - name: pull-request
   type: registry-image
   source:
@@ -135,6 +124,17 @@ resources:
         events:
         - push
         - pull_request
+
+- name: deployment
+  public: true
+  type: github-deployment
+  icon: ferry
+  source:
+    repository: ((source-repository))
+    token: ((((github-host-dashes))/token.token))
+    resource_name: deployment
+    environment_urls:
+      production: ((production-url))
 
 - name: slack
   public: true
