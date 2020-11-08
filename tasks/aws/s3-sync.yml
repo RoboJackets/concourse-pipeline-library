@@ -21,4 +21,3 @@ run:
   - sync
   - source
   - ((target))
-  - --delete

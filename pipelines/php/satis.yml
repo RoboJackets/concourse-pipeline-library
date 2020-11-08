@@ -267,6 +267,13 @@ jobs:
       inputs:
       - ((source-repository))
 
+  - task: update-satis-dist
+    file: concourse-pipeline-library/tasks/php/run-script.yml
+    input_mapping:
+      source: ((source-repository))
+    vars:
+      filename: update-satis-dist.php
+
   - task: satis-build
     file: concourse-pipeline-library/tasks/php/satis-build.yml
     input_mapping:
