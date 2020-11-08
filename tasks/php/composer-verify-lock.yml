@@ -19,6 +19,6 @@ run:
   - pipefail
   - -c
   - >-
-      (composer install --dry-run --no-interaction --no-progress --no-suggest
+      (composer install --dry-run --no-interaction --no-progress
       2>&1 | grep --fixed-strings "outdated"); if [[ "$?" -eq "0" ]]; then
       exit 1; else exit 0; fi

@@ -27,7 +27,7 @@ run:
   - pipefail
   - -c
   - >-
-      composer install --no-interaction --no-progress --no-suggest
+      composer install --no-interaction --no-progress
       --optimize-autoloader --classmap-authoritative &&
       php -f vendor/bin/phpstan analyse --level=max
       --configuration=((phpstan-config)) --error-format=json .

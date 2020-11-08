@@ -28,6 +28,5 @@ run:
   - install
   - --no-interaction
   - --no-progress
-  - --no-suggest
   - --optimize-autoloader
   - --classmap-authoritative

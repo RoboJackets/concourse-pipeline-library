@@ -19,5 +19,5 @@ run:
   - pipefail
   - -c
   - >-
-      composer install --dry-run --no-interaction --no-progress --no-suggest
+      composer install --dry-run --no-interaction --no-progress
       2>&1 | grep --fixed-strings "outdated"
