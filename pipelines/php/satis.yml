@@ -271,6 +271,8 @@ jobs:
     file: concourse-pipeline-library/tasks/php/run-script.yml
     input_mapping:
       source: ((source-repository))
+    output_mapping:
+      source: ((source-repository))
     vars:
       filename: update-satis-dist.php
 

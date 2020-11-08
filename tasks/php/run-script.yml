@@ -10,8 +10,6 @@ image_resource:
 
 inputs:
 - name: source
-- name: vendor
-  path: source/vendor
 
 outputs:
 - name: source
