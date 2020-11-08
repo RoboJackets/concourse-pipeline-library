@@ -1,6 +1,6 @@
 ---
 source-repository: id
 base-branch: main
-python-pathspec: "."
+python-pathspec: .
 aws-credentials: gatech/sts/sandbox
 production-url: https://id.robojackets.org
