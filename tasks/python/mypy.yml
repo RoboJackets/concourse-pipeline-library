@@ -8,12 +8,8 @@ image_resource:
     username: ((docker-robojackets-org.username))
     password: ((docker-robojackets-org.password))
 
-params:
-  PYTHONPATH: ../__pypackages__
-
 inputs:
 - name: source
-- name: __pypackages__
 
 outputs:
 - name: mypy
@@ -30,6 +26,6 @@ run:
   - pipefail
   - -c
   - >-
-      python -m mypy --cache-dir ../mypy-cache --strict --no-error-summary
+      poetry install && poetry run mypy --cache-dir ../mypy-cache --strict --no-error-summary
       --scripts-are-modules ((python-pathspec))
-      | tee ../mypy/output.json
+      | tee ../mypy/output.txt
