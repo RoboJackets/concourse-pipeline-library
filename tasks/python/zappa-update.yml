@@ -25,4 +25,5 @@ run:
   - pipefail
   - -c
   - >-
-      poetry install --no-dev && poetry run zappa update ((stage))
+      poetry install --no-dev --no-ansi --no-interaction &&
+      poetry run zappa update ((stage)) --disable_progress
