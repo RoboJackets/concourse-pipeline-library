@@ -3,3 +3,4 @@ source-repository: apiary
 base-branch: master
 phan-mode: custom
 automatic-deployment-environment: test
+build-image: php8-build

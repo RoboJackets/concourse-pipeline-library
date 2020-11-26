@@ -221,6 +221,8 @@ jobs:
     - do:
       - task: npm-ci-dev
         file: concourse-pipeline-library/tasks/javascript/npm-ci-dev.yml
+        vars:
+          build-image: ((build-image))
         input_mapping:
           source: ((source-repository))
         on_failure:
@@ -256,6 +258,8 @@ jobs:
           - ((source-repository))
       - task: npm-run-dev
         file: concourse-pipeline-library/tasks/javascript/npm-run-dev.yml
+        vars:
+          build-image: ((build-image))
         input_mapping:
           source: ((source-repository))
         on_success:
@@ -290,12 +294,16 @@ jobs:
       - in_parallel:
         - task: composer-install-dev
           file: concourse-pipeline-library/tasks/php/composer-install-dev.yml
+          vars:
+            build-image: ((build-image))
           params:
             COMPOSER_AUTH: ((composer-auth))
           input_mapping:
             source: ((source-repository))
         - task: composer-verify-lock
           file: concourse-pipeline-library/tasks/php/composer-verify-lock.yml
+          vars:
+            build-image: ((build-image))
           params:
             COMPOSER_AUTH: ((composer-auth))
           input_mapping:
@@ -341,6 +349,7 @@ jobs:
             file: concourse-pipeline-library/tasks/php/codesniffer.yml
             vars:
               codesniffer-config: ((codesniffer-config))
+              build-image: ((build-image))
             input_mapping:
               source: ((source-repository))
             on_success:
@@ -381,6 +390,8 @@ jobs:
             - ((source-repository))
           - task: phan
             file: concourse-pipeline-library/tasks/php/phan-((phan-mode)).yml
+            vars:
+              build-image: ((build-image))
             input_mapping:
               source: ((source-repository))
             on_success:
@@ -423,6 +434,7 @@ jobs:
             file: concourse-pipeline-library/tasks/php/phpstan.yml
             vars:
               phpstan-config: ((phpstan-config))
+              build-image: ((build-image))
             input_mapping:
               source: ((source-repository))
             on_success:
@@ -463,6 +475,8 @@ jobs:
             - ((source-repository))
           - task: psalm
             file: concourse-pipeline-library/tasks/php/psalm.yml
+            vars:
+              build-image: ((build-image))
             input_mapping:
               source: ((source-repository))
             on_success:
@@ -559,6 +573,8 @@ jobs:
     - do:
       - task: npm-ci-dev
         file: concourse-pipeline-library/tasks/javascript/npm-ci-dev.yml
+        vars:
+          build-image: ((build-image))
         input_mapping:
           source: pull-request
         on_failure:
@@ -594,6 +610,8 @@ jobs:
           - pull-request
       - task: npm-run-dev
         file: concourse-pipeline-library/tasks/javascript/npm-run-dev.yml
+        vars:
+          build-image: ((build-image))
         input_mapping:
           source: pull-request
         on_success:
@@ -628,12 +646,16 @@ jobs:
       - in_parallel:
         - task: composer-install-dev
           file: concourse-pipeline-library/tasks/php/composer-install-dev.yml
+          vars:
+            build-image: ((build-image))
           params:
             COMPOSER_AUTH: ((composer-auth))
           input_mapping:
             source: pull-request
         - task: composer-verify-lock
           file: concourse-pipeline-library/tasks/php/composer-verify-lock.yml
+          vars:
+            build-image: ((build-image))
           params:
             COMPOSER_AUTH: ((composer-auth))
           input_mapping:
@@ -678,6 +700,7 @@ jobs:
           - task: codesniffer
             file: concourse-pipeline-library/tasks/php/codesniffer.yml
             vars:
+              build-image: ((build-image))
               codesniffer-config: ((codesniffer-config))
             input_mapping:
               source: pull-request
@@ -719,6 +742,8 @@ jobs:
             - pull-request
           - task: phan
             file: concourse-pipeline-library/tasks/php/phan-((phan-mode)).yml
+            vars:
+              build-image: ((build-image))
             input_mapping:
               source: pull-request
             on_success:
@@ -760,6 +785,7 @@ jobs:
           - task: phpstan
             file: concourse-pipeline-library/tasks/php/phpstan.yml
             vars:
+              build-image: ((build-image))
               phpstan-config: ((phpstan-config))
             input_mapping:
               source: pull-request
@@ -801,6 +827,8 @@ jobs:
             - pull-request
           - task: psalm
             file: concourse-pipeline-library/tasks/php/psalm.yml
+            vars:
+              build-image: ((build-image))
             input_mapping:
               source: pull-request
             on_success:
