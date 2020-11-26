@@ -246,6 +246,12 @@ jobs:
       - concourse-pipeline-library/var_files/github/gatech.edu.yml
       - concourse-pipeline-library/var_files/pipelines/php-build.yml
 
+    - set_pipeline: php8-build
+      file: concourse-pipeline-library/pipelines/oci-build.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/pipelines/php8-build.yml
+
     - set_pipeline: fly
       file: concourse-pipeline-library/pipelines/oci-build.yml
       var_files:
