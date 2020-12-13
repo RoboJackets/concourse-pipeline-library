@@ -122,6 +122,10 @@ resources:
         github_uri: https://((github-host))/RoboJackets/static-analysis
         events:
         - release
+      auth-stickler:
+        github_uri: https://((github-host))/RoboJackets/auth-stickler
+        events:
+        - release
 
 - name: slack
   public: true
