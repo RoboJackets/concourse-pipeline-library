@@ -199,18 +199,18 @@ resources:
     release: true
     pre_release: true
 
-- name: auth-stickler
-  public: true
-  type: github-release
-  icon: github
-  source:
-    owner: RoboJackets
-    repository: auth-stickler
-    access_token: ((((github-host-dashes))/token.token))
-    github_api_url: ((github-rest-api-endpoint))
-    github_v4_api_url: ((github-graphql-api-endpoint))
-    release: true
-    pre_release: true
+# - name: auth-stickler
+#   public: true
+#   type: github-release
+#   icon: github
+#   source:
+#     owner: RoboJackets
+#     repository: auth-stickler
+#     access_token: ((((github-host-dashes))/token.token))
+#     github_api_url: ((github-rest-api-endpoint))
+#     github_v4_api_url: ((github-graphql-api-endpoint))
+#     release: true
+#     pre_release: true
 
 jobs:
 
@@ -240,8 +240,8 @@ jobs:
     - get: buzzapiclient
       trigger: true
 
-    - get: auth-stickler
-      trigger: true
+    # - get: auth-stickler
+    #   trigger: true
 
   - put: composer-install-check
     inputs:
