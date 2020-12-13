@@ -139,7 +139,7 @@ resources:
     owner: RoboJackets
     repository: apiary-user
     access_token: ((((github-host-dashes))/token.token))
-    github_api_url: ((github-rest-api-endpoint))/
+    github_api_url: ((github-rest-api-endpoint))
     release: true
     pre_release: true
 
@@ -152,7 +152,7 @@ resources:
     owner: RoboJackets
     repository: error-pages
     access_token: ((((github-host-dashes))/token.token))
-    github_api_url: ((github-rest-api-endpoint))/
+    github_api_url: ((github-rest-api-endpoint))
     release: true
     pre_release: true
 
@@ -165,7 +165,7 @@ resources:
     owner: RoboJackets
     repository: network-check
     access_token: ((((github-host-dashes))/token.token))
-    github_api_url: ((github-rest-api-endpoint))/
+    github_api_url: ((github-rest-api-endpoint))
     release: true
     pre_release: true
 
@@ -178,7 +178,7 @@ resources:
     owner: RoboJackets
     repository: static-analysis
     access_token: ((((github-host-dashes))/token.token))
-    github_api_url: ((github-rest-api-endpoint))/
+    github_api_url: ((github-rest-api-endpoint))
     release: true
     pre_release: true
 
@@ -190,7 +190,19 @@ resources:
     owner: OIT-NetworkServices
     repository: BuzzAPIClient
     access_token: ((((github-host-dashes))/token.token))
-    github_api_url: ((github-rest-api-endpoint))/
+    github_api_url: ((github-rest-api-endpoint))
+    release: true
+    pre_release: true
+
+- name: auth-stickler
+  public: true
+  type: github-release
+  icon: github
+  source:
+    owner: RoboJackets
+    repository: auth-stickler
+    access_token: ((((github-host-dashes))/token.token))
+    github_api_url: ((github-rest-api-endpoint))
     release: true
     pre_release: true
 
@@ -220,6 +232,9 @@ jobs:
       trigger: true
 
     - get: buzzapiclient
+      trigger: true
+
+    - get: auth-stickler
       trigger: true
 
   - put: composer-install-check
