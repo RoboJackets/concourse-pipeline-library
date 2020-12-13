@@ -140,6 +140,7 @@ resources:
     repository: apiary-user
     access_token: ((((github-host-dashes))/token.token))
     github_api_url: ((github-rest-api-endpoint))
+    github_v4_api_url: ((github-graphql-api-endpoint))
     release: true
     pre_release: true
 
@@ -153,6 +154,7 @@ resources:
     repository: error-pages
     access_token: ((((github-host-dashes))/token.token))
     github_api_url: ((github-rest-api-endpoint))
+    github_v4_api_url: ((github-graphql-api-endpoint))
     release: true
     pre_release: true
 
@@ -166,6 +168,7 @@ resources:
     repository: network-check
     access_token: ((((github-host-dashes))/token.token))
     github_api_url: ((github-rest-api-endpoint))
+    github_v4_api_url: ((github-graphql-api-endpoint))
     release: true
     pre_release: true
 
@@ -179,6 +182,7 @@ resources:
     repository: static-analysis
     access_token: ((((github-host-dashes))/token.token))
     github_api_url: ((github-rest-api-endpoint))
+    github_v4_api_url: ((github-graphql-api-endpoint))
     release: true
     pre_release: true
 
@@ -191,6 +195,7 @@ resources:
     repository: BuzzAPIClient
     access_token: ((((github-host-dashes))/token.token))
     github_api_url: ((github-rest-api-endpoint))
+    github_v4_api_url: ((github-graphql-api-endpoint))
     release: true
     pre_release: true
 
@@ -203,6 +208,7 @@ resources:
     repository: auth-stickler
     access_token: ((((github-host-dashes))/token.token))
     github_api_url: ((github-rest-api-endpoint))
+    github_v4_api_url: ((github-graphql-api-endpoint))
     release: true
     pre_release: true
 
