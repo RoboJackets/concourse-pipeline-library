@@ -240,8 +240,8 @@ jobs:
     - get: buzzapiclient
       trigger: true
 
-    # - get: auth-stickler
-    #   trigger: true
+  # - get: auth-stickler
+  #   trigger: true
 
   - put: composer-install-check
     inputs:
