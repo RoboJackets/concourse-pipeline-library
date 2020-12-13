@@ -342,6 +342,14 @@ jobs:
       - concourse-pipeline-library/var_files/codesniffer/defaults.yml
       - concourse-pipeline-library/var_files/pipelines/error-pages.yml
 
+    - set_pipeline: auth-stickler
+      file: concourse-pipeline-library/pipelines/php/library.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/gatech.edu.yml
+      - concourse-pipeline-library/var_files/phpstan/defaults.yml
+      - concourse-pipeline-library/var_files/codesniffer/defaults.yml
+      - concourse-pipeline-library/var_files/pipelines/auth-stickler.yml
+
     - set_pipeline: google-idp
       file: concourse-pipeline-library/pipelines/php/on-premises.yml
       var_files:
