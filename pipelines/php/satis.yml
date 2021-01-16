@@ -126,6 +126,10 @@ resources:
         github_uri: https://((github-host))/RoboJackets/auth-stickler
         events:
         - release
+      gatech-mediawiki-auth:
+        github_uri: https://((github-host))/RoboJackets/gatech-mediawiki-auth
+        events:
+        - release
 
 - name: slack
   public: true
@@ -216,6 +220,19 @@ resources:
     release: true
     pre_release: true
 
+- name: gatech-mediawiki-auth
+  public: true
+  type: github-release
+  icon: github
+  source:
+    owner: RoboJackets
+    repository: gatech-mediawiki-auth
+    access_token: ((((github-host-dashes))/token.token))
+    github_api_url: ((github-rest-api-endpoint))
+    github_v4_api_url: ((github-graphql-api-endpoint))
+    release: true
+    pre_release: true
+
 jobs:
 
 - name: build-((base-branch))
@@ -245,6 +262,9 @@ jobs:
       trigger: true
 
     - get: auth-stickler
+      trigger: true
+
+    - get: gatech-mediawiki-auth
       trigger: true
 
   - put: composer-install-check

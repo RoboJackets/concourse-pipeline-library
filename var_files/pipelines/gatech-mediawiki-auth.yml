@@ -1,0 +1,4 @@
+---
+source-repository: gatech-mediawiki-auth
+base-branch: main
+phan-mode: default
