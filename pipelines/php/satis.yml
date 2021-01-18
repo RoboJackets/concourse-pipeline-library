@@ -198,6 +198,7 @@ resources:
   public: true
   type: github-release
   icon: github
+  webhook_token: ((webhook-token))
   source:
     owner: OIT-NetworkServices
     repository: BuzzAPIClient
@@ -211,6 +212,7 @@ resources:
   public: true
   type: github-release
   icon: github
+  webhook_token: ((webhook-token))
   source:
     owner: RoboJackets
     repository: auth-stickler
@@ -224,6 +226,7 @@ resources:
   public: true
   type: github-release
   icon: github
+  webhook_token: ((webhook-token))
   source:
     owner: RoboJackets
     repository: gatech-mediawiki-auth
