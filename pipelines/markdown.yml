@@ -81,7 +81,7 @@ resources:
   source:
     check_name: Markdown Lint
     resource_name: markdownlint-check
-    annotations_format: yamllint
+    annotations_format: markdownlint
 
 - name: webhooks
   public: true
