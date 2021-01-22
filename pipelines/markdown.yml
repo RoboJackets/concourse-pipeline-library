@@ -135,7 +135,8 @@ jobs:
           source: ((source-repository))
         on_success:
           put: yamllint-check
-          conclusion: success
+          params:
+            conclusion: success
         on_failure:
           put: yamllint-check
           params:
@@ -161,7 +162,8 @@ jobs:
           source: ((source-repository))
         on_success:
           put: markdownlint-check
-          conclusion: success
+          params:
+            conclusion: success
         on_failure:
           put: markdownlint-check
           params:
@@ -232,7 +234,8 @@ jobs:
           source: pull-request
         on_success:
           put: yamllint-check
-          conclusion: success
+          params:
+            conclusion: success
         on_failure:
           put: yamllint-check
           params:
@@ -258,7 +261,8 @@ jobs:
           source: pull-request
         on_success:
           put: markdownlint-check
-          conclusion: success
+          params:
+            conclusion: success
         on_failure:
           put: markdownlint-check
           params:
