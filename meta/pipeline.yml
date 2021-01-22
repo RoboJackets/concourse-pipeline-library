@@ -424,6 +424,12 @@ jobs:
       - concourse-pipeline-library/var_files/codesniffer/defaults.yml
       - concourse-pipeline-library/var_files/pipelines/gatech-mediawiki-auth.yml
 
+    - set_pipeline: membership-agreement
+      file: concourse-pipeline-library/pipelines/markdown.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/com.yml
+      - concourse-pipeline-library/var_files/pipelines/membership-agreement.yml
+
   - put: webhooks
     inputs: []
 

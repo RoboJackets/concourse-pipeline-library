@@ -1,0 +1,24 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: docker.robojackets.org/robojackets/php-build
+    username: ((docker-robojackets-org.username))
+    password: ((docker-robojackets-org.password))
+
+inputs:
+- name: source
+
+outputs:
+- name: markdownlint
+
+run:
+  path: npx
+  dir: source
+  args:
+  - markdownlint-cli
+  - --output
+  - ../markdownlint/output
+  - .
