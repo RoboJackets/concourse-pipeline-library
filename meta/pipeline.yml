@@ -430,6 +430,12 @@ jobs:
       - concourse-pipeline-library/var_files/github/com.yml
       - concourse-pipeline-library/var_files/pipelines/membership-agreement.yml
 
+    - set_pipeline: technical-writing
+      file: concourse-pipeline-library/pipelines/markdown.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/com.yml
+      - concourse-pipeline-library/var_files/pipelines/technical-writing.yml
+
   - put: webhooks
     inputs: []
 
