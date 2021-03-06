@@ -436,6 +436,12 @@ jobs:
       - concourse-pipeline-library/var_files/github/com.yml
       - concourse-pipeline-library/var_files/pipelines/technical-writing.yml
 
+    - set_pipeline: alumni-association-constitution
+      file: concourse-pipeline-library/pipelines/markdown.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/com.yml
+      - concourse-pipeline-library/var_files/pipelines/alumni-association-constitution.yml
+
   - put: webhooks
     inputs: []
 
