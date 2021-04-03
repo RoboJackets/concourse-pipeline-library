@@ -294,6 +294,12 @@ jobs:
       - concourse-pipeline-library/var_files/github/com.yml
       - concourse-pipeline-library/var_files/pipelines/gatech-aws-credentials.yml
 
+    - set_pipeline: gatech-slack-account-fixer
+      file: concourse-pipeline-library/pipelines/python/library.yml
+      var_files:
+      - concourse-pipeline-library/var_files/github/com.yml
+      - concourse-pipeline-library/var_files/pipelines/gatech-slack-account-fixer.yml
+
     - set_pipeline: aws-idp
       file: concourse-pipeline-library/pipelines/php/serverless.yml
       var_files:
