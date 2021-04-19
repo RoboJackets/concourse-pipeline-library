@@ -5,3 +5,9 @@ repository:
   name: concourse-pipeline-library
   github: github.com
   main_branch: main
+
+resource_types:
+- name: github-webhook
+  defaults:
+    resources:
+      pipeline-library: (( grab webhook_configuration ))
