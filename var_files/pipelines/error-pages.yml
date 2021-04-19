@@ -1,4 +1,0 @@
----
-source-repository: error-pages
-base-branch: master
-phan-mode: custom

@@ -1,4 +1,0 @@
----
-source-repository: gatech-slack-account-fixer
-base-branch: main
-python-pathspec: gatech_slack_account_fixer.py

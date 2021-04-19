@@ -1,0 +1,18 @@
+---
+template: oci-build
+
+repository:
+  name: php-build
+  github: github.gatech.edu
+  main_branch: main
+
+base_image:
+  repository: ubuntu
+  tag: latest
+  icon: ubuntu
+
+resource_types:
+- name: github-webhook
+  defaults:
+    resources:
+      php-build: (( grab webhook_configuration ))

@@ -1,0 +1,112 @@
+---
+disable_forks: false
+
+merge:
+- flavors/yaml.yml
+- flavors/pipeline-library.yml
+
+jobs:
+
+- name: (( concat "build-" repository.main_branch ))
+  public: true
+  plan:
+
+  - get: (( grab repository.name ))
+    trigger: true
+
+  - (( grab tasks.get_commit_sha ))
+
+  - (( grab tasks.load_var_from_git ))
+
+  - put: yamllint-check
+    inputs: []
+
+  - (( grab tasks.yamllint ))
+
+  - in_parallel:
+
+    - put: yamllint-check
+      params:
+        conclusion: success
+      inputs:
+      - yamllint
+      - yamllint-check
+
+    - put: generate-check
+      inputs: []
+
+  - (( grab tasks.generate_pipelines ))
+
+  - in_parallel:
+
+    - put: generate-check
+      params:
+        conclusion: success
+      inputs:
+      - generate-check
+
+    - put: validate-check
+      inputs: []
+
+  - (( grab tasks.validate_pipelines ))
+
+  - in_parallel:
+
+    - put: validate-check
+      params:
+        conclusion: success
+      inputs:
+      - validate-check
+
+    - put: set-pipeline-check
+      inputs: []
+
+  - in_parallel: (( load "generated.yml" ))
+
+    on_success:
+      put: set-pipeline-check
+      params:
+        conclusion: success
+      inputs:
+      - set-pipeline-check
+    on_abort:
+      inject: (( defer inject jobs.build-main.plan.10.on_success ))
+      params:
+        conclusion: cancelled
+    on_error:
+      inject: (( defer inject jobs.build-main.plan.10.on_success ))
+      params:
+        conclusion: action_required
+    on_failure:
+      inject: (( defer inject jobs.build-main.plan.10.on_success ))
+      params:
+        conclusion: failure
+
+- name: build-pull-request
+  public: true
+  plan:
+
+  - get: pull-request
+    trigger: true
+
+  - (( grab tasks.load_var_from_pull_request ))
+
+  - (( defer grab jobs.build-main.plan.3 ))
+
+  - inject: (( defer inject jobs.build-main.plan.4 ))
+    input_mapping:
+      source: pull-request
+
+  - (( defer grab jobs.build-main.plan.5 ))
+
+  - inject: (( defer inject jobs.build-main.plan.6 ))
+    input_mapping:
+      source: pull-request
+
+  - (( defer grab jobs.build-main.plan.7 ))
+
+  - inject: (( defer inject jobs.build-main.plan.8 ))
+    input_mapping:
+      source: pull-request
+
+  - (( defer grab jobs.build-main.plan.9.in_parallel.0 ))

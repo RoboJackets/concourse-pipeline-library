@@ -1,0 +1,71 @@
+---
+template: oci-build
+
+repository:
+
+  name: python-build
+  github: github.gatech.edu
+  main_branch: main
+
+base_image:
+
+  repository: ubuntu
+  tag: latest
+  icon: ubuntu
+
+resource_types:
+
+- name: github-webhook
+  defaults:
+    resources:
+      python-build: (( grab webhook_configuration ))
+
+resources:
+
+- name: spruce
+  type: github-release
+  public: true
+  icon: pine-tree
+  source:
+    owner: geofffranks
+    repository: spruce
+    access_token: (("github.com"/token.token))
+  check_every: 1h
+
+jobs:
+
+- name: (( concat "build-" repository.main_branch ))
+  plan:
+
+  - in_parallel:
+
+    - (( append ))
+
+    - get: spruce
+      trigger: true
+      params:
+        globs:
+        - spruce-linux-amd64
+
+  - {}
+
+  - task: (( inject tasks.build_image))
+    config:
+      inject: (( defer inject build_task ))
+      inputs:
+      - name: spruce
+        path: source/spruce
+
+- name: build-pull-request
+  plan:
+
+  - in_parallel:
+
+    - (( append ))
+
+    - get: spruce
+      params:
+        globs:
+        - spruce-linux-amd64
+
+build_task: (( load "tasks/oci-build.yml" ))

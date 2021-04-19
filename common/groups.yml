@@ -1,0 +1,8 @@
+---
+groups:
+- name: (( grab repository.main_branch ))
+  jobs:
+  - (( concat "build-" repository.main_branch ))
+- name: pull-request
+  jobs:
+  - (( grab jobs.build-pull-request.name ))

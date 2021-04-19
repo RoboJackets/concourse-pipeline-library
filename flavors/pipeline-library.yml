@@ -1,0 +1,68 @@
+---
+resources:
+
+- name: generate-check
+  public: true
+  type: github-check
+  icon: check
+  source:
+    check_name: Generate Pipelines
+    resource_name: generate-check
+
+- name: validate-check
+  public: true
+  type: github-check
+  icon: check
+  source:
+    check_name: Validate Pipelines
+    resource_name: validate-check
+
+- name: set-pipeline-check
+  public: true
+  type: github-check
+  icon: check
+  source:
+    check_name: Set Pipelines
+    resource_name: set-pipeline-check
+
+tasks:
+
+  generate_pipelines:
+    task: generate-pipelines
+    config: (( load "tasks/python/generate-pipelines.yml" ))
+    input_mapping:
+      source: (( grab repository.name ))
+    on_abort:
+      put: generate-check
+      params:
+        conclusion: cancelled
+      inputs:
+      - generate-check
+    on_error:
+      inject: (( inject tasks.generate_pipelines.on_abort ))
+      params:
+        conclusion: action_required
+    on_failure:
+      inject: (( inject tasks.generate_pipelines.on_abort ))
+      params:
+        conclusion: failure
+
+  validate_pipelines:
+    task: validate-pipelines
+    config: (( load "tasks/validate-pipelines.yml" ))
+    input_mapping:
+      source: (( grab repository.name ))
+    on_abort:
+      put: validate-check
+      params:
+        conclusion: cancelled
+      inputs:
+      - validate-check
+    on_error:
+      inject: (( inject tasks.validate_pipelines.on_abort ))
+      params:
+        conclusion: action_required
+    on_failure:
+      inject: (( inject tasks.validate_pipelines.on_abort ))
+      params:
+        conclusion: failure

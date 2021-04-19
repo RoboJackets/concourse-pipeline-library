@@ -1,0 +1,18 @@
+---
+template: oci-build
+
+repository:
+  name: fly
+  github: github.gatech.edu
+  main_branch: main
+
+base_image:
+  repository: alpine
+  tag: latest
+  icon: image-filter-hdr
+
+resource_types:
+- name: github-webhook
+  defaults:
+    resources:
+      fly: (( grab webhook_configuration ))

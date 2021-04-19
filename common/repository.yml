@@ -1,0 +1,40 @@
+---
+repository:
+  name: (( param "What is the name of the source repository?" ))
+  github: (( param "Which GitHub has this repository?" ))
+  main_branch: (( param "What is the main branch?" ))
+
+resource_types:
+
+- name: pull-request
+  type: registry-image
+  source:
+    repository: teliaoss/github-pr-resource
+
+resources:
+
+- (( prepend ))
+
+- name: (( grab repository.name ))
+  type: git
+  public: true
+  icon: github
+  source:
+    branch: (( grab repository.main_branch ))
+    password: (( concat "((\"" repository.github "\"/token.token))" ))
+    uri: (( concat "https://" repository.github "/RoboJackets/" repository.name ))
+    username: x-access-token
+  webhook_token: ((webhook-token))
+
+- name: pull-request
+  type: pull-request
+  public: true
+  icon: source-pull
+  source:
+    access_token: (( concat "((\"" repository.github "\"/token.token))" ))
+    base_branch: (( grab repository.main_branch ))
+    disable_forks: (( grab disable_forks ))
+    repository: (( concat "RoboJackets/" repository.name ))
+    v3_endpoint: (( concat "(( grab " repository.github ".rest_api_endpoint ))" ))
+    v4_endpoint: (( concat "(( grab " repository.github ".graphql_api_endpoint ))" ))
+  webhook_token: ((webhook-token))

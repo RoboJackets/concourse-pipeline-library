@@ -2,23 +2,21 @@
 platform: linux
 
 image_resource:
+
   type: registry-image
   source:
     repository: (( join "/" registry.private.hostname "robojackets/python-build" ))
     inject: (( inject registry.private.source ))
 
 inputs:
+
 - name: source
+  path: .
 
 outputs:
-- name: yamllint
+
+- name: generated
 
 run:
-  path: bash
-  dir: source
-  args:
-  - -e
-  - -o
-  - pipefail
-  - -c
-  - yamllint --strict --format parsable . | tee ../yamllint/output.txt
+
+  path: tools/generate.sh

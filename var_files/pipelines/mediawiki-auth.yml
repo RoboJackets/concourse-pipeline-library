@@ -1,5 +1,0 @@
----
-source-repository: mediawiki-auth
-base-branch: master
-phan-mode: default
-automatic-deployment-environment: production

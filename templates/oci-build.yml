@@ -1,0 +1,62 @@
+---
+disable_forks: true
+
+merge:
+- flavors/oci-build.yml
+
+jobs:
+
+- name: (( concat "build-" repository.main_branch ))
+  public: true
+  plan:
+
+  - in_parallel:
+
+    - do:
+
+      - get: (( grab repository.name ))
+        trigger: true
+
+      - (( grab tasks.get_commit_sha ))
+
+      - (( grab tasks.load_var_from_git ))
+
+    - (( grab tasks.get_base_image ))
+
+  - put: build-check
+    inputs: []
+
+  - (( grab tasks.build_image ))
+
+  - in_parallel:
+
+    - (( grab tasks.put_build_check ))
+
+    - put: push-check
+      inputs: []
+
+  - (( grab tasks.put_image ))
+
+- name: build-pull-request
+  public: true
+  plan:
+
+  - in_parallel:
+
+    - do:
+
+      - get: pull-request
+        trigger: true
+
+      - (( grab tasks.load_var_from_pull_request ))
+
+    - inject: (( inject tasks.get_base_image ))
+      trigger: false
+
+  - inject: (( concat "(( inject jobs.build-" repository.main_branch ".plan.1 ))" ))
+
+  - inject: (( concat "(( inject jobs.build-" repository.main_branch ".plan.2 ))" ))
+    input_mapping:
+      source: pull-request
+
+  - (( grab tasks.put_build_check ))

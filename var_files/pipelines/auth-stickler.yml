@@ -1,4 +1,0 @@
----
-source-repository: auth-stickler
-base-branch: main
-phan-mode: default

@@ -1,0 +1,52 @@
+---
+webhook_configuration:
+  github_uri: (( concat "(( grab resources." repository.name ".source.uri ))" ))
+  events:
+  - push
+
+resource_types:
+
+- (( append ))
+
+- name: github-check
+  type: registry-image
+  source:
+    repository: (( join "/" registry.private.hostname "robojackets/concourse-github-check-resource" ))
+    inject: (( inject registry.private.source ))
+  defaults:
+    repository_url: (( concat "(( grab resources." repository.name ".source.uri ))" ))
+    commit: ((.:commit))
+    token: (( concat "((\"" repository.github "\"/token.token))" ))
+
+- name: github-webhook
+  type: registry-image
+  source:
+    repository: (( join "/" registry.private.hostname "robojackets/concourse-github-webhook-resource" ))
+    inject: (( inject registry.private.source ))
+  defaults:
+    github_token: (( concat "((\"" repository.github "\"/token.token))" ))
+    webhook_token: ((webhook-token))
+    resources:
+      pull-request:
+        github_uri: (( concat "(( grab resources." repository.name ".source.uri ))" ))
+        events:
+        - push
+        - pull_request
+
+resources:
+
+- (( prepend ))
+
+- name: webhooks
+  public: true
+  type: github-webhook
+  icon: webhook
+
+jobs:
+
+- name: (( concat "build-" repository.main_branch ))
+  plan:
+  - (( append ))
+
+  - put: webhooks
+    inputs: []

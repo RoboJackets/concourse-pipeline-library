@@ -1,4 +1,0 @@
----
-source-repository: network-check
-base-branch: master
-phan-mode: default

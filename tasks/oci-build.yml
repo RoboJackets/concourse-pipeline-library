@@ -6,9 +6,13 @@ image_resource:
   source:
     repository: vito/oci-build-task
 
+params:
+  CONTEXT: source
+  IMAGE_ARG_base_image:
+
 inputs:
 - name: source
-  path: .
+- name: (( grab base_image.repository ))
 
 outputs:
 - name: image

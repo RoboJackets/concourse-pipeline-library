@@ -4,9 +4,8 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: docker.robojackets.org/robojackets/python-build
-    username: ((docker-robojackets-org.username))
-    password: ((docker-robojackets-org.password))
+    repository: (( join "/" registry.private.hostname "robojackets/python-build" ))
+    inject: (( inject registry.private.source ))
 
 inputs:
 - name: source
@@ -26,6 +25,9 @@ run:
   - pipefail
   - -c
   - >-
-      poetry install && poetry run mypy --cache-dir ../mypy-cache --strict --no-error-summary
-      --scripts-are-modules ((python-pathspec))
-      | tee ../mypy/output.txt
+      (( concat
+      "poetry install && poetry run mypy --cache-dir ../mypy-cache --strict --no-error-summary
+      --scripts-are-modules "
+      python.pathspec
+      " | tee ../mypy/output.txt"
+      ))

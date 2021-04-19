@@ -1,5 +1,0 @@
----
-source-repository: nextcloud-auth
-base-branch: master
-phan-mode: custom
-automatic-deployment-environment: production

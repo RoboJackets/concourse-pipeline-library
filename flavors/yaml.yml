@@ -1,0 +1,40 @@
+---
+resources:
+
+- name: yamllint-check
+  public: true
+  type: github-check
+  icon: check
+  source:
+    check_name: yamllint
+    resource_name: yamllint-check
+    annotations_format: yamllint
+
+tasks:
+
+  yamllint:
+    task: yamllint
+    config: (( load "tasks/python/yamllint.yml" ))
+    input_mapping:
+      source: concourse-pipeline-library
+    on_failure:
+      put: yamllint-check
+      params:
+        conclusion: failure
+      inputs:
+      - yamllint
+      - yamllint-check
+    on_abort:
+      put: yamllint-check
+      params:
+        conclusion: cancelled
+      inputs:
+      - yamllint
+      - yamllint-check
+    on_error:
+      put: yamllint-check
+      params:
+        conclusion: action_required
+      inputs:
+      - yamllint
+      - yamllint-check

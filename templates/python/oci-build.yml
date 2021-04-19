@@ -1,0 +1,121 @@
+---
+disable_forks: true
+
+merge:
+- flavors/oci-build.yml
+- flavors/python.yml
+
+jobs:
+
+- name: (( concat "build-" repository.main_branch ))
+  public: true
+  plan:
+
+  - in_parallel:
+
+    - do:
+
+      - get: (( grab repository.name ))
+        trigger: true
+
+      - (( grab tasks.get_commit_sha ))
+
+      - (( grab tasks.load_var_from_git ))
+
+    - (( grab tasks.get_base_image ))
+
+  - in_parallel:
+
+    - do:
+
+      - put: build-check
+        inputs: []
+
+      - (( grab tasks.build_image ))
+
+      - (( grab tasks.put_build_check ))
+
+    - do:
+
+      - put: poetry-install-check
+        inputs: []
+
+      - (( grab tasks.poetry_install_dev ))
+
+      - in_parallel:
+
+        - (( grab tasks.put_poetry_install_check ))
+
+        - (( grab tasks.flake8 ))
+
+        - (( grab tasks.pylint ))
+
+        - (( grab tasks.mypy ))
+
+  - put: push-check
+    inputs: []
+
+  - (( grab tasks.put_image ))
+
+- name: build-pull-request
+  public: true
+  plan:
+
+  - in_parallel:
+
+    - do:
+
+      - get: pull-request
+        trigger: true
+
+      - (( grab tasks.load_var_from_pull_request ))
+
+    - inject: (( concat "(( inject jobs.build-" repository.main_branch ".plan.0.in_parallel.1 ))" ))
+      trigger: false
+
+  - in_parallel:
+
+    - do:
+
+      - put: build-check
+        inputs: []
+
+      - inject: (( inject tasks.build_image ))
+        input_mapping:
+          source: pull-request
+
+      - (( grab tasks.put_build_check ))
+
+    - do:
+
+      - put: poetry-install-check
+        inputs: []
+
+      - inject: (( inject tasks.poetry_install_dev ))
+        input_mapping:
+          source: pull-request
+
+      - in_parallel:
+
+        - inject: (( inject tasks.put_poetry_install_check ))
+
+        - inject: (( inject tasks.flake8 ))
+          do:
+          - (( defer inline ))
+          - {}
+          - input_mapping:
+              source: pull-request
+
+        - inject: (( inject tasks.pylint ))
+          do:
+          - (( defer inline ))
+          - {}
+          - input_mapping:
+              source: pull-request
+
+        - inject: (( inject tasks.mypy ))
+          do:
+          - (( defer inline ))
+          - {}
+          - input_mapping:
+              source: pull-request

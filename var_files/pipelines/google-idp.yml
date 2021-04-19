@@ -1,5 +1,0 @@
----
-source-repository: google-idp
-base-branch: master
-phan-mode: default
-automatic-deployment-environment: production

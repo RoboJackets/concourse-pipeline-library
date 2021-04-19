@@ -4,9 +4,8 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: docker.robojackets.org/robojackets/python-build
-    username: ((docker-robojackets-org.username))
-    password: ((docker-robojackets-org.password))
+    repository: (( join "/" registry.private.hostname "robojackets/python-build" ))
+    inject: (( inject registry.private.source ))
 
 params:
   PYTHONPATH: ../__pypackages__
@@ -27,5 +26,5 @@ run:
   - pipefail
   - -c
   - >-
-      python -m pylint --output-format=json ((python-pathspec))
-      | tee ../pylint/output.json
+      (( concat "python -m pylint --output-format=json " python.pathspec
+      "| tee ../pylint/output.json" ))

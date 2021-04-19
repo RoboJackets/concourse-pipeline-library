@@ -1,6 +1,0 @@
----
-source-repository: aws-idp
-base-branch: main
-phan-mode: custom
-aws-credentials: gatech/sts/deploy
-production-url: https://aws.robojackets.org
