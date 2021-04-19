@@ -20,7 +20,6 @@ outputs:
 run:
 
   path: bash
-  dir: source
   args:
   - -e
   - -o

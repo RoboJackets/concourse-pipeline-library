@@ -18,7 +18,6 @@ inputs:
 run:
 
   path: sh
-  dir: source
   args:
   - -e
   - -o
