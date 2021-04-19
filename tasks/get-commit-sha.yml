@@ -18,4 +18,4 @@ run:
   - -e
   - -c
   - >-
-    git -C source rev-parse HEAD > commit-sha/value
+      git -C source rev-parse HEAD > commit-sha/value

@@ -8,7 +8,7 @@ image_resource:
 
 params:
   CONTEXT: source
-  IMAGE_ARG_base_image:
+  IMAGE_ARG_base_image: ""
 
 inputs:
 - name: source
