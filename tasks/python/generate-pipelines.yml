@@ -19,4 +19,11 @@ outputs:
 
 run:
 
-  path: tools/generate.sh
+  path: bash
+  dir: source
+  args:
+  - -e
+  - -o
+  - pipefail
+  - -c
+  - tools/generate.sh

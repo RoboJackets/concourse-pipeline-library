@@ -17,4 +17,11 @@ inputs:
 
 run:
 
-  path: tools/validate.sh
+  path: sh
+  dir: source
+  args:
+  - -e
+  - -o
+  - pipefail
+  - -c
+  - tools/validate.sh
