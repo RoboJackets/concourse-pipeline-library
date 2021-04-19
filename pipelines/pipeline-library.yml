@@ -10,4 +10,4 @@ resource_types:
 - name: github-webhook
   defaults:
     resources:
-      pipeline-library: (( grab webhook_configuration ))
+      concourse-pipeline-library: (( grab webhook_configuration ))
