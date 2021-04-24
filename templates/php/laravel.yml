@@ -5,6 +5,7 @@ merge:
 - flavors/auto-merge-pull-request.yml
 - flavors/deployment.yml
 - flavors/javascript.yml
+- flavors/php-analysis.yml
 - flavors/php.yml
 
 deployment:

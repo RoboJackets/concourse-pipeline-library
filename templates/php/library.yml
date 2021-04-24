@@ -2,6 +2,7 @@
 disable_forks: false
 
 merge:
+- flavors/php-analysis.yml
 - flavors/php.yml
 
 jobs:

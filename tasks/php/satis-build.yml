@@ -8,11 +8,8 @@ image_resource:
     inject: (( inject registry.private.source ))
 
 params:
-  COMPOSER_AUTH:
-    http-basic:
-      ((github-host)):
-        username: x-access-token
-        password: ((((github-host-dashes))/token.token))
+  COMPOSER_AUTH: >-
+    {"http-basic":{"github.gatech.edu":{"username":"x-access-token","password":"(("github.gatech.edu"/token.token))"}}}
 
 inputs:
 - name: source

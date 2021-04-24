@@ -16,6 +16,4 @@ outputs:
 run:
   path: php
   dir: source
-  args:
-  - -f
-  - ((filename))
+  args: []

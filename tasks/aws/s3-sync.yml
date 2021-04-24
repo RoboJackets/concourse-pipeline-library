@@ -7,9 +7,9 @@ image_resource:
     repository: amazon/aws-cli
 
 params:
-  AWS_ACCESS_KEY_ID: ((((aws-credentials)).access_key))
-  AWS_SECRET_ACCESS_KEY: ((((aws-credentials)).secret_key))
-  AWS_SESSION_TOKEN: ((((aws-credentials)).security_token))
+  AWS_ACCESS_KEY_ID: (( concat "((aws/sts/" aws.credentials ".access_key))" ))
+  AWS_SECRET_ACCESS_KEY: (( concat "((aws/sts/" aws.credentials ".secret_key))" ))
+  AWS_SESSION_TOKEN: (( concat "((aws/sts/" aws.credentials ".security_token))" ))
 
 inputs:
 - name: source
@@ -20,4 +20,4 @@ run:
   - s3
   - sync
   - source
-  - ((target))
+  - (( grab aws.target ))

@@ -1,0 +1,50 @@
+---
+disable_forks: false
+
+merge:
+- flavors/php.yml
+
+jobs:
+
+- name: (( concat "build-" repository.main_branch ))
+  public: true
+  plan:
+
+  - in_parallel:
+
+    - do:
+
+      - get: (( grab repository.name ))
+        trigger: true
+
+      - (( grab tasks.get_commit_sha ))
+
+      - (( grab tasks.load_var_from_git ))
+
+  - put: composer-install-check
+    inputs: []
+
+  - (( grab tasks.composer_install_dev ))
+
+  - (( grab tasks.put_composer_install_check))
+
+- name: build-pull-request
+  public: true
+  plan:
+
+  - in_parallel:
+
+    - do:
+
+      - get: pull-request
+        trigger: true
+
+      - (( grab tasks.load_var_from_pull_request ))
+
+      - (( grab tasks.load_pull_request_url ))
+
+  - (( concat "(( grab jobs.build-" repository.main_branch ".plan.1 ))" ))
+
+  - (( concat "(( grab jobs.build-" repository.main_branch ".plan.2 ))" ))
+
+  - (( concat "(( grab jobs.build-" repository.main_branch ".plan.3 ))" ))

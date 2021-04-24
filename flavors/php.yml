@@ -13,42 +13,6 @@ resources:
     check_name: Composer Install
     resource_name: composer-install-check
 
-- name: codesniffer-check
-  public: true
-  type: github-check
-  icon: check
-  source:
-    check_name: CodeSniffer
-    resource_name: codesniffer-check
-    annotations_format: codesniffer
-
-- name: phan-check
-  public: true
-  type: github-check
-  icon: check
-  source:
-    check_name: Phan
-    resource_name: phan-check
-    annotations_format: phan
-
-- name: phpstan-check
-  public: true
-  type: github-check
-  icon: check
-  source:
-    check_name: PHPStan
-    resource_name: phpstan-check
-    annotations_format: phpstan
-
-- name: psalm-check
-  public: true
-  type: github-check
-  icon: check
-  source:
-    check_name: Psalm
-    resource_name: psalm-check
-    annotations_format: psalm
-
 tasks:
 
   load_phpstan_neon:
@@ -82,6 +46,40 @@ tasks:
     inputs:
     - composer-install-check
 
+  composer_install_dev:
+
+    in_parallel:
+    - task: composer-install-dev
+      config: (( load "tasks/php/composer-install-dev.yml" ))
+      input_mapping:
+        source: (( grab repository.name ))
+      timeout: 5m
+    - task: composer-verify-lock
+      config: (( load "tasks/php/composer-verify-lock.yml" ))
+      input_mapping:
+        source: (( grab repository.name ))
+      timeout: 5m
+    on_failure:
+      put: composer-install-check
+      params:
+        conclusion: failure
+        title: Failed to install dependencies
+        summary: Review the output within Concourse.
+      inputs:
+      - composer-install-check
+    on_abort:
+      put: composer-install-check
+      params:
+        conclusion: cancelled
+      inputs:
+      - composer-install-check
+    on_error:
+      put: composer-install-check
+      params:
+        conclusion: action_required
+      inputs:
+      - composer-install-check
+
   php_build:
 
     do:
@@ -89,47 +87,11 @@ tasks:
     - put: composer-install-check
       inputs: []
 
-    - in_parallel:
-      - task: composer-install-dev
-        config: (( load "tasks/php/composer-install-dev.yml" ))
-        input_mapping:
-          source: (( grab repository.name ))
-        timeout: 5m
-      - task: composer-verify-lock
-        config: (( load "tasks/php/composer-verify-lock.yml" ))
-        input_mapping:
-          source: (( grab repository.name ))
-        timeout: 5m
-      on_failure:
-        put: composer-install-check
-        params:
-          conclusion: failure
-          title: Failed to install dependencies
-          summary: Review the output within Concourse.
-        inputs:
-        - composer-install-check
-      on_abort:
-        put: composer-install-check
-        params:
-          conclusion: cancelled
-        inputs:
-        - composer-install-check
-      on_error:
-        put: composer-install-check
-        params:
-          conclusion: action_required
-        inputs:
-        - composer-install-check
+    - (( grab tasks.composer_install_dev ))
 
     - in_parallel:
 
-      - put: composer-install-check
-        params:
-          conclusion: success
-          title: Dependencies installed
-          summary: Composer successfully installed development dependencies.
-        inputs:
-        - composer-install-check
+      - (( grab tasks.put_composer_install_check))
       - do:
         - put: codesniffer-check
           inputs: []
