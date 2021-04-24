@@ -18,3 +18,9 @@ tasks:
     file: pull-request/.git/resource/head_sha
     format: trim
     reveal: true
+
+  load_pull_request_url:
+    load_var: pull_request_url
+    file: pull-request/.git/resource/url
+    format: trim
+    reveal: true

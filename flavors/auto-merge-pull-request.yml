@@ -37,14 +37,6 @@ resources:
   type: github-merge
   icon: source-merge
 
-tasks:
-
-  load_pull_request_url:
-    load_var: pull_request_url
-    file: pull-request/.git/resource/url
-    format: trim
-    reveal: true
-
 jobs:
 
 - name: build-pull-request
