@@ -4,9 +4,8 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: docker.robojackets.org/robojackets/((build-image))
-    username: ((docker-robojackets-org.username))
-    password: ((docker-robojackets-org.password))
+    repository: (( join "/" registry.private.hostname "robojackets/php-build" ))
+    inject: (( inject registry.private.source ))
 
 inputs:
 - name: source
@@ -25,6 +24,6 @@ run:
   - pipefail
   - -c
   - >-
-      php -f vendor/bin/phpstan analyse --level=max
-      --configuration=((phpstan-config)) --error-format=json .
-      | tee ../phpstan/output.json
+      (( concat "php -f vendor/bin/phpstan analyse --level=max
+      --configuration=" php.phpstan_config " --error-format=json .
+      | tee ../phpstan/output.json" ))

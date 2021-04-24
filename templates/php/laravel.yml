@@ -1,0 +1,130 @@
+---
+disable_forks: false
+
+merge:
+- flavors/auto-merge-pull-request.yml
+- flavors/deployment.yml
+- flavors/javascript.yml
+- flavors/php.yml
+
+deployment:
+  automatic_deployment_environment: (( param "Which environment should deploy automatically?" ))
+
+jobs:
+
+- name: (( concat "build-" repository.main_branch ))
+  public: true
+  plan:
+
+  - in_parallel:
+
+    - do:
+
+      - get: (( grab repository.name ))
+        trigger: true
+
+      - (( grab tasks.get_commit_sha ))
+
+      - (( grab tasks.load_var_from_git ))
+
+  - in_parallel:
+
+    - (( grab tasks.javascript_build ))
+
+    - (( grab tasks.php_build ))
+
+  - put: deployment
+    params:
+      environment: (( grab deployment.automatic_deployment_environment ))
+    inputs: []
+
+- name: build-pull-request
+  public: true
+  plan:
+
+  - in_parallel:
+
+    - do:
+
+      - get: pull-request
+        trigger: true
+
+      - (( grab tasks.load_var_from_pull_request ))
+
+      - (( grab tasks.load_pull_request_url ))
+
+  - in_parallel:
+
+    - inject: (( inject tasks.javascript_build ))
+      do:
+
+      - (( defer inline ))
+
+      - {}
+
+      - input_mapping:
+          source: pull-request
+
+      - {}
+
+      - input_mapping:
+          source: pull-request
+
+    - inject: (( inject tasks.php_build ))
+      do:
+
+      - (( defer inline ))
+
+      - {}
+
+      - in_parallel:
+
+        - (( defer inline ))
+
+        - input_mapping:
+            source: pull-request
+
+        - input_mapping:
+            source: pull-request
+
+      - in_parallel:
+
+        - (( defer inline ))
+
+        - {}
+
+        - do:
+
+          - (( defer inline ))
+
+          - {}
+
+          - input_mapping:
+              source: pull-request
+
+        - do:
+
+          - (( defer inline ))
+
+          - {}
+
+          - input_mapping:
+              source: pull-request
+
+        - do:
+
+          - (( defer inline ))
+
+          - {}
+
+          - input_mapping:
+              source: pull-request
+
+        - do:
+
+          - (( defer inline ))
+
+          - {}
+
+          - input_mapping:
+              source: pull-request

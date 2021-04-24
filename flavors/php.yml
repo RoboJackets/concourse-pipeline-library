@@ -1,0 +1,240 @@
+---
+php:
+  codesniffer_config: (( param "Which CodeSniffer standard are you using?" ))
+  phpstan_config: (( param "Which PHPStan configuration file are you using?" ))
+
+resources:
+
+- name: composer-install-check
+  public: true
+  type: github-check
+  icon: check
+  source:
+    check_name: Composer Install
+    resource_name: composer-install-check
+
+- name: codesniffer-check
+  public: true
+  type: github-check
+  icon: check
+  source:
+    check_name: CodeSniffer
+    resource_name: codesniffer-check
+    annotations_format: codesniffer
+
+- name: phan-check
+  public: true
+  type: github-check
+  icon: check
+  source:
+    check_name: Phan
+    resource_name: phan-check
+    annotations_format: phan
+
+- name: phpstan-check
+  public: true
+  type: github-check
+  icon: check
+  source:
+    check_name: PHPStan
+    resource_name: phpstan-check
+    annotations_format: phpstan
+
+- name: psalm-check
+  public: true
+  type: github-check
+  icon: check
+  source:
+    check_name: Psalm
+    resource_name: psalm-check
+    annotations_format: psalm
+
+tasks:
+
+  load_phpstan_neon:
+
+    load_var: phpstan_neon
+    file: (( concat repository.name "/phpstan.neon" ))
+    format: raw
+    reveal: true
+
+  composer_install_dev:
+
+    task: composer-install-dev
+    config: (( load "tasks/php/composer-install-dev.yml" ))
+    input_mapping:
+      source: (( grab repository.name ))
+
+  composer_verify_lock:
+
+    task: composer-install-dev
+    config: (( load "tasks/php/composer-verify-lock.yml" ))
+    input_mapping:
+      source: (( grab repository.name ))
+
+  put_composer_install_check:
+
+    put: composer-install-check
+    params:
+      conclusion: success
+      title: Dependencies installed
+      summary: Composer successfully installed development dependencies.
+    inputs:
+    - composer-install-check
+
+  php_build:
+
+    do:
+
+    - put: composer-install-check
+      inputs: []
+
+    - in_parallel:
+      - task: composer-install-dev
+        config: (( load "tasks/php/composer-install-dev.yml" ))
+        input_mapping:
+          source: (( grab repository.name ))
+        timeout: 5m
+      - task: composer-verify-lock
+        config: (( load "tasks/php/composer-verify-lock.yml" ))
+        input_mapping:
+          source: (( grab repository.name ))
+        timeout: 5m
+      on_failure:
+        put: composer-install-check
+        params:
+          conclusion: failure
+          title: Failed to install dependencies
+          summary: Review the output within Concourse.
+        inputs:
+        - composer-install-check
+      on_abort:
+        put: composer-install-check
+        params:
+          conclusion: cancelled
+        inputs:
+        - composer-install-check
+      on_error:
+        put: composer-install-check
+        params:
+          conclusion: action_required
+        inputs:
+        - composer-install-check
+
+    - in_parallel:
+
+      - put: composer-install-check
+        params:
+          conclusion: success
+          title: Dependencies installed
+          summary: Composer successfully installed development dependencies.
+        inputs:
+        - composer-install-check
+      - do:
+        - put: codesniffer-check
+          inputs: []
+        - task: codesniffer
+          config: (( load "tasks/php/codesniffer.yml" ))
+          input_mapping:
+            source: (( grab repository.name ))
+          on_success:
+            put: codesniffer-check
+            params:
+              conclusion: success
+            inputs:
+            - codesniffer
+            - codesniffer-check
+          on_failure:
+            inject: (( inject tasks.php_build.do.2.in_parallel.1.do.1.on_success ))
+            params:
+              conclusion: failure
+          on_abort:
+            inject: (( inject tasks.php_build.do.2.in_parallel.1.do.1.on_success ))
+            params:
+              conclusion: cancelled
+          on_error:
+            inject: (( inject tasks.php_build.do.2.in_parallel.1.do.1.on_success ))
+            params:
+              conclusion: action_required
+          timeout: 5m
+      - do:
+        - put: phan-check
+          inputs: []
+        - task: phan
+          config: (( load "tasks/php/phan-custom.yml" ))
+          input_mapping:
+            source: (( grab repository.name ))
+          on_success:
+            put: phan-check
+            params:
+              conclusion: success
+            inputs:
+            - phan
+            - phan-check
+          on_failure:
+            inject: (( inject tasks.php_build.do.2.in_parallel.2.do.1.on_success ))
+            params:
+              conclusion: failure
+          on_abort:
+            inject: (( inject tasks.php_build.do.2.in_parallel.2.do.1.on_success ))
+            params:
+              conclusion: cancelled
+          on_error:
+            inject: (( inject tasks.php_build.do.2.in_parallel.2.do.1.on_success ))
+            params:
+              conclusion: action_required
+          timeout: 5m
+      - do:
+        - put: phpstan-check
+          inputs: []
+        - task: phpstan
+          config: (( load "tasks/php/phpstan.yml" ))
+          input_mapping:
+            source: (( grab repository.name ))
+          on_success:
+            put: phpstan-check
+            params:
+              conclusion: success
+            inputs:
+            - phpstan
+            - phpstan-check
+          on_failure:
+            inject: (( inject tasks.php_build.do.2.in_parallel.3.do.1.on_success ))
+            params:
+              conclusion: failure
+          on_abort:
+            inject: (( inject tasks.php_build.do.2.in_parallel.3.do.1.on_success ))
+            params:
+              conclusion: cancelled
+          on_error:
+            inject: (( inject tasks.php_build.do.2.in_parallel.3.do.1.on_success ))
+            params:
+              conclusion: action_required
+          timeout: 5m
+      - do:
+        - put: psalm-check
+          inputs: []
+        - task: psalm
+          config: (( load "tasks/php/psalm.yml" ))
+          input_mapping:
+            source: (( grab repository.name ))
+          on_success:
+            put: psalm-check
+            params:
+              conclusion: success
+            inputs:
+            - psalm
+            - psalm-check
+          on_failure:
+            inject: (( inject tasks.php_build.do.2.in_parallel.4.do.1.on_success ))
+            params:
+              conclusion: failure
+          on_abort:
+            inject: (( inject tasks.php_build.do.2.in_parallel.4.do.1.on_success ))
+            params:
+              conclusion: cancelled
+          on_error:
+            inject: (( inject tasks.php_build.do.2.in_parallel.4.do.1.on_success ))
+            params:
+              conclusion: action_required
+          timeout: 5m

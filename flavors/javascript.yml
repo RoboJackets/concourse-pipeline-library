@@ -1,0 +1,74 @@
+---
+resources:
+
+- name: npm-install-check
+  public: true
+  type: github-check
+  icon: check
+  source:
+    check_name: NPM Install
+    resource_name: npm-install-check
+
+- name: npm-build-check
+  public: true
+  type: github-check
+  icon: check
+  source:
+    check_name: NPM Build
+    resource_name: npm-build-check
+
+tasks:
+
+  javascript_build:
+
+    do:
+    - put: npm-install-check
+      inputs: []
+    - task: npm-ci-dev
+      config: (( load "tasks/javascript/npm-ci-dev.yml" ))
+      input_mapping:
+        source: (( grab repository.name))
+      on_failure:
+        put: npm-install-check
+        params:
+          conclusion: failure
+        inputs:
+        - npm-install-check
+      on_abort:
+        inject: (( inject tasks.javascript_build.do.1.on_failure ))
+        params:
+          conclusion: cancelled
+      on_error:
+        inject: (( inject tasks.javascript_build.do.1.on_failure ))
+        params:
+          conclusion: action_required
+    - in_parallel:
+      - put: npm-install-check
+        params:
+          conclusion: success
+        inputs:
+        - npm-install-check
+      - put: npm-build-check
+        inputs: []
+    - task: npm-run-dev
+      config: (( load "tasks/javascript/npm-run-dev.yml" ))
+      input_mapping:
+        source: (( grab repository.name))
+      on_success:
+        put: npm-build-check
+        params:
+          conclusion: success
+        inputs:
+        - npm-build-check
+      on_failure:
+        inject: (( inject tasks.javascript_build.do.3.on_success ))
+        params:
+          conclusion: failure
+      on_abort:
+        inject: (( inject tasks.javascript_build.do.3.on_success ))
+        params:
+          conclusion: cancelled
+      on_error:
+        inject: (( inject tasks.javascript_build.do.3.on_success ))
+        params:
+          conclusion: action_required

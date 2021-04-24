@@ -4,9 +4,8 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: docker.robojackets.org/robojackets/((build-image))
-    username: ((docker-robojackets-org.username))
-    password: ((docker-robojackets-org.password))
+    repository: (( join "/" registry.private.hostname "robojackets/php-build" ))
+    inject: (( inject registry.private.source ))
 
 params:
   COMPOSER_AUTH:

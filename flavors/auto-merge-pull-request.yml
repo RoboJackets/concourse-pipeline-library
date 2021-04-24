@@ -1,0 +1,59 @@
+---
+resource_types:
+
+- (( append ))
+
+- name: github-approval
+  type: registry-image
+  source:
+    repository: (( join "/" registry.private.hostname "robojackets/concourse-github-approval-resource" ))
+    inject: (( inject registry.private.source ))
+  defaults:
+    pull_request_url: ((.:pull_request_url))
+    commit: ((.:commit))
+    token: (( concat "((\"" repository.github "\"/token.token))" ))
+
+- name: github-merge
+  type: registry-image
+  source:
+    repository: (( join "/" registry.private.hostname "robojackets/concourse-github-merge-resource" ))
+    inject: (( inject registry.private.source ))
+  defaults:
+    pull_request_url: ((.:pull_request_url))
+    commit: ((.:commit))
+    token: (( concat "((\"" repository.github "\"/token.token))" ))
+
+resources:
+
+- (( append ))
+
+- name: approve-pull-request
+  public: true
+  type: github-approval
+  icon: check-circle
+
+- name: merge-pull-request
+  public: true
+  type: github-merge
+  icon: source-merge
+
+tasks:
+
+  load_pull_request_url:
+    load_var: pull_request_url
+    file: pull-request/.git/resource/url
+    format: trim
+    reveal: true
+
+jobs:
+
+- name: build-pull-request
+  plan:
+
+  - (( append ))
+
+  - put: approve-pull-request
+    inputs: []
+
+  - put: merge-pull-request
+    inputs: []

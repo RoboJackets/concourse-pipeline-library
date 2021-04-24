@@ -1,0 +1,17 @@
+---
+template: php/library
+
+repository:
+  name: error-pages
+  github: github.gatech.edu
+  main_branch: master
+
+php:
+  codesniffer_config: vendor/robojackets/static-analysis/defaults/phpcs.xml
+  phpstan_config: vendor/robojackets/static-analysis/defaults/phpstan.neon
+
+resource_types:
+- name: github-webhook
+  defaults:
+    resources:
+      error-pages: (( grab webhook_configuration ))
