@@ -22,13 +22,6 @@ tasks:
     format: raw
     reveal: true
 
-  composer_install_dev:
-
-    task: composer-install-dev
-    config: (( load "tasks/php/composer-install-dev.yml" ))
-    input_mapping:
-      source: (( grab repository.name ))
-
   composer_verify_lock:
 
     task: composer-install-dev
