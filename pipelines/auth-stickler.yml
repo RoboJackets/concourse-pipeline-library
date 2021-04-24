@@ -4,7 +4,7 @@ template: php/library
 repository:
   name: auth-stickler
   github: github.gatech.edu
-  main_branch: master
+  main_branch: main
 
 php:
   codesniffer_config: vendor/robojackets/static-analysis/defaults/phpcs.xml
