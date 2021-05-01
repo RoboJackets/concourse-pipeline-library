@@ -9,16 +9,14 @@ image_resource:
 
 inputs:
 - name: source
-- name: node_modules
-  path: source/node_modules
-
-outputs:
+- name: vendor
+  path: source/vendor
 - name: public
   path: source/public
 
 run:
-  path: npm
+  path: composer
   dir: source
   args:
   - run
-  - development
+  - test
