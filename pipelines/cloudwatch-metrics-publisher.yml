@@ -74,9 +74,9 @@ jobs:
       run:
         path: sh
         args:
-        - e
-        - x
-        - c
+        - -e
+        - -x
+        - -c
         - cp image/rootfs/app/package.zip package/package-v$(cat version/version).zip
 
   - put: package
