@@ -46,7 +46,7 @@ resources:
     session_token: ((aws/sts/sandbox.security_token))
     region_name: us-east-1
     skip_download: true
-    regexp: cloudwatch-metrics-publisher\/package-v(?P<version>[0-9.]+)\.zip
+    regexp: cloudwatch-metrics-publisher/package-v(?P<version>[0-9.]+)\.zip
 
 jobs:
 
