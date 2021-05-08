@@ -1,0 +1,96 @@
+---
+template: python/oci-build
+
+repository:
+  name: concourse-cloudwatch-metrics-publisher
+  github: github.com
+  main_branch: main
+
+base_image:
+  repository: amazonlinux
+  tag: 2
+  icon: amazon
+
+python:
+  pathspec: concourse_cloudwatch_metrics_publisher.py
+
+resource_types:
+- name: github-webhook
+  defaults:
+    resources:
+      concourse-cloudwatch-metrics-publisher: (( grab webhook_configuration ))
+
+resources:
+- name: version
+  type: semver
+  public: true
+  icon: counter
+  source:
+    initial_version: 0
+    driver: s3
+    bucket: robojackets-sandbox-concourse-artifacts
+    key: cloudwatch-metrics-publisher/version.txt
+    access_key_id: ((aws/sts/ecr.access_key))
+    secret_access_key: ((aws/sts/ecr.secret_key))
+    session_token: ((aws/sts/ecr.security_token))
+    region_name: us-east-1
+
+- name: package
+  type: s3
+  public: true
+  icon: folder-zip
+  source:
+    bucket: robojackets-sandbox-concourse-artifacts
+    access_key_id: ((aws/sts/ecr.access_key))
+    secret_access_key: ((aws/sts/ecr.secret_key))
+    session_token: ((aws/sts/ecr.security_token))
+    region_name: us-east-1
+    skip_download: true
+    regexp: cloudwatch-metrics-publisher\/package-v(?P<version>[0-9]+)\.zip
+
+jobs:
+
+- name: (( concat "build-" repository.main_branch ))
+  plan:
+
+  - (( append ))
+
+  - get: version
+    params:
+      bump: major
+
+  - task: rename-package
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: alpine
+      inputs:
+      - name: image
+      - name: version
+      outputs:
+      - name: package
+      run:
+        path: sh
+        args:
+        - e
+        - x
+        - c
+        - cp image/rootfs/app/package.zip package/package-v$(cat version/version).zip
+
+  - put: package
+    params:
+      file: package/*.zip
+      content_type: application/zip
+    inputs:
+    - package
+
+  - put: version
+    params:
+      file: version/version
+    inputs:
+    - version
+
+  - put: webhooks
+    inputs: []

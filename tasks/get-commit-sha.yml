@@ -16,6 +16,7 @@ run:
   path: sh
   args:
   - -e
+  - -x
   - -c
   - >-
       git -C source rev-parse HEAD > commit-sha/value

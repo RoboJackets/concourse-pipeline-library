@@ -1,0 +1,13 @@
+---
+- type: remove
+  path: /jobs/name=build-main/plan/put=push-check
+
+- type: remove
+  path: /jobs/name=build-main/plan/put=image
+
+- type: replace
+  path: /jobs/name=build-main/plan/1/in_parallel/0/do/task=build/params/UNPACK_ROOTFS?
+  value: true
+
+- type: remove
+  path: /jobs/name=build-main/plan/get=version:prev
