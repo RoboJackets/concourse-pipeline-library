@@ -26,7 +26,7 @@ resources:
   public: true
   icon: counter
   source:
-    initial_version: "0.0.0"
+    initial_version: 0.0.0
     driver: s3
     bucket: robojackets-sandbox-concourse-artifacts
     key: cloudwatch-metrics-publisher/version.txt
