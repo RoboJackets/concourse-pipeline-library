@@ -11,3 +11,9 @@
 
 - type: remove
   path: /jobs/name=build-main/plan/get=version:prev
+
+- type: remove
+  path: /resources/name=image
+
+- type: remove
+  path: /resources/name=push-check
