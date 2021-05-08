@@ -26,7 +26,7 @@ resources:
   public: true
   icon: counter
   source:
-    initial_version: "0"
+    initial_version: "0.0.0"
     driver: s3
     bucket: robojackets-sandbox-concourse-artifacts
     key: cloudwatch-metrics-publisher/version.txt
@@ -46,7 +46,7 @@ resources:
     session_token: ((aws/sts/ecr.security_token))
     region_name: us-east-1
     skip_download: true
-    regexp: cloudwatch-metrics-publisher\/package-v(?P<version>[0-9]+)\.zip
+    regexp: cloudwatch-metrics-publisher\/package-v(?P<version>[0-9.]+)\.zip
 
 jobs:
 
