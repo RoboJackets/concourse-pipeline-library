@@ -60,6 +60,8 @@ resources:
     github_v4_api_url: (( grab github.gatech.edu.graphql_api_endpoint ))
     release: true
     pre_release: true
+  tags:
+  - resources
 
 - name: error-pages
   inject: (( inject resources.apiary-user ))
@@ -104,21 +106,35 @@ jobs:
 
     - get: apiary-user
       trigger: true
+      tags:
+      - resources
 
     - get: error-pages
       trigger: true
+      tags:
+      - resources
 
     - get: network-check
       trigger: true
+      tags:
+      - resources
 
     - get: static-analysis
       trigger: true
+      tags:
+      - resources
 
     - get: buzzapiclient
       trigger: true
+      tags:
+      - resources
 
     - get: auth-stickler
       trigger: true
+      tags:
+      - resources
 
     - get: gatech-mediawiki-auth
       trigger: true
+      tags:
+      - resources

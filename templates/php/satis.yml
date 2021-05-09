@@ -17,6 +17,8 @@ resources:
   source:
     check_name: Satis Build
     resource_name: satis-build-check
+  tags:
+  - resources
 
 - name: s3-sync-check
   public: true
@@ -25,6 +27,8 @@ resources:
   source:
     check_name: S3 Sync
     resource_name: s3-sync-check
+  tags:
+  - resources
 
 tasks:
 
@@ -58,6 +62,8 @@ jobs:
 
     - put: satis-build-check
       inputs: []
+      tags:
+      - resources
 
   - task: update-satis-dist
     config:
@@ -83,18 +89,24 @@ jobs:
         summary: Review the output within Concourse.
       inputs:
       - satis-build-check
+      tags:
+      - resources
     on_abort:
       put: satis-build-check
       params:
         conclusion: cancelled
       inputs:
       - satis-build-check
+      tags:
+      - resources
     on_error:
       put: satis-build-check
       params:
         conclusion: action_required
       inputs:
       - satis-build-check
+      tags:
+      - resources
 
   - in_parallel:
     - put: satis-build-check
@@ -104,8 +116,12 @@ jobs:
         summary: Satis successfully built the repository.
       inputs:
       - satis-build-check
+      tags:
+      - resources
     - put: s3-sync-check
       inputs: []
+      tags:
+      - resources
 
   - task: s3-sync
     config: (( load "tasks/aws/s3-sync.yml" ))
@@ -119,6 +135,8 @@ jobs:
         summary: Repository was successfully uploaded to AWS.
       inputs:
       - s3-sync-check
+      tags:
+      - resources
     on_failure:
       put: s3-sync-check
       params:
@@ -127,18 +145,24 @@ jobs:
         summary: Review the output within Concourse.
       inputs:
       - s3-sync-check
+      tags:
+      - resources
     on_abort:
       put: s3-sync-check
       params:
         conclusion: cancelled
       inputs:
       - s3-sync-check
+      tags:
+      - resources
     on_error:
       put: s3-sync-check
       params:
         conclusion: action_required
       inputs:
       - s3-sync-check
+      tags:
+      - resources
 
 - name: build-pull-request
   public: true

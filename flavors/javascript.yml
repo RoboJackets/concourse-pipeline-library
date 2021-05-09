@@ -8,6 +8,8 @@ resources:
   source:
     check_name: NPM Install
     resource_name: npm-install-check
+  tags:
+  - resources
 
 - name: npm-build-check
   public: true
@@ -16,6 +18,8 @@ resources:
   source:
     check_name: NPM Build
     resource_name: npm-build-check
+  tags:
+  - resources
 
 tasks:
 
@@ -24,6 +28,8 @@ tasks:
     do:
     - put: npm-install-check
       inputs: []
+      tags:
+      - resources
     - task: npm-ci-dev
       config: (( load "tasks/javascript/npm-ci-dev.yml" ))
       input_mapping:
@@ -48,8 +54,12 @@ tasks:
           conclusion: success
         inputs:
         - npm-install-check
+        tags:
+        - resources
       - put: npm-build-check
         inputs: []
+        tags:
+        - resources
     - task: npm-run-dev
       config: (( load "tasks/javascript/npm-run-dev.yml" ))
       input_mapping:
@@ -60,6 +70,8 @@ tasks:
           conclusion: success
         inputs:
         - npm-build-check
+        tags:
+        - resources
       on_failure:
         inject: (( inject tasks.javascript_build.do.3.on_success ))
         params:

@@ -34,6 +34,8 @@ jobs:
 
     - put: generate-check
       inputs: []
+      tags:
+      - resources
 
   - (( grab tasks.generate_pipelines ))
 
@@ -44,9 +46,13 @@ jobs:
         conclusion: success
       inputs:
       - generate-check
+      tags:
+      - resources
 
     - put: validate-check
       inputs: []
+      tags:
+      - resources
 
   - (( grab tasks.validate_pipelines ))
 
@@ -57,9 +63,13 @@ jobs:
         conclusion: success
       inputs:
       - validate-check
+      tags:
+      - resources
 
     - put: set-pipeline-check
       inputs: []
+      tags:
+      - resources
 
   - in_parallel: (( load "generated.yml" ))
 
@@ -69,6 +79,8 @@ jobs:
         conclusion: success
       inputs:
       - set-pipeline-check
+      tags:
+      - resources
     on_abort:
       inject: (( defer inject jobs.build-main.plan.10.on_success ))
       params:

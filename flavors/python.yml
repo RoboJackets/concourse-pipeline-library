@@ -11,6 +11,8 @@ resources:
   source:
     check_name: Poetry Install
     resource_name: poetry-install-check
+  tags:
+  - resources
 
 - name: mypy-check
   public: true
@@ -19,6 +21,8 @@ resources:
   source:
     check_name: mypy
     resource_name: mypy-check
+  tags:
+  - resources
 
 - name: flake8-check
   public: true
@@ -27,6 +31,8 @@ resources:
   source:
     check_name: flake8
     resource_name: flake8-check
+  tags:
+  - resources
 
 - name: pylint-check
   public: true
@@ -35,6 +41,8 @@ resources:
   source:
     check_name: pylint
     resource_name: pylint-check
+  tags:
+  - resources
 
 tasks:
 
@@ -49,6 +57,8 @@ tasks:
         conclusion: cancelled
       inputs:
       - poetry-install-check
+      tags:
+      - resources
     on_error:
       inject: (( inject tasks.poetry_install_dev.on_abort ))
       params:
@@ -68,6 +78,8 @@ tasks:
       summary: Poetry successfully installed development dependencies.
     inputs:
     - poetry-install-check
+    tags:
+    - resources
 
   flake8:
     do:

@@ -31,6 +31,8 @@ resources:
   source:
     check_name: Tests
     resource_name: tests-check
+  tags:
+  - resources
 
 tasks:
 
@@ -39,6 +41,8 @@ tasks:
     do:
     - put: tests-check
       inputs: []
+      tags:
+      - resources
     - task: test
       config: (( load "tasks/php/composer-run-test.yml" ))
       input_mapping:
@@ -51,6 +55,8 @@ tasks:
           summary: All tests passed
         inputs:
         - tests-check
+        tags:
+        - resources
       on_failure:
         inject: (( inject tasks.run_tests.do.1.on_success ))
         params:

@@ -9,6 +9,8 @@ resources:
     check_name: yamllint
     resource_name: yamllint-check
     annotations_format: yamllint
+  tags:
+  - resources
 
 tasks:
 

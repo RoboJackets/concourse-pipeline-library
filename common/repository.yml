@@ -25,6 +25,8 @@ resources:
     uri: (( concat "https://" repository.github "/RoboJackets/" repository.name ))
     username: x-access-token
   webhook_token: ((webhook-token))
+  tags:
+  - resources
 
 - name: pull-request
   type: pull-request
@@ -38,3 +40,5 @@ resources:
     v3_endpoint: (( concat "(( grab " repository.github ".rest_api_endpoint ))" ))
     v4_endpoint: (( concat "(( grab " repository.github ".graphql_api_endpoint ))" ))
   webhook_token: ((webhook-token))
+  tags:
+  - resources

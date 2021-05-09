@@ -8,6 +8,8 @@ resource_types:
     repository: mockersf/concourse-slack-notifier
   defaults:
     url: ((slack-webhook))
+  tags:
+  - resources
 
 resources:
 
@@ -16,6 +18,8 @@ resources:
   public: true
   type: slack
   icon: slack
+  tags:
+  - resources
 
 jobs:
 
@@ -26,6 +30,8 @@ jobs:
       alert_type: success
       mode: normal
     inputs: []
+    tags:
+    - resources
   on_failure:
     inject: (( concat "(( inject jobs.build-" repository.main_branch ".on_success ))" ))
     params:

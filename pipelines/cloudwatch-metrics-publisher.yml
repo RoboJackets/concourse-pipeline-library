@@ -34,6 +34,8 @@ resources:
     secret_access_key: ((aws/sts/sandbox.secret_key))
     session_token: ((aws/sts/sandbox.security_token))
     region_name: us-east-1
+  tags:
+  - resources
 
 - name: package
   type: s3
@@ -47,6 +49,8 @@ resources:
     region_name: us-east-1
     skip_download: true
     regexp: cloudwatch-metrics-publisher/package-v(?P<version>[0-9.]+)\.zip
+  tags:
+  - resources
 
 jobs:
 

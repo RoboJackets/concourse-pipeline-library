@@ -31,6 +31,8 @@ resources:
     repository: concourse
     access_token: (("github.com"/token.token))
   check_every: 1h
+  tags:
+  - resources
 
 jobs:
 

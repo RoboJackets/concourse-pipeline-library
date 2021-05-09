@@ -25,6 +25,8 @@ jobs:
 
   - put: build-check
     inputs: []
+    tags:
+    - resources
 
   - (( grab tasks.build_image ))
 
@@ -34,6 +36,8 @@ jobs:
 
     - put: push-check
       inputs: []
+      tags:
+      - resources
 
   - (( grab tasks.put_image ))
 

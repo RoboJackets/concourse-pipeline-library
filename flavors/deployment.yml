@@ -17,6 +17,8 @@ resource_types:
     token: (( concat "((\"" repository.github "\"/token.token))" ))
     resource_name: deployment
     environment_urls: (( grab deployment.environment_urls ))
+  tags:
+  - resources
 
 resources:
 
@@ -26,3 +28,5 @@ resources:
   public: true
   type: github-deployment
   icon: ferry
+  tags:
+  - resources

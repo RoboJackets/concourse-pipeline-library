@@ -8,6 +8,8 @@ resources:
   source:
     check_name: Generate Pipelines
     resource_name: generate-check
+  tags:
+  - resources
 
 - name: validate-check
   public: true
@@ -16,6 +18,8 @@ resources:
   source:
     check_name: Validate Pipelines
     resource_name: validate-check
+  tags:
+  - resources
 
 - name: set-pipeline-check
   public: true
@@ -24,6 +28,8 @@ resources:
   source:
     check_name: Set Pipelines
     resource_name: set-pipeline-check
+  tags:
+  - resources
 
 tasks:
 
@@ -38,6 +44,8 @@ tasks:
         conclusion: cancelled
       inputs:
       - generate-check
+      tags:
+      - resources
     on_error:
       inject: (( inject tasks.generate_pipelines.on_abort ))
       params:
@@ -58,6 +66,8 @@ tasks:
         conclusion: cancelled
       inputs:
       - validate-check
+      tags:
+      - resources
     on_error:
       inject: (( inject tasks.validate_pipelines.on_abort ))
       params:

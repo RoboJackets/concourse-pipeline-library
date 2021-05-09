@@ -17,6 +17,8 @@ resource_types:
     repository_url: (( concat "(( grab resources." repository.name ".source.uri ))" ))
     commit: ((.:commit))
     token: (( concat "((\"" repository.github "\"/token.token))" ))
+  tags:
+  - resources
 
 - name: github-webhook
   type: registry-image
@@ -32,6 +34,8 @@ resource_types:
         events:
         - push
         - pull_request
+  tags:
+  - resources
 
 resources:
 
@@ -41,6 +45,8 @@ resources:
   public: true
   type: github-webhook
   icon: webhook
+  tags:
+  - resources
 
 jobs:
 

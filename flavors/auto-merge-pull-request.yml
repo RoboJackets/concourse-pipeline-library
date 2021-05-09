@@ -12,6 +12,8 @@ resource_types:
     pull_request_url: ((.:pull_request_url))
     commit: ((.:commit))
     token: (( concat "((\"" repository.github "\"/token.token))" ))
+  tags:
+  - resources
 
 - name: github-merge
   type: registry-image
@@ -22,6 +24,8 @@ resource_types:
     pull_request_url: ((.:pull_request_url))
     commit: ((.:commit))
     token: (( concat "((\"" repository.github "\"/token.token))" ))
+  tags:
+  - resources
 
 resources:
 
@@ -31,11 +35,15 @@ resources:
   public: true
   type: github-approval
   icon: check-circle
+  tags:
+  - resources
 
 - name: merge-pull-request
   public: true
   type: github-merge
   icon: source-merge
+  tags:
+  - resources
 
 jobs:
 
@@ -46,6 +54,10 @@ jobs:
 
   - put: approve-pull-request
     inputs: []
+    tags:
+    - resources
 
   - put: merge-pull-request
     inputs: []
+    tags:
+    - resources
