@@ -24,6 +24,7 @@ run:
   - -e
   - -o
   - pipefail
+  - -x
   - -c
   - >-
       (( concat "python -m pylint --output-format=json " python.pathspec

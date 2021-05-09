@@ -23,6 +23,7 @@ run:
   - -e
   - -o
   - pipefail
+  - -x
   - -c
   - >-
       (( concat

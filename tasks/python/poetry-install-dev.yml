@@ -24,6 +24,7 @@ run:
   - -e
   - -o
   - pipefail
+  - -x
   - -c
   - >-
       poetry export --format requirements.txt --dev --without-hashes |

@@ -22,5 +22,6 @@ run:
   - -e
   - -o
   - pipefail
+  - -x
   - -c
   - tools/validate.sh

@@ -20,5 +20,6 @@ run:
   - -e
   - -o
   - pipefail
+  - -x
   - -c
   - yamllint --strict --format parsable . | tee ../yamllint/output.txt

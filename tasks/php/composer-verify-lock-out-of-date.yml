@@ -16,6 +16,7 @@ run:
   args:
   - -o
   - pipefail
+  - -x
   - -c
   - >-
       composer install --dry-run --no-interaction --no-progress

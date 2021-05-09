@@ -22,6 +22,7 @@ run:
   - -e
   - -o
   - pipefail
+  - -x
   - -c
   - >-
       poetry install --no-dev --no-ansi --no-interaction &&
