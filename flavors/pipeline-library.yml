@@ -44,8 +44,6 @@ tasks:
         conclusion: cancelled
       inputs:
       - generate-check
-      tags:
-      - resources
     on_error:
       inject: (( inject tasks.generate_pipelines.on_abort ))
       params:
@@ -66,8 +64,6 @@ tasks:
         conclusion: cancelled
       inputs:
       - validate-check
-      tags:
-      - resources
     on_error:
       inject: (( inject tasks.validate_pipelines.on_abort ))
       params:

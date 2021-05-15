@@ -30,8 +30,6 @@ jobs:
 
       - put: build-check
         inputs: []
-        tags:
-        - resources
 
       - (( grab tasks.build_image ))
 
@@ -41,8 +39,6 @@ jobs:
 
       - put: poetry-install-check
         inputs: []
-        tags:
-        - resources
 
       - (( grab tasks.poetry_install_dev ))
 
@@ -58,8 +54,6 @@ jobs:
 
   - put: push-check
     inputs: []
-    tags:
-    - resources
 
   - (( grab tasks.put_image ))
 
@@ -85,8 +79,6 @@ jobs:
 
       - put: build-check
         inputs: []
-        tags:
-        - resources
 
       - inject: (( inject tasks.build_image ))
         input_mapping:
@@ -98,8 +90,6 @@ jobs:
 
       - put: poetry-install-check
         inputs: []
-        tags:
-        - resources
 
       - inject: (( inject tasks.poetry_install_dev ))
         input_mapping:

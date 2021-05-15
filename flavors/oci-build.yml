@@ -72,8 +72,6 @@ tasks:
         conclusion: cancelled
       inputs:
       - build-check
-      tags:
-      - resources
     on_error:
       inject: (( inject tasks.build_image.on_abort ))
       params:
@@ -93,8 +91,6 @@ tasks:
       summary: The OCI image was built successfully.
     inputs:
     - build-check
-    tags:
-    - resources
 
   put_image:
     put: image
@@ -108,8 +104,6 @@ tasks:
         conclusion: cancelled
       inputs:
       - push-check
-      tags:
-      - resources
     on_error:
       inject: (( inject tasks.put_image.on_abort ))
       params:

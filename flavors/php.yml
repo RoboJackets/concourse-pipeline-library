@@ -40,8 +40,6 @@ tasks:
       summary: Composer successfully installed development dependencies.
     inputs:
     - composer-install-check
-    tags:
-    - resources
 
   composer_install_dev:
 
@@ -64,24 +62,18 @@ tasks:
         summary: Review the output within Concourse.
       inputs:
       - composer-install-check
-      tags:
-      - resources
     on_abort:
       put: composer-install-check
       params:
         conclusion: cancelled
       inputs:
       - composer-install-check
-      tags:
-      - resources
     on_error:
       put: composer-install-check
       params:
         conclusion: action_required
       inputs:
       - composer-install-check
-      tags:
-      - resources
 
   php_build:
 
@@ -89,8 +81,6 @@ tasks:
 
     - put: composer-install-check
       inputs: []
-      tags:
-      - resources
 
     - (( grab tasks.composer_install_dev ))
 

@@ -30,8 +30,6 @@ jobs:
       alert_type: success
       mode: normal
     inputs: []
-    tags:
-    - resources
   on_failure:
     inject: (( concat "(( inject jobs.build-" repository.main_branch ".on_success ))" ))
     params:

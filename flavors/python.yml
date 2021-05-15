@@ -57,8 +57,6 @@ tasks:
         conclusion: cancelled
       inputs:
       - poetry-install-check
-      tags:
-      - resources
     on_error:
       inject: (( inject tasks.poetry_install_dev.on_abort ))
       params:
@@ -78,8 +76,6 @@ tasks:
       summary: Poetry successfully installed development dependencies.
     inputs:
     - poetry-install-check
-    tags:
-    - resources
 
   flake8:
     do:

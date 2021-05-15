@@ -54,10 +54,6 @@ jobs:
 
   - put: approve-pull-request
     inputs: []
-    tags:
-    - resources
 
   - put: merge-pull-request
     inputs: []
-    tags:
-    - resources
