@@ -28,4 +28,4 @@ run:
   - -c
   - >-
       (( concat "python -m pylint --output-format=json " python.pathspec
-      "| tee ../pylint/output.json" ))
+      " | tee ../pylint/output.json" ))

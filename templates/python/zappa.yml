@@ -1,0 +1,142 @@
+---
+disable_forks: false
+
+aws:
+  credentials: (( param "What AWS credentials should be used?" ))
+
+deployment:
+  automatic_deployment_environment: (( param "Which environment should deploy automatically?" ))
+
+merge:
+- flavors/deployment.yml
+- flavors/python.yml
+
+groups:
+- name: (( grab repository.main_branch ))
+  jobs:
+  - (( append ))
+  - (( concat "deploy-" deployment.automatic_deployment_environment ))
+
+jobs:
+
+- name: (( concat "build-" repository.main_branch ))
+  public: true
+  plan:
+
+  - get: (( grab repository.name ))
+    trigger: true
+
+  - (( grab tasks.get_commit_sha ))
+
+  - (( grab tasks.load_var_from_git ))
+
+  - put: poetry-install-check
+    inputs: []
+
+  - (( grab tasks.poetry_install_dev ))
+
+  - in_parallel:
+
+    - (( grab tasks.put_poetry_install_check ))
+
+    - (( grab tasks.flake8 ))
+
+    - (( grab tasks.pylint ))
+
+    - (( grab tasks.mypy ))
+
+- name: build-pull-request
+  public: true
+  plan:
+
+  - get: pull-request
+    trigger: true
+
+  - (( grab tasks.load_var_from_pull_request ))
+
+  - put: poetry-install-check
+    inputs: []
+
+  - inject: (( inject tasks.poetry_install_dev ))
+    input_mapping:
+      source: pull-request
+
+  - in_parallel:
+
+    - inject: (( inject tasks.put_poetry_install_check ))
+
+    - inject: (( inject tasks.flake8 ))
+      do:
+      - (( defer inline ))
+      - {}
+      - input_mapping:
+          source: pull-request
+
+    - inject: (( inject tasks.pylint ))
+      do:
+      - (( defer inline ))
+      - {}
+      - input_mapping:
+          source: pull-request
+
+    - inject: (( inject tasks.mypy ))
+      do:
+      - (( defer inline ))
+      - {}
+      - input_mapping:
+          source: pull-request
+
+- name: (( concat "deploy-" deployment.automatic_deployment_environment ))
+  public: true
+  plan:
+
+  - get: (( grab repository.name ))
+    trigger: true
+    passed:
+    - (( concat "build-" repository.main_branch ))
+
+  - (( grab tasks.get_commit_sha ))
+
+  - (( grab tasks.load_var_from_git ))
+
+  - put: deployment
+    params:
+      environment: production
+    inputs: []
+
+  - in_parallel:
+    - put: deployment
+      params:
+        state: in_progress
+      inputs:
+      - deployment
+
+    - task: zappa-update
+      config: (( load "tasks/python/zappa-update.yml" ))
+      input_mapping:
+        source: (( grab repository.name ))
+
+  on_success:
+    put: deployment
+    params:
+      state: success
+    inputs:
+    - deployment
+  on_failure:
+    put: deployment
+    params:
+      state: failure
+    inputs:
+    - deployment
+  on_abort:
+    put: deployment
+    params:
+      state: error
+    inputs:
+    - deployment
+  on_error:
+    put: deployment
+    params:
+      state: error
+    inputs:
+    - deployment

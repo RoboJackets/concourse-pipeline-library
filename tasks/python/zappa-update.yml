@@ -8,9 +8,9 @@ image_resource:
     inject: (( inject registry.private.source ))
 
 params:
-  AWS_ACCESS_KEY_ID: ((((aws-credentials)).access_key))
-  AWS_SECRET_ACCESS_KEY: ((((aws-credentials)).secret_key))
-  AWS_SESSION_TOKEN: ((((aws-credentials)).security_token))
+  AWS_ACCESS_KEY_ID: (( concat "((aws/sts/" aws.credentials ".access_key))" ))
+  AWS_SECRET_ACCESS_KEY: (( concat "((aws/sts/" aws.credentials ".secret_key))" ))
+  AWS_SESSION_TOKEN: (( concat "((aws/sts/" aws.credentials ".security_token))" ))
 
 inputs:
 - name: source
@@ -26,4 +26,4 @@ run:
   - -c
   - >-
       poetry install --no-dev --no-ansi --no-interaction &&
-      poetry run zappa update ((stage)) --disable_progress
+      poetry run zappa update production --disable_progress

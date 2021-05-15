@@ -1,7 +1,9 @@
 ---
 groups:
+- (( merge ))
 - name: (( grab repository.main_branch ))
   jobs:
+  - (( append ))
   - (( concat "build-" repository.main_branch ))
 - name: pull-request
   jobs:
