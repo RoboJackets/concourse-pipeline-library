@@ -5,13 +5,7 @@ set -o pipefail
 set -x
 
 generate_pipeline () {
-  if test -f "go-patch/$3.yml"
-  then
-    GOPATCH="go-patch/$3.yml"
-  else
-    GOPATCH=""
-  fi
-  spruce merge templates/$1.yml $(yq --raw-output ".merge[]" templates/$1.yml) common/*.yml $2 | spruce merge --go-patch - $GOPATCH > generated/$3.yml
+  spruce merge templates/$1.yml $(yq --raw-output ".merge[]" templates/$1.yml) common/*.yml $2 | spruce merge > generated/$3.yml
 }
 
 rm -f generated.yml

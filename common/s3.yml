@@ -1,0 +1,8 @@
+---
+s3:
+  source:
+    bucket: robojackets-sandbox-concourse-artifacts
+    access_key_id: ((aws/sts/sandbox.access_key))
+    secret_access_key: ((aws/sts/sandbox.secret_key))
+    session_token: ((aws/sts/sandbox.security_token))
+    region_name: us-east-1
