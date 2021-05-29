@@ -1,0 +1,19 @@
+---
+template: python/lambda
+
+repository:
+  name: concourse-dispatch
+  github: github.com
+  main_branch: main
+
+python:
+  pathspec: concourse_dispatch.py
+
+artifact:
+  prefix: dispatch/
+
+resource_types:
+- name: github-webhook
+  defaults:
+    resources:
+      concourse-dispatch: (( grab webhook_configuration ))
