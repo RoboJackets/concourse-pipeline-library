@@ -18,7 +18,7 @@ tasks:
     task: yamllint
     config: (( load "tasks/python/yamllint.yml" ))
     input_mapping:
-      source: concourse-pipeline-library
+      source: (( grab repository.name ))
     on_failure:
       put: yamllint-check
       params:

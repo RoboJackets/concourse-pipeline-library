@@ -1,0 +1,13 @@
+---
+template: markdown
+
+repository:
+  name: membership-agreement
+  github: github.com
+  main_branch: main
+
+resource_types:
+- name: github-webhook
+  defaults:
+    resources:
+      membership-agreement: (( grab webhook_configuration ))

@@ -1,0 +1,22 @@
+---
+template: php/on-premises
+
+repository:
+  name: nextcloud-auth
+  github: github.gatech.edu
+  main_branch: master
+
+deployment:
+  automatic_deployment_environment: production
+  environment_urls:
+    production: https://cloud.robojackets.org
+
+php:
+  codesniffer_config: vendor/robojackets/static-analysis/defaults/phpcs.xml
+  phpstan_config: phpstan.neon
+
+resource_types:
+- name: github-webhook
+  defaults:
+    resources:
+      nextcloud-auth: (( grab webhook_configuration ))

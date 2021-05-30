@@ -1,0 +1,25 @@
+---
+template: php/bref
+
+repository:
+  name: meraki-idp
+  github: github.gatech.edu
+  main_branch: main
+
+deployment:
+  automatic_deployment_environment: production
+  environment_urls:
+    production: https://meraki.robojackets.org
+
+php:
+  codesniffer_config: vendor/robojackets/static-analysis/defaults/phpcs.xml
+  phpstan_config: vendor/robojackets/static-analysis/defaults/phpstan.neon
+
+aws:
+  credentials: gatech
+
+resource_types:
+- name: github-webhook
+  defaults:
+    resources:
+      meraki-idp: (( grab webhook_configuration ))

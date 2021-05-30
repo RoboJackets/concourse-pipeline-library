@@ -1,0 +1,127 @@
+---
+disable_forks: false
+
+merge:
+- flavors/yaml.yml
+
+resources:
+
+- name: markdownlint-check
+  public: true
+  type: github-check
+  icon: check
+  source:
+    check_name: markdownlint
+    resource_name: markdownlint-check
+    annotations_format: markdownlint
+
+jobs:
+
+- name: (( concat "build-" repository.main_branch ))
+  public: true
+  plan:
+
+  - get: (( grab repository.name ))
+    trigger: true
+
+  - (( grab tasks.get_commit_sha ))
+
+  - (( grab tasks.load_var_from_git ))
+
+  - in_parallel:
+
+    - do:
+
+      - put: yamllint-check
+        inputs: []
+
+      - (( grab tasks.yamllint ))
+
+      - put: yamllint-check
+        params:
+          conclusion: success
+        inputs:
+        - yamllint
+        - yamllint-check
+
+    - do:
+
+      - put: markdownlint-check
+        inputs: []
+
+      - task: markdownlint
+        config: (( load "tasks/javascript/markdownlint.yml" ))
+        input_mapping:
+          source: (( grab repository.name ))
+        on_success: &mdlc
+          put: markdownlint-check
+          params:
+            conclusion: success
+          inputs:
+          - markdownlint
+          - markdownlint-check
+        on_failure:
+          <<: *mdlc
+          params:
+            conclusion: failure
+        on_abort:
+          <<: *mdlc
+          params:
+            conclusion: cancelled
+        on_error:
+          <<: *mdlc
+          params:
+            conclusion: action_required
+
+- name: build-pull-request
+  public: true
+  plan:
+
+  - get: pull-request
+    trigger: true
+
+  - (( grab tasks.load_var_from_pull_request ))
+
+  - in_parallel:
+
+    - do:
+
+      - put: yamllint-check
+        inputs: []
+
+      - inject: (( inject tasks.yamllint ))
+        input_mapping:
+          source: pull-request
+
+      - put: yamllint-check
+        params:
+          conclusion: success
+        inputs:
+        - yamllint
+        - yamllint-check
+
+    - do:
+
+      - put: markdownlint-check
+        inputs: []
+
+      - task: markdownlint
+        config: (( load "tasks/javascript/markdownlint.yml" ))
+        input_mapping:
+          source: pull-request
+        on_success:
+          <<: *mdlc
+          params:
+            conclusion: success
+        on_failure:
+          <<: *mdlc
+          params:
+            conclusion: failure
+        on_abort:
+          <<: *mdlc
+          params:
+            conclusion: cancelled
+        on_error:
+          <<: *mdlc
+          params:
+            conclusion: action_required

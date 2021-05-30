@@ -1,0 +1,25 @@
+---
+template: php/bref
+
+repository:
+  name: aws-idp
+  github: github.gatech.edu
+  main_branch: main
+
+deployment:
+  automatic_deployment_environment: production
+  environment_urls:
+    production: https://aws.robojackets.org
+
+php:
+  codesniffer_config: vendor/robojackets/static-analysis/defaults/phpcs.xml
+  phpstan_config: vendor/robojackets/static-analysis/defaults/phpstan.neon
+
+aws:
+  credentials: gatech
+
+resource_types:
+- name: github-webhook
+  defaults:
+    resources:
+      aws-idp: (( grab webhook_configuration ))

@@ -1,0 +1,13 @@
+---
+template: markdown
+
+repository:
+  name: technical-writing
+  github: github.com
+  main_branch: gh-pages
+
+resource_types:
+- name: github-webhook
+  defaults:
+    resources:
+      technical-writing: (( grab webhook_configuration ))

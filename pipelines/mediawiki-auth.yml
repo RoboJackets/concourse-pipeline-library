@@ -1,0 +1,22 @@
+---
+template: php/on-premises
+
+repository:
+  name: mediawiki-auth
+  github: github.gatech.edu
+  main_branch: master
+
+deployment:
+  automatic_deployment_environment: production
+  environment_urls:
+    production: https://wiki.robojackets.org/Special:UserLogin
+
+php:
+  codesniffer_config: vendor/robojackets/static-analysis/defaults/phpcs.xml
+  phpstan_config: phpstan.neon
+
+resource_types:
+- name: github-webhook
+  defaults:
+    resources:
+      mediawiki-auth: (( grab webhook_configuration ))

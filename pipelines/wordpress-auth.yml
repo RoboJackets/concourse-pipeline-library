@@ -1,0 +1,22 @@
+---
+template: php/on-premises
+
+repository:
+  name: wordpress-auth
+  github: github.gatech.edu
+  main_branch: master
+
+deployment:
+  automatic_deployment_environment: production
+  environment_urls:
+    production: https://robojackets.org/wp-login.php
+
+php:
+  codesniffer_config: vendor/robojackets/static-analysis/defaults/phpcs.xml
+  phpstan_config: phpstan.neon
+
+resource_types:
+- name: github-webhook
+  defaults:
+    resources:
+      wordpress-auth: (( grab webhook_configuration ))

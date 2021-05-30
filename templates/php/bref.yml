@@ -1,0 +1,181 @@
+---
+disable_forks: false
+
+aws:
+  credentials: (( param "What AWS credentials should be used?" ))
+
+deployment:
+  automatic_deployment_environment: (( param "Which environment should deploy automatically?" ))
+
+merge:
+- flavors/deployment.yml
+- flavors/javascript.yml
+- flavors/php-analysis.yml
+- flavors/php.yml
+
+groups:
+
+- name: (( grab repository.main_branch ))
+  jobs:
+  - (( append ))
+  - (( concat "deploy-" deployment.automatic_deployment_environment ))
+
+jobs:
+
+- name: (( concat "build-" repository.main_branch ))
+  public: true
+  plan:
+
+  - in_parallel:
+
+    - do:
+
+      - get: (( grab repository.name ))
+        trigger: true
+
+      - (( grab tasks.get_commit_sha ))
+
+      - (( grab tasks.load_var_from_git ))
+
+  - (( grab tasks.php_build ))
+
+- name: build-pull-request
+  public: true
+  plan:
+
+  - in_parallel:
+
+    - do:
+
+      - get: pull-request
+        trigger: true
+
+      - (( grab tasks.load_var_from_pull_request ))
+
+      - (( grab tasks.load_pull_request_url ))
+
+  - inject: (( inject tasks.php_build ))
+    do:
+
+    - (( defer inline ))
+
+    - {}
+
+    - in_parallel:
+
+      - (( defer inline ))
+
+      - input_mapping:
+          source: pull-request
+
+      - input_mapping:
+          source: pull-request
+
+    - in_parallel:
+
+      - (( defer inline ))
+
+      - {}
+
+      - do:
+
+        - (( defer inline ))
+
+        - {}
+
+        - input_mapping:
+            source: pull-request
+
+      - do:
+
+        - (( defer inline ))
+
+        - {}
+
+        - input_mapping:
+            source: pull-request
+
+      - do:
+
+        - (( defer inline ))
+
+        - {}
+
+        - input_mapping:
+            source: pull-request
+
+      - do:
+
+        - (( defer inline ))
+
+        - {}
+
+        - input_mapping:
+            source: pull-request
+
+- name: (( concat "deploy-" deployment.automatic_deployment_environment ))
+  public: true
+  plan:
+
+  - get: (( grab repository.name ))
+    trigger: true
+    passed:
+    - (( concat "build-" repository.main_branch ))
+
+  - (( grab tasks.get_commit_sha ))
+
+  - (( grab tasks.load_var_from_git ))
+
+  - in_parallel:
+
+    - put: deployment
+      params:
+        environment: production
+      inputs: []
+
+    - task: npm-ci-dev
+      config: (( load "tasks/javascript/npm-ci-dev.yml" ))
+      input_mapping:
+        source: (( grab repository.name))
+
+    - task: composer-install-no-dev
+      config: (( load "tasks/php/composer-install-no-dev.yml" ))
+      input_mapping:
+        source: (( grab repository.name))
+
+  - in_parallel:
+    - put: deployment
+      params:
+        state: in_progress
+      inputs:
+      - deployment
+
+    - task: serverless-deploy
+      config: (( load "tasks/php/serverless-deploy.yml" ))
+      input_mapping:
+        source: (( grab repository.name))
+
+  on_success:
+    put: deployment
+    params:
+      state: success
+    inputs:
+    - deployment
+  on_failure:
+    put: deployment
+    params:
+      state: failure
+    inputs:
+    - deployment
+  on_abort:
+    put: deployment
+    params:
+      state: error
+    inputs:
+    - deployment
+  on_error:
+    put: deployment
+    params:
+      state: error
+    inputs:
+    - deployment
