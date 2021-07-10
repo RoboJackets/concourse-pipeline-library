@@ -44,6 +44,10 @@ resource_types:
         github_uri: https://github.gatech.edu/RoboJackets/gatech-mediawiki-auth
         events:
         - release
+      meilisearch-index-settings-helper:
+        github_uri: https://github.gatech.edu/RoboJackets/meilisearch-index-settings-helper
+        events:
+        - release
 
 resources:
 
@@ -94,6 +98,11 @@ resources:
   source:
     repository: gatech-mediawiki-auth
 
+- name: meilisearch-index-settings-helper
+  inject: (( inject resources.apiary-user ))
+  source:
+    repository: meilisearch-index-settings-helper
+
 jobs:
 - name: (( concat "build-" repository.main_branch ))
   plan:
@@ -123,4 +132,7 @@ jobs:
       trigger: true
 
     - get: gatech-mediawiki-auth
+      trigger: true
+
+    - get: meilisearch-index-settings-helper
       trigger: true
