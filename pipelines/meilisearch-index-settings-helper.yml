@@ -8,7 +8,7 @@ repository:
 
 php:
   codesniffer_config: vendor/robojackets/static-analysis/defaults/phpcs.xml
-  phpstan_config: vendor/robojackets/static-analysis/defaults/phpstan.neon
+  phpstan_config: phpstan.neon
 
 resource_types:
 - name: github-webhook
