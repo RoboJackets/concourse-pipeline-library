@@ -23,7 +23,9 @@ resource_types:
 
 resources:
 
-- name: docker-build
+- (( merge on name ))
+
+- name: (( grab repository.name ))
   source:
     paths:
     - ci/dockerfiles/mjackets-build/Dockerfile
