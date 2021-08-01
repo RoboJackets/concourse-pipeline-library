@@ -39,4 +39,4 @@ tasks:
 
   build_image:
     params:
-      CONTEXT: mjackets-api/ci/dockerfiles/mjackets-build
+      CONTEXT: source/ci/dockerfiles/mjackets-build
