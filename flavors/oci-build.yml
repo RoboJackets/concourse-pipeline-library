@@ -28,7 +28,8 @@ resources:
   public: true
   icon: docker
   source:
-    repository: (( concat "(( join "/" registry." destination.registry ".hostname "robojackets" destination.repository ))" ))
+    repository: >-
+      (( concat "(( join "/" registry." destination.registry ".hostname "robojackets" destination.repository ))" ))
     tag: latest
     inject: (( concat "(( inject registry." destination.registry ".source ))" ))
   tags:

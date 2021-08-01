@@ -28,6 +28,11 @@ resources:
     paths:
     - ci/dockerfiles/mjackets-build/Dockerfile
 
+- name: pull-request
+  source:
+    paths:
+    - ci/dockerfiles/mjackets-build/Dockerfile
+
 tasks:
 
   build_image:
