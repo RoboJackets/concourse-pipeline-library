@@ -5,6 +5,11 @@ base_image:
   tag: (( param "What tag is used?" ))
   icon: (( param "Which icon should be displayed?" ))
 
+destination:
+
+  registry: private
+  repository: (( grab repository.name ))
+
 resources:
 
 - name: (( grab base_image.repository ))
@@ -23,9 +28,9 @@ resources:
   public: true
   icon: docker
   source:
-    repository: (( join "/" registry.private.hostname "robojackets" repository.name ))
+    repository: (( concat "(( join "/" registry." destination.registry ".hostname "robojackets" destination.repository ))" ))
     tag: latest
-    inject: (( inject registry.private.source ))
+    inject: (( concat "(( inject registry." destination.registry ".source ))" ))
   tags:
   - resources
 

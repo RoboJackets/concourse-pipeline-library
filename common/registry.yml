@@ -7,3 +7,8 @@ registry:
     aws_secret_access_key: ((aws/sts/ecr.secret_key))
     aws_session_token: ((aws/sts/ecr.security_token))
     aws_region: us-east-1
+- name: dockerhub
+  hostname: []
+  source:
+    username: ((kv/"hub.docker.com".username))
+    password: ((kv/"hub.docker.com".password))

@@ -1,0 +1,35 @@
+---
+template: oci-build
+
+repository:
+  name: mjackets-api
+  github: github.com
+  main_branch: master
+
+base_image:
+  repository: ubuntu
+  tag: "20.04"
+  icon: ubuntu
+
+destination:
+  registry: dockerhub
+  repository: mjackets-dev
+
+resource_types:
+- name: github-webhook
+  defaults:
+    resources:
+      php-build: (( grab webhook_configuration ))
+
+resources:
+
+- name: docker-build
+  source:
+    paths:
+    - ci/dockerfiles/mjackets-build/Dockerfile
+
+tasks:
+
+  build_image:
+    params:
+      CONTEXT: mjackets-api/ci/dockerfiles/mjackets-build

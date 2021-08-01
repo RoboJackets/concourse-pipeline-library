@@ -15,24 +15,29 @@ generate_pipeline () {  if test -f "go-patch/$3.yml"
 
 rm -f generated.yml
 
-for pipeline_file in pipelines/*.yml
+for team in pipelines/*
 do
-  template_name=$(yq --raw-output .template $pipeline_file)
-  pipeline_name=$(echo $pipeline_file | python3 tools/grab_pipeline_name.py)
+  for pipeline_file in $team/*.yml
+  do
+    template_name=$(yq --raw-output .template $pipeline_file)
+    pipeline_name=$(echo $pipeline_file | python3 tools/parse_filename.py pipeline)
+    team_name=$(echo $pipeline_file | python3 tools/parse_filename.py team)
 
-  echo "- set_pipeline: $pipeline_name" >> generated.yml
-  echo "  file: generated/$pipeline_name.yml" >> generated.yml
+    echo "- set_pipeline: $pipeline_name" >> generated.yml
+    echo "  file: generated/$pipeline_name.yml" >> generated.yml
+    echo "  team: $team_name" >> generated.yml
 
-  if [ $pipeline_name == "pipeline-library" ]
-  then
-    continue
-  fi
+    if [ $pipeline_name == "pipeline-library" ]
+    then
+      continue
+    fi
 
-  generate_pipeline $template_name $pipeline_file $pipeline_name
+    generate_pipeline $template_name $pipeline_file $pipeline_name
+  done
 done
 
-pipeline_file=pipelines/pipeline-library.yml
+pipeline_file=pipelines/main/pipeline-library.yml
 template_name=$(yq --raw-output .template $pipeline_file)
-pipeline_name=$(echo $pipeline_file | python3 tools/grab_pipeline_name.py)
+pipeline_name=$(echo $pipeline_file | python3 tools/parse_filename.py pipeline)
 
 generate_pipeline $template_name $pipeline_file $pipeline_name
