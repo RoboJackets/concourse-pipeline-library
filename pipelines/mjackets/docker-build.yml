@@ -19,7 +19,7 @@ resource_types:
 - name: github-webhook
   defaults:
     resources:
-      docker-build: (( grab webhook_configuration ))
+      mjackets-api: (( grab webhook_configuration ))
 
 resources:
 
