@@ -19,7 +19,7 @@ resource_types:
 - name: github-webhook
   defaults:
     resources:
-      php-build: (( grab webhook_configuration ))
+      docker-build: (( grab webhook_configuration ))
 
 resources:
 
