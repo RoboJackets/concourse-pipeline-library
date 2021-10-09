@@ -1,0 +1,22 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: openpolicyagent/opa
+
+inputs:
+- name: source
+
+run:
+  path: /opa
+  dir: source
+  args:
+  - test
+  - .
+  - --bundle
+  - --coverage
+  - --threshold
+  - "100"
+  - --verbose

@@ -1,0 +1,17 @@
+---
+template: opa
+
+aws:
+  credentials: sandbox
+  target: s3://robojackets-concourse-policies-20211009194133406800000001
+
+repository:
+  name: concourse-policies
+  github: github.com
+  main_branch: main
+
+resource_types:
+- name: github-webhook
+  defaults:
+    resources:
+      concourse-policies: (( grab webhook_configuration ))

@@ -1,0 +1,29 @@
+---
+aws:
+
+  target: (( param "Where should the bundle be uploaded?" ))
+
+resources:
+
+tasks:
+
+  build:
+    task: build
+    config: (( load "tasks/opa/build.yml" ))
+    input_mapping:
+      source: (( grab repository.name ))
+    timeout: 1m
+
+  fmt:
+    task: fmt
+    config: (( load "tasks/opa/fmt.yml" ))
+    input_mapping:
+      source: (( grab repository.name ))
+    timeout: 1m
+
+  test:
+    task: test
+    config: (( load "tasks/opa/test.yml" ))
+    input_mapping:
+      source: (( grab repository.name ))
+    timeout: 1m
