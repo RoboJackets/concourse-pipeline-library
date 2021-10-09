@@ -3,8 +3,6 @@ aws:
 
   target: (( param "Where should the bundle be uploaded?" ))
 
-resources:
-
 tasks:
 
   build:
