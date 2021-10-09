@@ -26,8 +26,6 @@ jobs:
   - get: (( grab repository.name ))
     trigger: true
 
-  - (( grab tasks.get_commit_sha ))
-
   - (( grab tasks.load_var_from_git ))
 
   - put: poetry-install-check
@@ -94,8 +92,6 @@ jobs:
     trigger: true
     passed:
     - (( concat "build-" repository.main_branch ))
-
-  - (( grab tasks.get_commit_sha ))
 
   - (( grab tasks.load_var_from_git ))
 

@@ -14,8 +14,6 @@ jobs:
   - get: (( grab repository.name ))
     trigger: true
 
-  - (( grab tasks.get_commit_sha ))
-
   - (( grab tasks.load_var_from_git ))
 
   - put: yamllint-check
@@ -70,15 +68,15 @@ jobs:
       inputs:
       - set-pipeline-check
     on_abort:
-      inject: (( defer inject jobs.build-main.plan.10.on_success ))
+      inject: (( defer inject jobs.build-main.plan.9.on_success ))
       params:
         conclusion: cancelled
     on_error:
-      inject: (( defer inject jobs.build-main.plan.10.on_success ))
+      inject: (( defer inject jobs.build-main.plan.9.on_success ))
       params:
         conclusion: action_required
     on_failure:
-      inject: (( defer inject jobs.build-main.plan.10.on_success ))
+      inject: (( defer inject jobs.build-main.plan.9.on_success ))
       params:
         conclusion: failure
 
@@ -91,22 +89,22 @@ jobs:
 
   - (( grab tasks.load_var_from_pull_request ))
 
-  - (( defer grab jobs.build-main.plan.3 ))
+  - (( defer grab jobs.build-main.plan.2 ))
 
-  - inject: (( defer inject jobs.build-main.plan.4 ))
+  - inject: (( defer inject jobs.build-main.plan.3 ))
     input_mapping:
       source: pull-request
 
-  - (( defer grab jobs.build-main.plan.5 ))
+  - (( defer grab jobs.build-main.plan.4 ))
 
-  - inject: (( defer inject jobs.build-main.plan.6 ))
+  - inject: (( defer inject jobs.build-main.plan.5 ))
     input_mapping:
       source: pull-request
 
-  - (( defer grab jobs.build-main.plan.7 ))
+  - (( defer grab jobs.build-main.plan.6 ))
 
-  - inject: (( defer inject jobs.build-main.plan.8 ))
+  - inject: (( defer inject jobs.build-main.plan.7 ))
     input_mapping:
       source: pull-request
 
-  - (( defer grab jobs.build-main.plan.9.in_parallel.0 ))
+  - (( defer grab jobs.build-main.plan.8.in_parallel.0 ))

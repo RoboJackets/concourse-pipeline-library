@@ -1,15 +1,9 @@
 ---
 tasks:
 
-  get_commit_sha:
-    task: get-commit-sha
-    config: (( load "tasks/get-commit-sha.yml" ))
-    input_mapping:
-      source: (( grab repository.name ))
-
   load_var_from_git:
     load_var: commit
-    file: commit-sha/value
+    file: (( concat repository.name "/.git/ref" ))
     format: trim
     reveal: true
 

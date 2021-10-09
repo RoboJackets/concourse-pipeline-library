@@ -22,8 +22,6 @@ jobs:
       - get: (( grab repository.name ))
         trigger: true
 
-      - (( grab tasks.get_commit_sha ))
-
       - (( grab tasks.load_var_from_git ))
 
   - (( grab tasks.php_build ))
