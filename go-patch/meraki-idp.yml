@@ -1,6 +1,0 @@
----
-- type: remove
-  path: /resources/name=npm-install-check
-
-- type: remove
-  path: /resources/name=npm-build-check
