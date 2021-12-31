@@ -7,7 +7,6 @@ image_resource:
     repository: openpolicyagent/opa
     tag: latest
 
-
 inputs:
 - name: source
 
