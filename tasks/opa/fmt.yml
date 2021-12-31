@@ -5,6 +5,7 @@ image_resource:
   type: registry-image
   source:
     repository: openpolicyagent/opa
+    tag: latest
 
 inputs:
 - name: source
