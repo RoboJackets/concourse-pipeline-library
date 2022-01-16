@@ -14,6 +14,7 @@ generate_pipeline () {  if test -f "go-patch/$3.yml"
 }
 
 rm -f generated.yml
+mkdir -p generated
 
 for team in pipelines/*
 do

@@ -8,6 +8,7 @@ repository:
 
 base_image:
   repository: mingc/android-build-box
+  resource_name: android
   tag: 1.24.0
   icon: docker
 
@@ -15,7 +16,7 @@ resource_types:
 - name: github-webhook
   defaults:
     resources:
-      mjackets-api: (( grab webhook_configuration ))
+      apiary-mobile: (( grab webhook_configuration ))
 
 resources:
 
@@ -33,6 +34,19 @@ resources:
 
 tasks:
 
+  get_base_image:
+    tags:
+    - large
+    timeout: 5m
+
   build_image:
     params:
-      CONTEXT: source/ci/mjackets-build
+      CONTEXT: source
+      DOCKERFILE: source/ci/dockerfiles/Dockerfile
+    tags:
+    - large
+
+  put_image:
+    tags:
+    - large
+    timeout: 10m

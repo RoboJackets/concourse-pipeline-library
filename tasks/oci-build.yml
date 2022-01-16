@@ -12,7 +12,7 @@ params:
 
 inputs:
 - name: source
-- name: (( grab base_image.repository ))
+- name: (( grab base_image.resource_name ))
 
 outputs:
 - name: image

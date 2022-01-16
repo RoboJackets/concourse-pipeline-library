@@ -8,6 +8,7 @@ repository:
 
 base_image:
   repository: ubuntu
+  resource_name: ubuntu
   tag: latest
   icon: ubuntu
 
