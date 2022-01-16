@@ -25,12 +25,12 @@ resources:
 - name: (( grab repository.name ))
   source:
     paths:
-    - ci/dockerfiles/Dockerfile
+    - ci/dockerfiles/*
 
 - name: pull-request
   source:
     paths:
-    - ci/dockerfiles/Dockerfile
+    - ci/dockerfiles/*
 
 tasks:
 
