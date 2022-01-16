@@ -8,7 +8,7 @@ repository:
   main_branch: main
 
 base_image:
-  
+
   repository: alpine
   resource_name: alpine
   tag: latest
