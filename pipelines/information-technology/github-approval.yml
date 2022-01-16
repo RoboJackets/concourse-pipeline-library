@@ -8,6 +8,7 @@ repository:
 
 base_image:
   repository: python
+  resource_name: python
   tag: 3.8-alpine
   icon: language-python
 

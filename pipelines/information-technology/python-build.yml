@@ -10,6 +10,7 @@ repository:
 base_image:
 
   repository: ubuntu
+  resource_name: python
   tag: latest
   icon: ubuntu
 
