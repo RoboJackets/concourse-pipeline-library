@@ -155,7 +155,7 @@ tasks:
 
       - put: deployment
         params:
-            state: in_progress
+          state: in_progress
         inputs:
         - deployment
 
@@ -224,25 +224,25 @@ tasks:
 
   record_end_time:
 
-    - task: record-end-time
-      config:
-        image_resource:
-          type: registry-image
-          source:
-            repository: alpine
-            tag: latest
-        outputs:
-        - name: end-time
-        platform: linux
-        run:
-          args:
-          - -euxc
-          - date +%s > end-time/end-time
-          path: sh
-    - load_var: end_time
-      file: end-time/end-time
-      format: trim
-      reveal: true
+  - task: record-end-time
+    config:
+      image_resource:
+        type: registry-image
+        source:
+          repository: alpine
+          tag: latest
+      outputs:
+      - name: end-time
+      platform: linux
+      run:
+        args:
+        - -euxc
+        - date +%s > end-time/end-time
+        path: sh
+  - load_var: end_time
+    file: end-time/end-time
+    format: trim
+    reveal: true
 
 jobs:
 
@@ -402,10 +402,10 @@ jobs:
     config:
       run:
         args:
-          - -i
-          - >-
-            /job/c\job "apiary-test" {
-          - apiary.nomad
+        - -i
+        - >-
+          /job/c\job "apiary-test" {
+        - apiary.nomad
 
   - (( grab tasks.start_deployment ))
 
@@ -483,10 +483,10 @@ jobs:
     config:
       run:
         args:
-          - -i
-          - >-
-            /job/c\job "apiary-google-play-review" {
-          - apiary.nomad
+        - -i
+        - >-
+          /job/c\job "apiary-google-play-review" {
+        - apiary.nomad
 
   - (( grab tasks.start_deployment ))
 
@@ -564,10 +564,10 @@ jobs:
     config:
       run:
         args:
-          - -i
-          - >-
-            /job/c\job "apiary-production" {
-          - apiary.nomad
+        - -i
+        - >-
+          /job/c\job "apiary-production" {
+        - apiary.nomad
 
   - (( grab tasks.start_deployment ))
 
