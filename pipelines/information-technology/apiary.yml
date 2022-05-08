@@ -404,7 +404,7 @@ jobs:
         args:
         - -i
         - >-
-          /job/c\job "apiary-test" {
+            /job/c\job "apiary-test" {
         - apiary.nomad
 
   - (( grab tasks.start_deployment ))
@@ -485,7 +485,7 @@ jobs:
         args:
         - -i
         - >-
-          /job/c\job "apiary-google-play-review" {
+            /job/c\job "apiary-google-play-review" {
         - apiary.nomad
 
   - (( grab tasks.start_deployment ))
@@ -566,7 +566,7 @@ jobs:
         args:
         - -i
         - >-
-          /job/c\job "apiary-production" {
+            /job/c\job "apiary-production" {
         - apiary.nomad
 
   - (( grab tasks.start_deployment ))
