@@ -17,7 +17,7 @@ resource_types:
     token: (( concat "((\"" repository.github "\"/token.token))" ))
     resource_name: deployment
     environment_urls: (( grab deployment.environment_urls ))
-    github_user_tokens: ((github-user-tokens))
+    github_user_tokens: (( concat "((\"" repository.github "\"/user-tokens))" ))
   tags:
   - resources
 
