@@ -9,6 +9,7 @@ image_resource:
 params:
   CONTEXT: source
   IMAGE_ARG_base_image: ""
+  BUILDKIT_PROGRESS: plain
 
 inputs:
 - name: source

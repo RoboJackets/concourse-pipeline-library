@@ -12,3 +12,13 @@ registry:
   source:
     username: ((kv/"hub.docker.com".username))
     password: ((kv/"hub.docker.com".password))
+- name: cc
+  hostname: registry.cc.robojackets.net
+  source:
+    username: (("registry.cc.robojackets.net".username))
+    password: (("registry.cc.robojackets.net".password))
+- name: bcdc
+  hostname: registry.bcdc.robojackets.net
+  source:
+    username: (("registry.bcdc.robojackets.net".username))
+    password: (("registry.bcdc.robojackets.net".password))

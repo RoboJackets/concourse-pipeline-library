@@ -1,0 +1,74 @@
+---
+template: oci-build
+
+repository:
+
+  name: nomad
+  github: github.gatech.edu
+  main_branch: main
+
+base_image:
+
+  resource_name: debian
+  repository: debian
+  tag: bullseye-slim
+  icon: debian
+
+resource_types:
+
+- name: github-webhook
+  defaults:
+    resources:
+      nomad: (( grab webhook_configuration ))
+
+- name: hashicorp-release
+  type: registry-image
+  source:
+    repository: starkandwayne/hashicorp-release-resource
+  tags:
+  - resources
+
+resources:
+
+- name: nomad-release
+  type: hashicorp-release
+  source:
+    project: nomad
+  tags:
+  - resources
+
+jobs:
+
+- name: (( concat "build-" repository.main_branch ))
+  plan:
+
+  - in_parallel:
+
+    - (( append ))
+
+    - get: nomad-release
+      trigger: true
+      params:
+        regexp: linux_amd64
+
+  - {}
+
+  - task: (( inject tasks.build_image))
+    config:
+      inject: (( defer inject build_task ))
+      inputs:
+      - name: nomad-release
+        path: source/nomad
+
+- name: build-pull-request
+  plan:
+
+  - in_parallel:
+
+    - (( append ))
+
+    - get: nomad-release
+      params:
+        regexp: linux_amd64
+
+build_task: (( load "tasks/oci-build.yml" ))

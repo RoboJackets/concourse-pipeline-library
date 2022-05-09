@@ -103,6 +103,8 @@ tasks:
     put: image
     params:
       image: image/image.tar
+    get_params:
+      skip_download: true
     inputs:
     - image
     on_abort:

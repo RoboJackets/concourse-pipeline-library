@@ -1,20 +1,44 @@
 ---
-template: php/laravel
+template: php/laravel-nomad
 
 repository:
   name: apiary
   github: github.com
-  main_branch: master
+  main_branch: main
+
+base_image:
+
+  resource_name: debian
+  repository: debian
+  tag: bullseye-slim
+  icon: debian
 
 deployment:
-  automatic_deployment_environment: test
   environment_urls:
+    google-play-review: https://apiary-google-play-review.robojackets.org
     test: https://apiary-test.robojackets.org
     production: https://my.robojackets.org
+
+destination:
+  registry: bcdc
 
 php:
   codesniffer_config: phpcs.xml
   phpstan_config: phpstan.neon
+
+groups:
+- (( merge ))
+- name: (( grab repository.main_branch ))
+  jobs:
+  - (( prepend ))
+  - create-sentry-release
+  - deploy-test
+  - deploy-google-play-review
+  - deploy-production
+- name: pull-request
+  jobs:
+  - (( prepend ))
+  - deploy-pull-request
 
 resource_types:
 - name: github-webhook
@@ -69,26 +93,742 @@ tasks:
           conclusion: action_required
       timeout: 5m
 
+  write_composer_auth:
+
+    task: write-composer-auth
+    config:
+      image_resource:
+        type: registry-image
+        source:
+          repository: alpine
+          tag: latest
+      outputs:
+      - name: composer-auth
+      params:
+        COMPOSER_AUTH: ((composer-auth))
+      platform: linux
+      run:
+        args:
+        - -euxc
+        - echo ${COMPOSER_AUTH} > composer-auth/auth.json
+        path: sh
+
+  sentry_cli:
+
+    platform: linux
+    image_resource:
+      type: registry-image
+      source:
+        repository: getsentry/sentry-cli
+        tag: latest
+    run:
+      path: sentry-cli
+    params:
+      SENTRY_AUTH_TOKEN: ((sentry-token))
+      SENTRY_ORG: robojackets
+      SENTRY_PROJECT: apiary
+
+  set_job_name:
+
+    task: set-job-name
+    config:
+      image_resource:
+        type: registry-image
+        source:
+          repository: alpine
+          tag: latest
+      inputs:
+      - name: apiary
+      outputs:
+      - name: apiary
+      platform: linux
+      run:
+        path: sed
+        dir: apiary/.nomad
+
+  start_deployment:
+
+    do:
+
+    - in_parallel:
+
+      - put: deployment
+        params:
+          state: in_progress
+        inputs:
+        - deployment
+
+      - do:
+
+        - task: record-start-time
+          config:
+            image_resource:
+              type: registry-image
+              source:
+                repository: alpine
+                tag: latest
+            outputs:
+            - name: start-time
+            platform: linux
+            run:
+              args:
+              - -euxc
+              - date +%s > start-time/start-time
+              path: sh
+
+        - load_var: start_time
+          file: start-time/start-time
+          format: trim
+          reveal: true
+
+  nomad_job_run:
+
+    task: nomad-job-run
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          aws_access_key_id: ((aws/sts/ecr.access_key))
+          aws_secret_access_key: ((aws/sts/ecr.secret_key))
+          aws_session_token: ((aws/sts/ecr.security_token))
+          aws_region: us-east-1
+          repository: robojackets/nomad
+      inputs:
+      - name: apiary
+      run:
+        path: nomad
+        dir: apiary/.nomad
+      params:
+        NOMAD_ADDR: https://nomad.bcdc.robojackets.net
+        NOMAD_TOKEN: ((nomad/bcdc/creds/management.secret_id))
+    on_abort:
+      inputs:
+      - deployment
+      params:
+        state: error
+      put: deployment
+    on_error:
+      inputs:
+      - deployment
+      params:
+        state: error
+      put: deployment
+    on_failure:
+      inputs:
+      - deployment
+      params:
+        state: failure
+      put: deployment
+
+  record_end_time:
+
+  - task: record-end-time
+    config:
+      image_resource:
+        type: registry-image
+        source:
+          repository: alpine
+          tag: latest
+      outputs:
+      - name: end-time
+      platform: linux
+      run:
+        args:
+        - -euxc
+        - date +%s > end-time/end-time
+        path: sh
+  - load_var: end_time
+    file: end-time/end-time
+    format: trim
+    reveal: true
+
 jobs:
 
 - name: (( concat "build-" repository.main_branch ))
   plan:
 
-  - (( insert after 1 ))
+  - (( replace ))
+
+  - in_parallel:
+
+    - do:
+
+      - get: (( grab repository.name ))
+        trigger: true
+
+      - (( grab tasks.load_var_from_git ))
+
+    - (( grab tasks.get_base_image ))
+
+  - in_parallel:
+
+    - (( grab tasks.javascript_build ))
+
+    - (( grab tasks.php_build ))
+
+    - do:
+
+      - put: build-check
+        inputs: []
+
+      - (( grab tasks.write_composer_auth ))
+
+      - task: (( inject tasks.build_image ))
+        config:
+          inject: (( defer inject build_task ))
+          inputs:
+          - name: composer-auth
+          params:
+            BUILDKIT_SECRET_composer_auth: composer-auth/auth.json
+            BUILDKIT_PROGRESS: plain
+
+      - (( grab tasks.put_build_check ))
 
   - (( grab tasks.run_tests ))
+
+  - put: push-check
+    inputs: []
+
+  - (( grab tasks.put_image ))
+
+  - put: webhooks
+    inputs: []
+
+- name: create-sentry-release
+  plan:
+
+  - in_parallel:
+
+    - get: apiary
+      trigger: true
+      passed:
+      - build-main
+
+    - do:
+
+      - get: image
+        trigger: true
+        passed:
+        - build-main
+
+      - load_var: image_digest
+        file: image/digest
+        format: trim
+        reveal: true
+
+  - task: create-release
+    config:
+      inject: (( inject tasks.sentry_cli ))
+      run:
+        args:
+        - releases
+        - new
+        - ((.:image_digest))
+
+  - task: set-commits
+    config:
+      inject: (( inject tasks.sentry_cli ))
+      inputs:
+      - name: apiary
+      run:
+        args:
+        - releases
+        - set-commits
+        - ((.:image_digest))
+        - --auto
+        dir: apiary
+
+  - task: upload-sourcemaps
+    config:
+      inject: (( inject tasks.sentry_cli ))
+      inputs:
+      - name: image
+      run:
+        args:
+        - releases
+        - files
+        - ((.:image_digest))
+        - upload-sourcemaps
+        - public/js/
+        - --wait
+        - --validate
+        - --url-prefix
+        - ~/js/
+        dir: image/rootfs/app/
+
+  - task: finalize-release
+    config:
+      inject: (( inject tasks.sentry_cli ))
+      run:
+        args:
+        - releases
+        - finalize
+        - ((.:image_digest))
+
+- name: deploy-test
+  public: true
+  serial: true
+  plan:
+  - in_parallel:
+    - do:
+      - get: apiary
+        trigger: true
+        passed:
+        - create-sentry-release
+
+      - load_var: commit
+        file: apiary/.git/ref
+        format: trim
+        reveal: true
+
+    - do:
+      - get: image
+        params:
+          # deliberately re-downloading image at this point to confirm that it is still in the registry
+          # registry will be garbage collecting images fairly quickly since they're not actually tagged
+          skip_download: false
+        trigger: true
+        passed:
+        - create-sentry-release
+
+      - load_var: image_digest
+        file: image/digest
+        format: trim
+        reveal: true
+
+  - inject: (( inject tasks.set_job_name ))
+    config:
+      run:
+        args:
+        - -i
+        - >-
+            /job/c\job "apiary-test" {
+        - apiary.nomad
+
+  - put: deployment
+    params:
+      environment: test
+    inputs: []
+
+  - (( grab tasks.start_deployment ))
+
+  - inject: (( inject tasks.nomad_job_run ))
+    config:
+      run:
+        args:
+        - job
+        - run
+        - -var
+        - image=registry.bcdc.robojackets.net/robojackets/apiary@((.:image_digest))
+        - -var-file
+        - var-files/test.hcl
+        - apiary.nomad
+
+  - in_parallel:
+
+    - put: deployment
+      inputs:
+      - deployment
+      params:
+        state: success
+
+    - do:
+      - do: (( grab tasks.record_end_time ))
+
+      - task: create-sentry-deployment
+        config:
+          inject: (( inject tasks.sentry_cli ))
+          run:
+            args:
+            - releases
+            - deploys
+            - ((.:image_digest))
+            - new
+            - --env
+            - test
+            - --finished
+            - ((.:end_time))
+            - --started
+            - ((.:start_time))
+
+- name: deploy-google-play-review
+  public: true
+  serial: true
+  plan:
+  - in_parallel:
+    - do:
+      - get: apiary
+        trigger: false
+        passed:
+        - deploy-test
+
+      - load_var: commit
+        file: apiary/.git/ref
+        format: trim
+        reveal: true
+
+    - do:
+      - get: image
+        params:
+          # deliberately re-downloading image at this point to confirm that it is still in the registry
+          # registry will be garbage collecting images fairly quickly since they're not actually tagged
+          skip_download: false
+        trigger: false
+        passed:
+        - deploy-test
+
+      - load_var: image_digest
+        file: image/digest
+        format: trim
+        reveal: true
+
+  - inject: (( inject tasks.set_job_name ))
+    config:
+      run:
+        args:
+        - -i
+        - >-
+            /job/c\job "apiary-google-play-review" {
+        - apiary.nomad
+
+  - put: deployment
+    params:
+      environment: google-play-review
+    inputs: []
+
+  - (( grab tasks.start_deployment ))
+
+  - inject: (( inject tasks.nomad_job_run ))
+    config:
+      run:
+        args:
+        - job
+        - run
+        - -var
+        - image=registry.bcdc.robojackets.net/robojackets/apiary@((.:image_digest))
+        - -var-file
+        - var-files/google-play-review.hcl
+        - apiary.nomad
+
+  - in_parallel:
+
+    - put: deployment
+      inputs:
+      - deployment
+      params:
+        state: success
+
+    - do:
+      - do: (( grab tasks.record_end_time ))
+
+      - task: create-sentry-deployment
+        config:
+          inject: (( inject tasks.sentry_cli ))
+          run:
+            args:
+            - releases
+            - deploys
+            - ((.:image_digest))
+            - new
+            - --env
+            - google-play-review
+            - --finished
+            - ((.:end_time))
+            - --started
+            - ((.:start_time))
+
+- name: deploy-production
+  public: true
+  serial: true
+  plan:
+  - in_parallel:
+    - do:
+      - get: apiary
+        trigger: false
+        passed:
+        - deploy-google-play-review
+
+      - load_var: commit
+        file: apiary/.git/ref
+        format: trim
+        reveal: true
+
+    - do:
+      - get: image
+        params:
+          # deliberately re-downloading image at this point to confirm that it is still in the registry
+          # registry will be garbage collecting images fairly quickly since they're not actually tagged
+          skip_download: false
+        trigger: false
+        passed:
+        - deploy-google-play-review
+
+      - load_var: image_digest
+        file: image/digest
+        format: trim
+        reveal: true
+
+  - inject: (( inject tasks.set_job_name ))
+    config:
+      run:
+        args:
+        - -i
+        - >-
+            /job/c\job "apiary-production" {
+        - apiary.nomad
+
+  - put: deployment
+    params:
+      environment: production
+    inputs: []
+
+  - (( grab tasks.start_deployment ))
+
+  - inject: (( inject tasks.nomad_job_run ))
+    config:
+      run:
+        args:
+        - job
+        - run
+        - -var
+        - image=registry.bcdc.robojackets.net/robojackets/apiary@((.:image_digest))
+        - -var-file
+        - var-files/production.hcl
+        - apiary.nomad
+
+  - in_parallel:
+
+    - put: deployment
+      inputs:
+      - deployment
+      params:
+        state: success
+
+    - do:
+      - do: (( grab tasks.record_end_time ))
+
+      - task: create-sentry-deployment
+        config:
+          inject: (( inject tasks.sentry_cli ))
+          run:
+            args:
+            - releases
+            - deploys
+            - ((.:image_digest))
+            - new
+            - --env
+            - production
+            - --finished
+            - ((.:end_time))
+            - --started
+            - ((.:start_time))
 
 - name: build-pull-request
   plan:
 
-  - (( insert after 1 ))
+  - (( replace ))
+
+  - in_parallel:
+
+    - do:
+
+      - get: pull-request
+        trigger: true
+
+      - (( grab tasks.load_var_from_pull_request ))
+
+      - (( grab tasks.load_pull_request_url ))
+
+    - inject: (( inject tasks.get_base_image ))
+      trigger: false
+
+  - in_parallel:
+
+    - inject: (( inject tasks.javascript_build ))
+      do:
+
+      - (( defer inline ))
+
+      - {}
+
+      - input_mapping:
+          source: pull-request
+
+      - {}
+
+      - input_mapping:
+          source: pull-request
+
+    - inject: (( inject tasks.php_build ))
+      do:
+
+      - (( defer inline ))
+
+      - {}
+
+      - in_parallel:
+
+        - (( defer inline ))
+
+        - input_mapping:
+            source: pull-request
+
+        - input_mapping:
+            source: pull-request
+
+      - in_parallel:
+
+        - (( defer inline ))
+
+        - {}
+
+        - do:
+
+          - (( defer inline ))
+
+          - {}
+
+          - input_mapping:
+              source: pull-request
+
+        - do:
+
+          - (( defer inline ))
+
+          - {}
+
+          - input_mapping:
+              source: pull-request
+
+        - do:
+
+          - (( defer inline ))
+
+          - {}
+
+          - input_mapping:
+              source: pull-request
+
+        - do:
+
+          - (( defer inline ))
+
+          - {}
+
+          - input_mapping:
+              source: pull-request
+
+    - do:
+
+      - put: build-check
+        inputs: []
+
+      - (( grab tasks.write_composer_auth ))
+
+      - task: (( inject tasks.build_image))
+        config:
+          inject: (( defer inject build_task ))
+          inputs:
+          - name: composer-auth
+          params:
+            BUILDKIT_SECRET_composer_auth: composer-auth/auth.json
+            BUILDKIT_PROGRESS: plain
+        input_mapping:
+          source: pull-request
+
+      - (( grab tasks.put_build_check ))
 
   - inject: (( inject tasks.run_tests ))
     do:
-
     - (( inline ))
 
     - {}
 
     - input_mapping:
         source: pull-request
+
+  - put: push-check
+    inputs: []
+
+  - (( grab tasks.put_image ))
+
+  - put: approve-pull-request
+    inputs: []
+
+  - put: merge-pull-request
+    inputs: []
+
+- name: deploy-pull-request
+  public: true
+  serial: true
+  plan:
+  - in_parallel:
+    - do:
+      - get: pull-request
+        trigger: false
+        passed:
+        - build-pull-request
+
+      - (( grab tasks.load_var_from_pull_request ))
+
+    - do:
+      - get: image
+        params:
+          # deliberately re-downloading image at this point to confirm that it is still in the registry
+          # registry will be garbage collecting images fairly quickly since they're not actually tagged
+          skip_download: false
+        trigger: false
+        passed:
+        - build-pull-request
+
+      - load_var: image_digest
+        file: image/digest
+        format: trim
+        reveal: true
+
+  - inject: (( inject tasks.set_job_name ))
+    config:
+      run:
+        args:
+        - -i
+        - >-
+            /job/c\job "apiary-test" {
+        - apiary.nomad
+    input_mapping:
+      apiary: pull-request
+    output_mapping:
+      apiary: pull-request
+
+  - put: deployment
+    params:
+      environment: test
+    inputs: []
+
+  - put: deployment
+    params:
+      state: in_progress
+    inputs:
+    - deployment
+
+  - inject: (( inject tasks.nomad_job_run ))
+    config:
+      run:
+        args:
+        - job
+        - run
+        - -var
+        - image=registry.bcdc.robojackets.net/robojackets/apiary@((.:image_digest))
+        - -var-file
+        - var-files/test.hcl
+        - apiary.nomad
+    input_mapping:
+      apiary: pull-request
+
+  - put: deployment
+    inputs:
+    - deployment
+    params:
+      state: success
+
+build_task: (( load "tasks/oci-build.yml" ))

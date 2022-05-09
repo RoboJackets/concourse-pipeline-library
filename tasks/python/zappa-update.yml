@@ -4,8 +4,8 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: (( join "/" registry.private.hostname "robojackets/python-build" ))
-    inject: (( inject registry.private.source ))
+    repository: mlupin/docker-lambda
+    tag: python3.9-build
 
 params:
   AWS_ACCESS_KEY_ID: (( concat "((aws/sts/" aws.credentials ".access_key))" ))
