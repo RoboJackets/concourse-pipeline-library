@@ -35,6 +35,10 @@ groups:
   - deploy-test
   - deploy-google-play-review
   - deploy-production
+- name: pull-request
+  jobs:
+  - (( prepend ))
+  - deploy-pull-request
 
 resource_types:
 - name: github-webhook
@@ -145,11 +149,6 @@ tasks:
   start_deployment:
 
     do:
-
-    - put: deployment
-      params:
-        environment: test
-      inputs: []
 
     - in_parallel:
 
@@ -407,6 +406,11 @@ jobs:
             /job/c\job "apiary-test" {
         - apiary.nomad
 
+  - put: deployment
+    params:
+      environment: test
+    inputs: []
+
   - (( grab tasks.start_deployment ))
 
   - inject: (( inject tasks.nomad_job_run ))
@@ -488,6 +492,11 @@ jobs:
             /job/c\job "apiary-google-play-review" {
         - apiary.nomad
 
+  - put: deployment
+    params:
+      environment: google-play-review
+    inputs: []
+
   - (( grab tasks.start_deployment ))
 
   - inject: (( inject tasks.nomad_job_run ))
@@ -568,6 +577,11 @@ jobs:
         - >-
             /job/c\job "apiary-production" {
         - apiary.nomad
+
+  - put: deployment
+    params:
+      environment: production
+    inputs: []
 
   - (( grab tasks.start_deployment ))
 
@@ -744,5 +758,77 @@ jobs:
 
   - put: merge-pull-request
     inputs: []
+
+- name: deploy-pull-request
+  public: true
+  serial: true
+  plan:
+  - in_parallel:
+    - do:
+      - get: pull-request
+        trigger: false
+        passed:
+        - build-pull-request
+
+      - (( grab tasks.load_var_from_pull_request ))
+
+    - do:
+      - get: image
+        params:
+          # deliberately re-downloading image at this point to confirm that it is still in the registry
+          # registry will be garbage collecting images fairly quickly since they're not actually tagged
+          skip_download: false
+        trigger: false
+        passed:
+        - build-pull-request
+
+      - load_var: image_digest
+        file: image/digest
+        format: trim
+        reveal: true
+
+  - inject: (( inject tasks.set_job_name ))
+    config:
+      run:
+        args:
+        - -i
+        - >-
+            /job/c\job "apiary-test" {
+        - apiary.nomad
+    input_mapping:
+      apiary: pull-request
+    output_mapping:
+      apiary: pull-request
+
+  - put: deployment
+    params:
+      environment: test
+    inputs: []
+
+  - put: deployment
+    params:
+      state: in_progress
+    inputs:
+    - deployment
+
+  - inject: (( inject tasks.nomad_job_run ))
+    config:
+      run:
+        args:
+        - job
+        - run
+        - -var
+        - image=registry.bcdc.robojackets.net/robojackets/apiary@((.:image_digest))
+        - -var-file
+        - var-files/test.hcl
+        - apiary.nomad
+    input_mapping:
+      apiary: pull-request
+
+  - put: deployment
+    inputs:
+    - deployment
+    params:
+      state: success
 
 build_task: (( load "tasks/oci-build.yml" ))
