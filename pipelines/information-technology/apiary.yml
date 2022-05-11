@@ -408,7 +408,7 @@ jobs:
         args:
         - -i
         - >-
-            /job/c\job "apiary-test" {
+            /job "apiary" {/c\job "apiary-test" {
         - apiary.nomad
 
   - put: deployment
@@ -496,7 +496,7 @@ jobs:
         args:
         - -i
         - >-
-            /job/c\job "apiary-google-play-review" {
+            /job "apiary" {/c\job "apiary-google-play-review" {
         - apiary.nomad
 
   - put: deployment
@@ -584,7 +584,7 @@ jobs:
         args:
         - -i
         - >-
-            /job/c\job "apiary-production" {
+            /job "apiary" {/c\job "apiary-production" {
         - apiary.nomad
 
   - put: deployment
@@ -809,7 +809,7 @@ jobs:
         args:
         - -i
         - >-
-            /job/c\job "apiary-test" {
+            /job "apiary" {/c\job "apiary-test" {
         - apiary.nomad
     input_mapping:
       apiary: pull-request
