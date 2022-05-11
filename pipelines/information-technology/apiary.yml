@@ -282,6 +282,7 @@ jobs:
           params:
             BUILDKIT_SECRET_composer_auth: composer-auth/auth.json
             BUILDKIT_PROGRESS: plain
+            TARGET: backend-compressed
         tags:
         - large
 
