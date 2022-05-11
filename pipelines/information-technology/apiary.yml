@@ -282,6 +282,9 @@ jobs:
           params:
             BUILDKIT_SECRET_composer_auth: composer-auth/auth.json
             BUILDKIT_PROGRESS: plain
+            TARGET: backend-compressed
+        tags:
+        - large
 
       - (( grab tasks.put_build_check ))
 
@@ -290,7 +293,9 @@ jobs:
   - put: push-check
     inputs: []
 
-  - (( grab tasks.put_image ))
+  - inject: (( inject tasks.put_image ))
+    tags:
+    - large
 
   - put: webhooks
     inputs: []
@@ -403,7 +408,7 @@ jobs:
         args:
         - -i
         - >-
-            /job/c\job "apiary-test" {
+            /job "apiary" {/c\job "apiary-test" {
         - apiary.nomad
 
   - put: deployment
@@ -421,6 +426,8 @@ jobs:
         - run
         - -var
         - image=registry.bcdc.robojackets.net/robojackets/apiary@((.:image_digest))
+        - -var
+        - precompressed_assets=true
         - -var-file
         - var-files/test.hcl
         - apiary.nomad
@@ -489,7 +496,7 @@ jobs:
         args:
         - -i
         - >-
-            /job/c\job "apiary-google-play-review" {
+            /job "apiary" {/c\job "apiary-google-play-review" {
         - apiary.nomad
 
   - put: deployment
@@ -507,6 +514,8 @@ jobs:
         - run
         - -var
         - image=registry.bcdc.robojackets.net/robojackets/apiary@((.:image_digest))
+        - -var
+        - precompressed_assets=true
         - -var-file
         - var-files/google-play-review.hcl
         - apiary.nomad
@@ -575,7 +584,7 @@ jobs:
         args:
         - -i
         - >-
-            /job/c\job "apiary-production" {
+            /job "apiary" {/c\job "apiary-production" {
         - apiary.nomad
 
   - put: deployment
@@ -593,6 +602,8 @@ jobs:
         - run
         - -var
         - image=registry.bcdc.robojackets.net/robojackets/apiary@((.:image_digest))
+        - -var
+        - precompressed_assets=true
         - -var-file
         - var-files/production.hcl
         - apiary.nomad
@@ -734,8 +745,11 @@ jobs:
           params:
             BUILDKIT_SECRET_composer_auth: composer-auth/auth.json
             BUILDKIT_PROGRESS: plain
+            TARGET: backend-uncompressed
         input_mapping:
           source: pull-request
+        tags:
+        - large
 
       - (( grab tasks.put_build_check ))
 
@@ -751,7 +765,9 @@ jobs:
   - put: push-check
     inputs: []
 
-  - (( grab tasks.put_image ))
+  - inject: (( inject tasks.put_image ))
+    tags:
+    - large
 
   - put: approve-pull-request
     inputs: []
@@ -793,7 +809,7 @@ jobs:
         args:
         - -i
         - >-
-            /job/c\job "apiary-test" {
+            /job "apiary" {/c\job "apiary-test" {
         - apiary.nomad
     input_mapping:
       apiary: pull-request
@@ -819,6 +835,8 @@ jobs:
         - run
         - -var
         - image=registry.bcdc.robojackets.net/robojackets/apiary@((.:image_digest))
+        - -var
+        - precompressed_assets=false
         - -var-file
         - var-files/test.hcl
         - apiary.nomad
